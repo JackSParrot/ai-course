@@ -1,0 +1,33 @@
+# Generated static site and local releases
+/public/
+/publication-manifest.json
+/releases/
+/verification/
+
+# Dependencies, downloaded dataset cache and local output
+node_modules/
+.cache/
+coverage/
+logs/
+*.log
+*.pid
+*-process.json
+*.zip
+
+# Local credentials and host-specific configuration
+.env
+.env.*
+!.env.example
+.ssh/
+.cloudflared/
+.aws/
+.openai/
+*.pem
+*.key
+*.pfx
+*.p12
+
+# Editor and OS files
+.DS_Store
+Thumbs.db
+.idea/

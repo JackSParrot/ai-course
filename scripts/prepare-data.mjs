@@ -1,0 +1,18 @@
+// Run once to rebuild the checked-in educational subset. The app needs no network.
+import {mkdir,readFile,writeFile} from 'node:fs/promises';
+import {gunzipSync} from 'node:zlib';
+import {createHash} from 'node:crypto';
+import {rng,shuffle} from '../digits/src/math.js';
+const root=new URL('../',import.meta.url), out=new URL('digits/data/',root), cache=new URL('.cache/',root);
+await mkdir(out,{recursive:true});await mkdir(cache,{recursive:true});
+const files={'train-images-idx3-ubyte.gz':'f68b3c2dcbeaaa9fbdd348bbdeb94873','train-labels-idx1-ubyte.gz':'d53e105ee54ea40749a09fcbcd1e9432','t10k-images-idx3-ubyte.gz':'9fb629c4189551a2d022fa330f9573f3','t10k-labels-idx1-ubyte.gz':'ec29112dd5afa0611ce80d1b7f02629c'};
+const hash=b=>createHash('sha256').update(b).digest('hex');const sources=[];const buffers={};
+for(const [name,md5] of Object.entries(files)){const url=`https://storage.googleapis.com/cvdf-datasets/mnist/${name}`;let b;try{b=await readFile(new URL(name,cache));}catch{const r=await fetch(url);if(!r.ok)throw Error(`${r.status} ${url}`);b=Buffer.from(await r.arrayBuffer());await writeFile(new URL(name,cache),b);}if(createHash('md5').update(b).digest('hex')!==md5)throw Error(`Checksum failed: ${name}`);sources.push({url,md5,sha256:hash(b)});buffers[name]=gunzipSync(b);}
+// Area average over the complete 28x28 field: no learned or split-dependent transform.
+function resize(src){const dst=new Uint8Array(256),scale=28/16;for(let y=0;y<16;y++)for(let x=0;x<16;x++){let sum=0;for(let sy=Math.floor(y*scale);sy<Math.ceil((y+1)*scale);sy++)for(let sx=Math.floor(x*scale);sx<Math.ceil((x+1)*scale);sx++){const area=Math.max(0,Math.min((x+1)*scale,sx+1)-Math.max(x*scale,sx))*Math.max(0,Math.min((y+1)*scale,sy+1)-Math.max(y*scale,sy));sum+=src[sy*28+sx]*area;}dst[y*16+x]=Math.round(sum/(scale*scale));}return dst;}
+const split={train:[],validation:[],test:[]},seen=new Set();
+for(const origin of ['train','t10k']){const images=buffers[`${origin}-images-idx3-ubyte.gz`],labels=buffers[`${origin}-labels-idx1-ubyte.gz`];if(images.readUInt32BE(0)!==2051||labels.readUInt32BE(0)!==2049||images.readUInt32BE(8)!==28||images.readUInt32BE(12)!==28)throw Error('Invalid IDX');
+for(let digit=0;digit<10;digit++){const ids=[];for(let i=0;i<labels.readUInt32BE(4);i++)if(labels[8+i]===digit)ids.push(i);shuffle(ids,rng(42000+digit+(origin==='train'?0:100)));let taken=0;for(const id of ids){const pixels=resize(images.subarray(16+id*784,16+(id+1)*784));const pixelHash=hash(pixels);if(seen.has(pixelHash))continue;seen.add(pixelHash);const role=origin==='t10k'?'test':taken<200?'train':'validation';split[role].push({pixels,label:digit,id:`mnist-${origin}-${id}`,sourceIndex:id,sourceSplit:origin==='train'?'train':'test',pixelHash});taken++;if(taken===(origin==='train'?250:50))break;}}}
+const manifest={version:1,id:'mnist-3000-area16-seed42000-v1',width:16,height:16,total:3000,perDigit:300,selectionSeed:42000,transform:'28x28 to 16x16, area average, round to uint8; preserve full field; no fitted preprocessing',authors:'Yann LeCun, Corinna Cortes, Christopher J. C. Burges',license:'CC BY-SA 3.0',licenseURL:'https://creativecommons.org/licenses/by-sa/3.0/',licenseEvidence:'https://keras.io/api/datasets/mnist/',homepage:'http://yann.lecun.com/exdb/mnist/',sources,splits:{}};
+for(const [name,items]of Object.entries(split)){const bytes=Buffer.concat(items.map(x=>Buffer.from(x.pixels)));await writeFile(new URL(`${name}.bin`,out),bytes);manifest.splits[name]={file:`${name}.bin`,count:items.length,sha256:hash(bytes),records:items.map(({pixels,...rest})=>rest)};}
+await writeFile(new URL('manifest.json',out),JSON.stringify(manifest));console.log(Object.fromEntries(Object.entries(split).map(([k,v])=>[k,v.length])));

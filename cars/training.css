@@ -1,0 +1,79 @@
+.training-lab { border: 1px solid #d5ddcc; border-radius: 14px; background: #fbfcf6; margin-bottom: 26px; padding: 26px; }
+.training-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 22px; }
+.training-heading .eyebrow { color: #76886a; }
+.training-heading h2 { font-size: 26px; }
+.training-heading p:last-child { font-size: 12px; color: var(--muted); line-height: 1.6; margin-bottom: 0; }
+.training-state { border: 1px solid #c8d5b9; background: #eff4e6; color: #627e47; font: 9px Consolas, monospace; letter-spacing: .6px; border-radius: 4px; padding: 8px; white-space: nowrap; }
+.training-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 22px 0; }
+.training-steps > div { display: flex; gap: 12px; padding: 15px; border: 1px solid #e0e3d7; border-radius: 8px; background: #f5f6ef; }
+.training-steps b { background: #e4e9d9; border-radius: 50%; width: 28px; height: 28px; flex: none; display: grid; place-items: center; font: 13px Consolas, monospace; color: #778565; }
+.training-steps strong { font-size: 13px; }
+.training-steps p { font-size: 11px; color: #7c8471; line-height: 1.6; margin: 6px 0 0; }
+.training-steps [aria-current="step"] { background: #edf3e1; border-color: #8da973; }
+.training-steps [aria-current="step"] b { background: #6a894f; color: #fff; }
+.training-settings { display: grid; grid-template-columns: 1.1fr .6fr 1.2fr 1.2fr .65fr; gap: 12px; }
+.training-settings label, .training-evolution > label { display: grid; gap: 7px; font-size: 11px; color: #68715e; }
+.training-settings input, .training-settings select, .training-evolution select { width: 100%; min-width: 0; background: #fffef9; border: 1px solid #d5dcc9; border-radius: 5px; padding: 9px; font: 12px "Segoe UI", sans-serif; color: var(--ink); }
+.training-settings :disabled { opacity: .55; cursor: default; }
+.training-help { font-size: 11px; line-height: 1.6; color: #7d8473; }
+.training-plan { font-size: 11px; line-height: 1.7; color: #657657; padding: 12px 14px; border-radius: 6px; background: #edf0e6; margin: 16px 0; }
+.training-plan strong { color: #455637; }
+.training-plan span { display: block; }
+.training-actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.training-actions .button-primary { background: #49663a; }
+.training-actions .button-primary:hover { background: #3d5930; }
+.training-pace { display: grid; gap: 4px; margin-left: auto; color: #758466; font-size: 10px; }
+.training-pace select { border: 1px solid #d5dcc9; border-radius: 5px; padding: 7px; background: #fffef9; color: #52673f; font: 11px "Segoe UI", sans-serif; }
+.training-lab button:disabled { opacity: .4; }
+.training-explanation { font-size: 12px; line-height: 1.65; color: #596d48; margin: 15px 0 0; min-height: 40px; }
+.training-metrics { display: grid; grid-template-columns: repeat(4, 1fr); margin: 18px 0; }
+.training-metrics > div { border-right: 1px solid var(--line); padding: 0 16px; }
+.training-metrics > div:first-child { padding-left: 0; }
+.training-metrics > div:last-child { border: 0; }
+.training-metrics span { display: block; font: 8px Consolas, monospace; letter-spacing: .7px; color: #8b9480; margin-bottom: 8px; }
+.training-metrics strong { font: 24px Consolas, monospace; color: #485e38; }
+#training-progress { display: block; width: 100%; height: 5px; border: 0; border-radius: 3px; background: #e8eede; accent-color: #79945e; margin-bottom: 20px; }
+#training-progress::-webkit-progress-bar { background: #e8eede; border-radius: 3px; }
+#training-progress::-webkit-progress-value { background: #79945e; border-radius: 3px; }
+.training-display { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(285px, 1fr); gap: 22px; }
+.training-arena { background: #142a29; border-radius: 8px; overflow: hidden; color: #b8cbbd; min-width: 0; }
+.training-arena-title { display: flex; justify-content: space-between; gap: 10px; padding: 13px 16px 0; font: 10px Consolas, monospace; }
+#training-canvas { display: block; width: 100%; height: auto; aspect-ratio: 1060 / 720; }
+#training-live-caption { font-size: 10px; line-height: 1.6; padding: 0 16px; margin: 2px 0 10px; }
+.training-origin-legend { display: flex; flex-wrap: wrap; gap: 10px; padding: 0 16px 15px; font-size: 9px; }
+.training-origin-legend span { display: inline-flex; align-items: center; gap: 5px; }
+.training-origin-legend i { width: 6px; height: 6px; border-radius: 50%; }
+.origin-elite { background: #f0cd70; }
+.origin-mutation { background: #73d8bd; }
+.origin-random { background: #ac9ae7; }
+.training-evolution { min-width: 0; }
+.training-chart-heading { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; margin-top: 18px; }
+.training-lab h3 { font-size: 13px; margin: 0; font-weight: 600; }
+.training-chart-heading span { font-size: 9px; color: #8c9580; }
+#training-chart { display: block; width: 100%; height: auto; aspect-ratio: 600 / 330; }
+.training-chart-legend { display: flex; justify-content: space-between; gap: 12px; font-size: 9px; color: #638146; }
+.training-chart-legend span:last-child { color: #a5a28b; }
+.training-mutation { background: #eef2e5; border: 1px solid #dce4ce; border-radius: 6px; padding: 13px 15px; margin-top: 14px; }
+.training-mutation strong { font-size: 11px; }
+.training-mutation p { margin: 8px 0 0; font-size: 11px; line-height: 1.6; color: #78836b; }
+.training-mutation code { display: block; margin-top: 9px; font: 16px Consolas, monospace; color: #5d7f45; }
+.training-scoring, .training-detail { font-size: 12px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); margin-top: 20px; }
+.training-scoring summary, .training-detail summary { padding: 14px 0; cursor: pointer; font-weight: 600; }
+.training-scoring p, .training-detail > p { font-size: 11px; line-height: 1.7; color: #7a8370; margin: 0 0 12px; }
+.training-population-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 15px; margin: 22px 0 12px; }
+.training-population-heading p { font-size: 10px; color: #818b75; margin: 0; }
+.training-table-scroll { max-height: 260px; overflow: auto; border: 1px solid #dfe5d6; border-radius: 6px; }
+.training-table { border-collapse: collapse; width: 100%; font-size: 11px; white-space: nowrap; }
+.training-table th { position: sticky; top: 0; background: #edf1e5; color: #7b886c; font-size: 10px; font-weight: 500; text-align: left; padding: 10px 12px; }
+.training-table td { border-top: 1px solid #e8ece1; padding: 7px 12px; font-variant-numeric: tabular-nums; }
+.training-table .selected-candidate { background: #eef4e3; }
+.training-table button { border: 0; background: none; padding: 2px 0; font: 11px Consolas, monospace; color: #5c793f; text-decoration: underline; text-underline-offset: 3px; }
+.training-detail { padding-bottom: 15px; }
+.training-results { margin-top: 22px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; }
+.training-results > div:last-child { display: flex; flex-wrap: wrap; gap: 7px; }
+.training-results p { font-size: 11px; color: #7a8471; line-height: 1.7; margin: 6px 0 0; max-width: 620px; }
+.training-message { font-size: 12px; color: #597540; line-height: 1.6; margin: 14px 0 0; }
+.training-message:empty { display: none; }
+.training-message.error { color: #a14530; }
+@media (max-width: 1000px) { .training-settings { grid-template-columns: repeat(3, minmax(0, 1fr)); } .training-display { grid-template-columns: minmax(0, 1fr) minmax(250px, 1fr); } .training-lab { padding: 20px; } }
+@media (max-width: 720px) { .training-heading { flex-direction: column; gap: 12px; } .training-steps { grid-template-columns: 1fr; gap: 8px; } .training-steps > div { padding: 12px; } .training-settings { grid-template-columns: repeat(2, minmax(0, 1fr)); } .training-display { grid-template-columns: 1fr; } .training-population-heading { flex-direction: column; gap: 8px; } .training-heading h2 { font-size: 23px; } .training-metrics { grid-template-columns: 1fr 1fr; gap: 18px 8px; } .training-metrics > div:nth-child(3) { padding-left: 0; } .training-metrics > div:nth-child(even) { border: 0; } .training-metrics strong { font-size: 21px; } .training-lab { padding: 18px; } .training-actions > button { flex: 1 1 140px; } .training-results > div:last-child { width: 100%; } .training-results button { white-space: normal; flex: 1 1 140px; } }

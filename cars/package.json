@@ -1,0 +1,11 @@
+{
+  "name": "neural-racing-lab",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Un laboratorio de coches y redes neuronales, en JavaScript sin dependencias.",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test"
+  }
+}

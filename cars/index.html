@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f6f5f0">
+  <title>Neural Racing — Laboratorio 01</title>
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg">
+  <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="./map-editor.css">
+  <link rel="stylesheet" href="./topology-editor.css">
+  <link rel="stylesheet" href="./training.css">
+</head>
+<body>
+  <svg class="icon-library" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+    <symbol id="play" viewBox="0 0 24 24"><path d="m8 5 11 7-11 7Z"/></symbol>
+    <symbol id="pause" viewBox="0 0 24 24"><path d="M8 5v14M16 5v14"/></symbol>
+    <symbol id="step" viewBox="0 0 24 24"><path d="m5 5 10 7-10 7ZM19 5v14"/></symbol>
+    <symbol id="reset" viewBox="0 0 24 24"><path d="M4 10a8 8 0 1 1 1 8M4 4v6h6"/></symbol>
+    <symbol id="shuffle" viewBox="0 0 24 24"><path d="M3 6h3c5 0 7 12 12 12h3M17 14l4 4-4 4M3 18h3c2 0 3-2 4-4M14 9c1-2 2-3 4-3h3M17 2l4 4-4 4"/></symbol>
+    <symbol id="arrow" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></symbol>
+  </svg>
+
+  <header class="site-header">
+    <a class="brand" href="./" aria-label="Neural Racing, inicio">
+      <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+      neural<span class="brand-slash">/</span><strong>racing</strong>
+    </a>
+    <span class="lab-label">LABORATORIO <b>01</b></span>
+    <a class="guide-link" href="#guia">Cómo funciona <span aria-hidden="true">↗</span></a>
+  </header>
+
+  <main>
+    <section class="intro" aria-labelledby="page-title">
+      <div>
+        <p class="eyebrow"><span></span> REDES NEURONALES EN LA PISTA</p>
+        <h1 id="page-title">Cinco sensores.<br class="mobile-break"> Distintas decisiones.</h1>
+        <p class="intro-copy">Mira lo que ve un coche. Descubre cómo decide una red neuronal.</p>
+      </div>
+      <div class="stack-note"><span class="code-braces">{ }</span><div>JavaScript puro<small>Sin librerías. A la vista.</small></div></div>
+    </section>
+
+    <section class="map-library" aria-labelledby="map-library-title">
+      <div class="map-library-heading"><div><p class="eyebrow">MAPAS DEL EXPERIMENTO</p><h2 id="map-library-title">Diseña. Guarda. Compara.</h2></div><button id="new-map-button" type="button" class="button button-primary">+ Nuevo mapa</button></div>
+      <div class="map-selection"><label for="active-map">Circuito actual<select id="active-map"></select></label><span id="active-map-purpose" class="purpose-tag"></span><button id="edit-map-button" class="button button-outline" type="button">Editar circuito</button><button id="export-map-button" class="button button-quiet" type="button">Exportar</button><button id="import-map-button" class="button button-quiet" type="button">Importar</button><input id="import-map-file" type="file" accept=".json,application/json" hidden></div>
+      <details id="map-library-details" class="map-library-details"><summary><span>Organizar entrenamiento y prueba</span><span id="map-plan-summary"></span></summary><p class="map-help">Elige 3 o 4 circuitos para entrenar y reserva otro para la prueba final. Cada mapa tiene un solo uso. Al reservar una nueva prueba, la anterior queda libre.</p><div id="map-cards" class="map-cards"></div><p id="map-plan-status" class="map-help"></p></details>
+      <p class="map-phase-note">El entrenador usa solo los mapas marcados como Entrenamiento. Cambiar el circuito de la carrera conserva las redes.</p>
+      <p id="map-message" class="map-message" role="status" aria-live="polite"></p>
+    </section>
+
+    <section class="topology-bar" aria-labelledby="topology-bar-title">
+      <div><p class="eyebrow">TIPOS DE COCHE</p><h2 id="topology-bar-title">Distintas formas de decidir.</h2><p>Elige entradas, acciones y capas. Compara las redes en una misma pista.</p></div>
+      <div id="topology-summary" class="topology-summary"></div>
+      <button id="open-topology-editor" class="button button-primary" type="button">Editar topologías <span aria-hidden="true">↗</span></button>
+      <p id="topology-message" class="topology-message" role="status" aria-live="polite"></p>
+    </section>
+
+    <section id="entrenamiento" class="training-lab" aria-labelledby="training-title">
+      <div class="training-heading"><div><p class="eyebrow">APRENDER POR SELECCIÓN Y MUTACIÓN</p><h2 id="training-title">Aprender, generación a generación.</h2><p>No les decimos qué botón pulsar. Probamos redes y conservamos las que conducen mejor.</p></div><span id="training-state" class="training-state">LISTO PARA EMPEZAR</span></div>
+      <div class="training-steps" aria-label="Los tres pasos del algoritmo">
+        <div data-training-phase="evaluate"><b>1</b><div><strong>Evaluar</strong><p>Mismos mapas y salidas para todos. Los pesos no cambian mientras conducen.</p></div></div>
+        <div data-training-phase="select"><b>2</b><div><strong>Seleccionar</strong><p>Clasificar los resultados de cada tipo y elegir las redes que serán padres.</p></div></div>
+        <div data-training-phase="reproduce"><b>3</b><div><strong>Crear descendientes</strong><p>Conservar élites, mutar copias de los mejores y añadir redes nuevas.</p></div></div>
+      </div>
+      <form id="training-settings" class="training-settings">
+        <label for="training-population">Redes por tipo<select id="training-population"><option value="16">16 · grupo pequeño</option><option value="24" selected>24 · equilibrado</option><option value="48">48 · más exploración</option><option value="64">64 · grupo grande</option></select></label>
+        <label for="training-generations">Generaciones<input id="training-generations" type="number" min="1" max="200" value="20"></label>
+        <label for="training-rate">Probabilidad de mutación<select id="training-rate"><option value="0.05">5% de los parámetros</option><option value="0.12" selected>12% de los parámetros</option><option value="0.3">30% de los parámetros</option><option value="1">Todos los parámetros</option></select></label>
+        <label for="training-amount">Tamaño del cambio<select id="training-amount"><option value="0.05">Pequeño · hasta ±0,05</option><option value="0.2" selected>Medio · hasta ±0,20</option><option value="0.5">Grande · hasta ±0,50</option></select></label>
+        <label for="training-seed">Semilla<input id="training-seed" type="number" min="1" max="2140000000" value="42"></label>
+      </form>
+      <p class="training-help">La misma semilla repite el experimento. Cada tipo tiene una población independiente; se mantienen sus entradas, salidas y capas.</p>
+      <div id="training-plan" class="training-plan"></div>
+      <div class="training-actions"><button id="training-step" class="button button-primary" type="button">1. Evaluar población</button><button id="training-auto" class="button button-outline" type="button">Entrenar automáticamente</button><button id="training-pause" class="button button-outline" type="button" disabled>Pausar</button><button id="training-new" class="button button-quiet" type="button">Reiniciar desde cero</button><label class="training-pace">Ritmo de la vista<select id="training-pace" aria-label="Ritmo de la vista"><option value="fast">Rápido · ver evolución</option><option value="watch">Lento · observar coches</option></select></label></div>
+      <p id="training-explanation" class="training-explanation" role="status" aria-live="polite">Empieza por Evaluar población. El modo por pasos se detiene al terminar cada fase para que puedas inspeccionarla.</p>
+      <div class="training-metrics"><div><span>GENERACIÓN</span><strong id="training-generation">—</strong></div><div><span>ESCENARIOS EVALUADOS</span><strong id="training-cases">0 / 0</strong></div><div><span>MEJOR PUNTUACIÓN DEL TIPO</span><strong id="training-best">—</strong></div><div><span>VUELTAS DEL CAMPEÓN</span><strong id="training-laps">—</strong></div></div>
+      <progress id="training-progress" max="1" value="0" aria-label="Escenarios de la generación evaluados"></progress>
+      <div class="training-display">
+        <div class="training-arena"><div class="training-arena-title"><span id="training-case-label">Vista de la evaluación</span><span id="training-case-clock">0,0 s</span></div><canvas id="training-canvas" width="1060" height="720" aria-label="Población de entrenamiento y siguiente punto de control."></canvas><p id="training-live-caption">Cada red hará dos intentos por mapa. La línea amarilla será el siguiente punto de control del líder.</p><div class="training-origin-legend"><span><i class="origin-elite"></i> Élite intacta</span><span><i class="origin-mutation"></i> Copia mutada</span><span><i class="origin-random"></i> Red aleatoria</span></div></div>
+        <div class="training-evolution"><label for="training-type">Inspeccionar un tipo<select id="training-type"></select></label><div class="training-chart-heading"><h3>¿Está mejorando?</h3><span>puntuación por generación</span></div><canvas id="training-chart" width="600" height="330" role="img" aria-label="Evolución de la puntuación de la mejor red y de la media de la población."></canvas><div class="training-chart-legend"><span>━ Mejor de la generación</span><span>┄ Media de la población</span></div><p id="training-history-summary" class="training-help">La gráfica aparecerá después de seleccionar la primera generación.</p><div id="training-mutation" class="training-mutation"></div></div>
+      </div>
+      <details class="training-scoring"><summary>Cómo se gana la puntuación</summary><p><strong>Por intento:</strong> 1000 × fracción de pista recorrida + 200 si completa la vuelta + hasta 100 por terminar rápido − 25 si choca − 15 si se queda sin avanzar.</p><p>Hay 32 puntos de control, que se cruzan en orden y hacia delante. Volver sobre el mismo tramo no suma otra vez. Cada intento termina al completar la vuelta, chocar, pasar 3 segundos sin avanzar o llegar a 22 segundos.</p><p><strong>Resultado de la red:</strong> 75% de la media de todos sus intentos + 25% del peor intento. Un solo mapa fácil no basta para ganar. No recibe puntos por estar quieta.</p></details>
+      <div class="training-population-heading"><h3 id="training-population-title">La población, red por red</h3><p id="training-selection-help">Evalúa para descubrir cuáles funcionan mejor.</p></div>
+      <div class="training-table-scroll" tabindex="0" role="region" aria-label="Clasificación y ascendencia de las redes"><table class="training-table"><thead><tr><th>Red</th><th>Cómo nació</th><th>Padre</th><th>Cambios</th><th>Puntuación</th><th>Vueltas</th><th>Selección</th></tr></thead><tbody id="training-population-body"><tr><td colspan="7">Todavía no hay una población. Pulsa Evaluar o Entrenar automáticamente.</td></tr></tbody></table></div>
+      <details id="training-detail" class="training-detail"><summary id="training-detail-title">Desglose de una red por mapa</summary><p id="training-detail-note"></p><div class="training-table-scroll"><table class="training-table"><thead><tr><th>Mapa / salida</th><th>Avance</th><th>Vuelta</th><th>Rapidez</th><th>Choque</th><th>Parada</th><th>Total</th></tr></thead><tbody id="training-detail-body"></tbody></table></div></details>
+      <div class="training-results"><div><h3>Del entrenamiento a la pista</h3><p id="training-results-note">Tras seleccionar una generación, podrás conducir con el mejor de cada tipo.</p></div><div><button id="training-use" class="button button-primary" type="button" disabled>Usar campeones en carrera</button><button id="training-test" class="button button-outline" type="button" disabled>Probar en mapa reservado</button><button id="training-save" class="button button-quiet" type="button" disabled>Guardar campeones</button><button id="training-load" class="button button-quiet" type="button" disabled>Recuperar guardados</button></div></div>
+      <p id="training-message" class="training-message" role="status" aria-live="polite"></p>
+    </section>
+
+    <section id="carrera" class="workspace" aria-label="Simulación de coches">
+      <div class="circuit-column">
+        <div class="toolbar">
+          <div class="playback">
+            <button id="play-button" class="button button-primary" type="button"><svg class="icon"><use href="#play"/></svg><span>Iniciar</span></button>
+            <button id="step-button" class="button button-icon" type="button" aria-label="Avanzar un paso de simulación" title="Avanzar un paso (1/60 s)"><svg class="icon"><use href="#step"/></svg></button>
+            <span class="toolbar-divider"></span>
+            <button id="reset-button" class="button button-quiet" type="button" title="Volver a la salida con las mismas redes"><svg class="icon"><use href="#reset"/></svg><span>Reiniciar</span></button>
+          </div>
+          <label class="speed-label" for="simulation-speed">Ritmo <select id="simulation-speed"><option value="0.5">0,5×</option><option value="1" selected>1×</option><option value="2">2×</option></select></label>
+        </div>
+
+        <div class="circuit-shell">
+          <div class="circuit-topline"><span><b class="section-number">01</b> <span id="active-map-label">ÓVALO</span></span><span id="run-state" class="run-state">EN PAUSA</span></div>
+          <canvas id="track-canvas" width="1060" height="720" aria-label="Circuito ovalado con seis coches. Los cinco rayos muestran los sensores del coche seleccionado.">Tu navegador necesita admitir Canvas para mostrar la simulación.</canvas>
+          <div class="circuit-bottomline"><span><i class="legend-dot"></i> Coche seleccionado <span id="selected-label">01</span></span><label class="sensor-toggle"><input id="show-sensors" type="checkbox" checked><span>Ver sensores</span></label></div>
+        </div>
+
+        <div class="telemetry" aria-label="Datos de la simulación">
+          <div><span class="metric-label">TIEMPO</span><strong id="elapsed">00:00.0</strong></div>
+          <div><span class="metric-label">EN PISTA</span><strong><span id="active-cars">6</span><small> / 6</small></strong></div>
+          <div><span class="metric-label">VELOCIDAD <span class="selected-number">01</span></span><strong><span id="car-speed">0</span><small> u/s</small></strong></div>
+          <div><span class="metric-label">RECORRIDO <span class="selected-number">01</span></span><strong><span id="car-distance">0</span><small> u</small></strong></div>
+        </div>
+
+        <div class="experiment-note"><span class="note-icon" aria-hidden="true">i</span><p id="race-network-note"><strong>Redes aleatorias.</strong> Entrena arriba y usa los campeones para comprobar lo aprendido.</p></div>
+      </div>
+
+      <aside class="inspector" aria-label="Inspector de la red neuronal">
+        <div class="inspector-heading"><div><p class="eyebrow">SIGUE A UN COCHE</p><h2>Dentro de la red</h2></div><span class="live-label"><i></i> EN VIVO</span></div>
+        <div id="car-picker" class="car-picker" role="group" aria-label="Seleccionar coche"></div>
+        <div class="car-caption"><span id="car-name">Coche 01</span><span id="car-state">En la salida</span></div>
+        <div class="car-type-caption"><span id="car-type-name"></span><button id="edit-selected-topology" class="text-button" type="button">Editar tipo ↗</button></div>
+
+        <section class="sensor-panel" aria-labelledby="sensor-heading">
+          <div class="panel-heading"><h3 id="sensor-heading"><span>01</span> Lo que recibe</h3><span id="input-count" class="panel-meta">5 ENTRADAS</span></div>
+          <div id="sensor-readings" class="sensor-readings"></div>
+          <div class="range-caption"><span>Distancia al borde · unidades</span><span>Alcance: 220 u</span></div>
+          <table class="input-values"><caption>Entradas de esta red</caption><thead><tr><th>Entrada</th><th>Real</th><th>A la red</th></tr></thead><tbody id="input-values"></tbody></table>
+          <p class="control-hint">0 = borde encima · 220 = alcance completo. Las entradas desmarcadas no llegan a la red.</p>
+        </section>
+
+        <section class="network-panel" aria-labelledby="network-heading">
+          <div class="panel-heading"><h3 id="network-heading"><span>02</span> Cómo lo procesa</h3><span class="architecture">5 <i>→</i> 6 <i>→</i> 4</span></div>
+          <div class="network-scroll" tabindex="0" role="region" aria-label="Diagrama de la red; desplaza horizontalmente para ver todas las capas"><canvas id="network-canvas" width="680" height="380" aria-label="Red neuronal del coche seleccionado."></canvas></div>
+          <p id="network-description" class="network-description"></p>
+          <div class="weight-legend"><span><i class="positive-line"></i> Peso positivo</span><span><i class="negative-line"></i> Peso negativo</span></div>
+        </section>
+
+        <section class="controls-panel" aria-labelledby="controls-heading">
+          <div class="panel-heading"><h3 id="controls-heading"><span>03</span> Lo que decide</h3><span id="output-count" class="panel-meta">4 SALIDAS</span></div>
+          <div id="output-values" class="output-values" aria-label="Salidas de la red"></div>
+          <p class="actuator-caption">LOS CUATRO BOTONES DEL COCHE</p>
+          <div id="control-buttons" class="control-buttons"></div>
+          <p class="control-hint" id="control-hint">La red pulsa un botón cuando su salida supera 0,50.</p>
+        </section>
+      </aside>
+    </section>
+
+    <section class="experiment-bar" aria-label="Cambiar experimento">
+      <div><span class="experiment-symbol" aria-hidden="true">↗</span><p><strong>Seis coches. Distintas formas de decidir.</strong><span>Reinicia para repetir. Cambia los pesos para explorar otras decisiones.</span></p></div>
+      <button id="randomize-button" class="button button-outline" type="button"><svg class="icon"><use href="#shuffle"/></svg>Nuevas redes</button>
+    </section>
+
+    <section id="guia" class="guide" aria-labelledby="guide-title">
+      <div class="guide-heading"><p class="eyebrow">EL EXPERIMENTO, PASO A PASO</p><h2 id="guide-title">Del entorno a una decisión.</h2></div>
+      <div class="guide-steps">
+        <article><span class="guide-number">01 / PERCIBIR</span><h3>Cinco rayos y la velocidad.</h3><p>Los rayos apuntan a las 10, 11, 12, 1 y 2 del coche. Elige qué distancias y si la velocidad entran en la red: en unidades reales o divididas por su máximo para obtener valores de 0 a 1.</p></article>
+        <article><span class="guide-number">02 / PROCESAR</span><h3>Multiplicar. Sumar. Activar.</h3><p>Cada neurona multiplica entradas por pesos, añade un sesgo y aplica sigmoide o ReLU. Prueba otras capas ocultas: la sigmoide limita la salida a 0–1; ReLU deja pasar los valores positivos.</p></article>
+        <article><span class="guide-number">03 / ACTUAR</span><h3>De una acción a los botones.</h3><p>Una salida puede avanzar, girar, frenar o combinar avance y giro. Activa las salidas mayores que 0,5 o elige solo la de mayor valor. Cada acción pulsa los botones correspondientes.</p></article>
+      </div>
+      <details class="code-explainer"><summary>Abre el capó: una neurona en JavaScript <span aria-hidden="true">+</span></summary><div><pre><code>let suma = sesgo;
+for (let i = 0; i &lt; entradas.length; i++) {
+  suma += entradas[i] * pesos[i];
+}
+const salida = activacion === "relu"
+  ? Math.max(0, suma)
+  : 1 / (1 + Math.exp(-suma));</code></pre><p><strong>Inferencia y aprendizaje.</strong> Mientras conducen, las redes calculan salidas con pesos fijos. El entrenador compara los resultados y crea nuevas generaciones con selección y mutación. «Nuevas redes» solo genera pesos al azar.<br><br>Si se pulsan ambos pedales, prevalece el freno. Los dos giros a la vez se cancelan. Los coches detectan los bordes y se detienen al tocarlos; en esta versión no chocan entre sí.</p></div></details>
+    </section>
+  </main>
+
+  <dialog id="map-editor" class="map-editor" aria-labelledby="editor-title">
+    <div class="editor-heading"><div><p class="eyebrow">EDITOR DE CIRCUITOS</p><h2 id="editor-title">Dibuja tu próximo desafío.</h2></div><button id="close-editor-button" class="button button-outline" type="button" aria-label="Cerrar editor">Cerrar <span aria-hidden="true">×</span></button></div>
+    <div class="editor-layout">
+      <div class="editor-workspace">
+        <div class="editor-toolbar" role="group" aria-label="Herramientas del editor"><button type="button" class="button editor-tool" data-tool="add" aria-pressed="true">+ Trazar</button><button type="button" class="button editor-tool" data-tool="move" aria-pressed="false">Mover</button><button type="button" class="button editor-tool" data-tool="start" aria-pressed="false">Salida</button><button type="button" class="button editor-tool" data-tool="remove" aria-pressed="false">Quitar punto</button><span class="editor-toolbar-space"></span><button id="editor-undo" type="button" class="button button-icon" aria-label="Deshacer cambio de mapa">↶</button><button id="editor-redo" type="button" class="button button-icon" aria-label="Rehacer cambio de mapa">↷</button></div>
+        <canvas id="editor-canvas" width="1060" height="720" tabindex="0" aria-label="Lienzo del editor. Coloca puntos para dibujar una pista cerrada. También puedes usar el ajuste preciso por coordenadas."></canvas>
+        <p id="editor-tool-help" class="editor-tool-help"></p>
+      </div>
+      <form id="editor-form" class="editor-settings">
+        <label for="editor-map-name">Nombre del circuito<input id="editor-map-name" type="text" maxlength="48" required autocomplete="off" placeholder="Mi circuito"></label>
+        <label for="editor-width">Ancho de pista <output id="editor-width-value">110 u</output><input id="editor-width" type="range" min="70" max="160" step="2" value="110"></label>
+        <label for="editor-purpose">Uso del mapa<select id="editor-purpose"><option value="practice">Libre · explorar</option><option value="training">Entrenamiento</option><option value="test">Prueba reservada</option></select></label>
+        <label class="editor-checkbox"><input id="editor-reversed" type="checkbox"> Invertir sentido de marcha</label>
+        <label class="editor-checkbox"><input id="editor-snap" type="checkbox" checked> Ajustar puntos a la cuadrícula</label>
+        <div class="editor-start-info"><span>SALIDA</span><strong id="editor-start-label">Sin definir</strong><small>Con la herramienta Salida, elige un punto. Las flechas marcan el sentido.</small></div>
+        <details class="coordinate-editor"><summary>Ajuste preciso y teclado</summary><label for="editor-point">Punto seleccionado<select id="editor-point"><option value="-1">Ninguno</option></select></label><div class="coordinate-fields"><label for="editor-x">X<input id="editor-x" type="number" min="0" max="1060" step="1" value="530"></label><label for="editor-y">Y<input id="editor-y" type="number" min="0" max="720" step="1" value="360"></label></div><div class="coordinate-actions"><button id="editor-add-coordinate" type="button" class="button button-outline">Añadir punto</button><button id="editor-move-coordinate" type="button" class="button button-outline">Aplicar posición</button></div><p>También puedes mover el punto seleccionado con las flechas sobre el lienzo, o quitarlo con Supr.</p></details>
+        <div id="editor-validation" class="editor-validation" role="status" aria-live="polite"></div>
+        <button id="save-map-button" class="button button-primary" type="submit">Guardar y usar mapa</button>
+        <button id="export-draft-button" class="button button-outline" type="button">Exportar este diseño</button>
+        <p class="editor-save-note">Guardado local en este navegador. Exporta el archivo para compartirlo o conservar una copia.</p>
+      </form>
+    </div>
+  </dialog>
+
+  <dialog id="topology-editor" class="topology-editor" aria-labelledby="topology-editor-title">
+    <form id="topology-form" novalidate>
+      <div class="topology-heading"><div><p class="eyebrow">EDITOR DE TOPOLOGÍAS</p><h2 id="topology-editor-title">Diseña cómo piensa cada tipo.</h2></div><button id="close-topology-editor" class="button button-outline" type="button">Cancelar <span aria-hidden="true">×</span></button></div>
+      <div class="topology-layout">
+        <nav class="topology-types" aria-label="Tipos de coche del editor"><p class="eyebrow">TUS TIPOS</p><div id="topology-type-list"></div><div class="type-actions"><button id="new-topology" type="button" class="button button-outline">+ Nuevo tipo</button><button id="duplicate-topology" type="button" class="button button-quiet">Duplicar tipo</button><button id="delete-topology" type="button" class="text-button">Eliminar tipo</button></div><p class="topology-help">Dos coches del mismo tipo comparten la arquitectura, pero cada uno tiene sus propios pesos.</p></nav>
+        <div class="topology-fields">
+          <label class="topology-field" for="topology-name">Nombre del tipo<input id="topology-name" maxlength="48" autocomplete="off" type="text"></label>
+          <fieldset><legend><span>01</span> Entradas</legend><div class="scale-tools"><span>Todas las escalas:</span><button id="inputs-raw" type="button" class="text-button">Absolutos</button><button id="inputs-normalized" type="button" class="text-button">0–1</button></div><div id="topology-input-options"></div><p class="topology-help">Distancia ÷ 220; velocidad ÷ 165. Un sensor sin borde a su alcance mide 220 (normalizado: 1). Puedes mezclar escalas.</p></fieldset>
+          <fieldset><legend><span>02</span> Capas ocultas</legend><div id="topology-layers"></div><button id="add-hidden-layer" type="button" class="button button-outline">+ Añadir capa</button><p class="topology-help">De 0 a 4 capas, de 1 a 16 neuronas cada una. Sin capas ocultas, las entradas conectan directamente con las salidas.</p><label class="topology-field" for="topology-activation">Función de activación<select id="topology-activation"><option value="sigmoid">Sigmoide · 1 / (1 + e⁻ˣ)</option><option value="relu">ReLU · máximo(0, x)</option></select></label><p id="activation-help" class="topology-help"></p></fieldset>
+          <fieldset><legend><span>03</span> Salidas</legend><div id="topology-output-options"></div><p class="topology-help">El número indica el orden de las neuronas. «Avanzar» pulsa acelerar; los giros solos no aceleran.</p><label class="topology-field" for="topology-output-mode">Cómo elegir las acciones<select id="topology-output-mode"><option value="threshold">Todas las salidas mayores que 0,5</option><option value="winner">Solo la salida con mayor valor</option></select></label><p id="output-mode-help" class="topology-help"></p></fieldset>
+        </div>
+        <aside class="topology-preview" aria-label="Vista previa y asignación de coches"><p class="eyebrow">TU ARQUITECTURA</p><strong id="topology-shape"></strong><p id="topology-parameters" class="topology-help"></p><div class="network-scroll" tabindex="0" role="region" aria-label="Vista previa de capas; desplaza para ver la red completa"><canvas id="topology-preview-canvas" width="680" height="420"></canvas></div><p class="topology-help">E = entradas · C = capa oculta · S = salidas.<br>Vista de estructura; las activaciones en vivo están en el inspector.</p><h3>Asigna un tipo a cada coche</h3><div id="topology-assignments"></div><p class="topology-help">Los colores corresponden a los coches de la pista.</p></aside>
+      </div>
+      <div class="topology-footer"><div><p id="topology-validation" role="status" aria-live="polite"></p><p class="topology-help">Guardar reinicia la carrera y reconstruye las redes cuya configuración cambie. Este editor guarda tipos y asignaciones; los pesos aprendidos se guardan con «Guardar campeones».</p></div><button id="save-topologies" class="button button-primary" type="submit">Guardar y aplicar</button></div>
+    </form>
+  </dialog>
+
+  <footer><span>neural / racing <b>·</b> un experimento para aprender</span><span>01 — Sensores, red y controles</span></footer>
+  <p id="announcement" class="sr-only" role="status" aria-live="polite"></p>
+  <script type="module" src="./src/app.js"></script>
+</body>
+</html>

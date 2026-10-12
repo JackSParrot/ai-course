@@ -1,0 +1,22 @@
+import {createPeerGuard} from './peer-guard.mjs';
+import http from 'node:http';
+import {readFile,realpath} from 'node:fs/promises';
+import {resolve,dirname,extname,sep} from 'node:path';
+import {fileURLToPath} from 'node:url';
+import {createHash} from 'node:crypto';
+const here=dirname(fileURLToPath(import.meta.url));
+const types={'.html':'text/html; charset=utf-8','.css':'text/css; charset=utf-8','.js':'text/javascript; charset=utf-8','.svg':'image/svg+xml','.json':'application/json; charset=utf-8','.bin':'application/octet-stream','.md':'text/plain; charset=utf-8'};
+async function createStaticServer(releaseRoot){const root=await realpath(resolve(releaseRoot,'public'));const manifest=JSON.parse(await readFile(resolve(releaseRoot,'publication-manifest.json'),'utf8'));if(manifest.version!==1)throw Error('Unsupported publication manifest.');const files=new Map();for(const [url,spec]of Object.entries(manifest.files)){if(!/^\/(?:[A-Za-z0-9_-]+\/)*[A-Za-z0-9_.-]+$/.test(url)||url.split('/').some(p=>p.startsWith('.')))throw Error('Unsafe publication entry.');const path=await realpath(resolve(root,'.'+url));if(!path.startsWith(root+sep))throw Error('File escapes publication root.');const bytes=await readFile(path);const hash=createHash('sha256').update(bytes).digest('hex');if(hash!==spec.sha256||bytes.length!==spec.bytes)throw Error('Published file changed: rebuild first.');if(!types[extname(path)])throw Error('Unsupported MIME type.');files.set(url,{bytes,etag:`"${hash}"`,mime:types[extname(path)]});}
+return http.createServer((req,res)=>{const base={'X-Content-Type-Options':'nosniff','Referrer-Policy':'same-origin','X-Frame-Options':'DENY','Cache-Control':'no-cache','Content-Security-Policy':"default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; worker-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'"};const reply=(status,text='')=>{res.writeHead(status,{...base,'Content-Type':'text/plain; charset=utf-8'});res.end(req.method==='HEAD'?'':text);};if(!['GET','HEAD'].includes(req.method)){res.setHeader('Allow','GET, HEAD');return reply(405,'Method not allowed');}let path;try{const raw=req.url.split('?')[0];path=decodeURIComponent(raw);if(!path.startsWith('/')||/[\\\x00-\x1f]/.test(path)||path.split('/').some(x=>x==='.'||x==='..'||x.startsWith('.')))return reply(404,'Not found');}catch{return reply(400,'Bad request');}
+if(path==='/health'){res.writeHead(200,{...base,'Content-Type':'application/json'});return res.end(req.method==='HEAD'?'':JSON.stringify({ok:true,application:'neural-labs',resources:files.size}));}
+if(['/cars','/digits','/perceptrons'].includes(path)){res.writeHead(308,{...base,Location:path+'/'});return res.end();}const canonical=path==='/'?'/index.html':path==='/cars/'?'/cars/index.html':path==='/digits/'?'/digits/index.html':path==='/perceptrons/'?'/perceptrons/index.html':path;const file=files.get(canonical);if(!file)return reply(404,'Not found');if(req.headers['if-none-match']===file.etag){res.writeHead(304,{...base,ETag:file.etag});return res.end();}res.writeHead(200,{...base,'Content-Type':file.mime,'Content-Length':file.bytes.length,ETag:file.etag});res.end(req.method==='HEAD'?undefined:file.bytes);
+});}
+export async function createServer({allowedPeers=null,onAllowedPeer,releaseRoot=process.env.LABS_CONTENT_ROOT||here}={}){
+  const permit=createPeerGuard(allowedPeers,onAllowedPeer);
+  const server=await createStaticServer(releaseRoot);
+  const [handle]=server.listeners('request');
+  server.removeListener('request',handle);
+  server.on('request',(req,res)=>{if(permit(req,res))handle(req,res);});
+  return server;
+}
+if(process.argv[1]&&resolve(process.argv[1])===fileURLToPath(import.meta.url)){const host=process.env.LABS_HOST||'127.0.0.1',port=Number(process.env.LABS_PORT||5200);if(!Number.isInteger(port)||port<1024||port>65535)throw Error('Invalid port.');const allowedPeers=process.env.LABS_ALLOWED_PEERS?process.env.LABS_ALLOWED_PEERS.split(',').map(x=>x.trim()):null;if(host!=='127.0.0.1'&&!allowedPeers)throw Error('Non-loopback listener requires an explicit peer restriction.');const server=await createServer({allowedPeers,onAllowedPeer:peer=>console.log('Allowed origin peer: '+peer)});server.listen(port,host,()=>console.log(`Neural Labs: http://${host}:${port}/ (allowlisted static snapshot)`));}
