@@ -1,3 +1,4 @@
+import { translateText } from '../../i18n/i18n.js';
 import { clamp, closestPointOnSegment, distance } from "./geometry.js";
 import { copyMap, MAP_VERSION } from "./maps.js";
 import { serializeMap } from "./map-store.js";
@@ -64,6 +65,7 @@ export class MapEditor {
     this.canvas.addEventListener("lostpointercapture", () => this.cancelPointer());
     this.canvas.addEventListener("keydown", event => this.keyDown(event));
     window.addEventListener("resize", () => { if (this.dialog.open) this.draw(); });
+    document.addEventListener("languagechange", () => { if (this.dialog.open) this.draw(); });
   }
 
   open(map = null, purpose = "practice", asCopy = false) {
@@ -272,14 +274,14 @@ export class MapEditor {
       context.fillText(String(index + 1), point.x, point.y);
       if (index === this.draft.startIndex) {
         context.fillStyle = "#c9e398"; context.font = "12px Consolas, monospace";
-        context.fillText("SALIDA", point.x, point.y - 26);
+        context.fillText(translateText("SALIDA"), point.x, point.y - 26);
       }
     });
     if (!this.draft.points.length) {
       context.fillStyle = "#a9c2aa"; context.textAlign = "center"; context.font = "23px 'Segoe UI', sans-serif";
-      context.fillText("Tu circuito empieza con un punto.", 530, 338);
+      context.fillText(translateText("Tu circuito empieza con un punto."), 530, 338);
       context.font = "15px 'Segoe UI', sans-serif";
-      context.fillText("Haz clic y dibuja un recorrido amplio, sin cruces.", 530, 375);
+      context.fillText(translateText("Haz clic y dibuja un recorrido amplio, sin cruces."), 530, 375);
     }
   }
 }

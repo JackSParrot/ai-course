@@ -36,6 +36,12 @@ En macOS/Linux: `LABS_PORT=5201 npm start`.
 
 Los dos talleres permiten guardar trabajo en el almacenamiento local del navegador. Los guardados pertenecen a su origen completo —protocolo, host y puerto— y no se transfieren automáticamente al cambiar de dirección. Usa las opciones de exportar/importar cuando estén disponibles. El servidor del curso no recibe dibujos, pesos ni experimentos.
 
+## Idiomas
+
+La portada, los tres capítulos y los editores comparten las mismas páginas en **español e inglés**. Usa el selector **ES / EN** para cambiar sin recargar ni perder el ejercicio o entrenamiento en curso. El idioma se recuerda en este navegador; también puedes compartir enlaces con `?lang=en` o `?lang=es`, por ejemplo `/perceptrons/?lang=en#combinar`. El parámetro del enlace tiene prioridad sobre la preferencia guardada.
+
+Las traducciones están en `i18n/en.js`: el texto español original es la clave. `i18n/dom.js` traduce el contenido y los atributos accesibles, incluidos los mensajes que generan los talleres, y conserva el original para volver a español. Los gráficos usan la misma función de traducción. No hay copias de las páginas, peticiones a servicios de traducción ni dependencias adicionales. Al cambiar un texto, actualiza su entrada del catálogo; puedes marcar contenido propio con `data-i18n-ignore` para conservarlo literalmente. Los nombres de usuario, valores de formularios, código, pesos y guardados mantienen sus datos originales.
+
 ## Fuentes y estructura
 
 ```text
@@ -43,6 +49,7 @@ course/           Capítulo 01: HTML, estilos, controles y matemáticas
 digits/           Capítulo 02: interfaz, red, entrenamiento, editores y MNIST
 cars/             Capítulo 03: fuentes y pruebas del laboratorio de coches
 shell/            Portada, estilos comunes y navegación entre capítulos
+i18n/             Catálogo inglés, selector y traducción compartida
 tests/            Perceptrones, publicación HTTP y restricciones del servidor
 digits-tests/     Matemáticas, datos, editores, entrenamiento, guardado e inspector
 cars/tests/       Redes, simulación, mapas, topologías y entrenamiento genético
@@ -67,7 +74,7 @@ npm test
 
 `npm test` reconstruye primero el sitio y ejecuta todas las pruebas con el runner incluido en Node. Las suites verifican matemáticas, gradientes por diferencias finitas, separación y hashes de los datos, modelos independientes, entrenamiento real, editores, guardado/recuperación, las tres imágenes del inspector, coches y recursos HTTP. Los servidores de prueba usan puertos efímeros de loopback y se cierran al terminar.
 
-El build genera **55 recursos** mediante una lista explícita y escribe sus tamaños y SHA-256 en `publication-manifest.json`. El servidor valida esos archivos al arrancar y solo expone esa lista: no publica código del servidor, pruebas, Git, variables de entorno ni directorios completos. También comprueba rutas relativas, módulos y ambos Web Workers.
+El build genera **59 recursos** mediante una lista explícita y escribe sus tamaños y SHA-256 en `publication-manifest.json`. El servidor valida esos archivos al arrancar y solo expone esa lista: no publica código del servidor, pruebas, Git, variables de entorno ni directorios completos. También comprueba rutas relativas, módulos y ambos Web Workers.
 
 Para generar una salida separada dentro del repositorio:
 

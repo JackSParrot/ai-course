@@ -68,11 +68,12 @@ export class MapUI {
   render() {
     const maps = this.store.list();
     const activeId = this.store.state.activeId;
-    field("active-map").replaceChildren(...maps.map(map => new Option(map.name, map.id)));
+    field("active-map").replaceChildren(...maps.map(map => { const option = new Option(map.name, map.id); if (!this.store.isBuiltIn(map.id)) option.dataset.i18nIgnore = ""; return option; }));
     field("active-map").value = activeId;
     const purpose = this.store.purpose(activeId);
     field("active-map-purpose").className = `purpose-tag ${purpose}`;
     field("active-map-purpose").textContent = PURPOSES[purpose];
+    field("active-map-label").toggleAttribute("data-i18n-ignore", !this.store.isBuiltIn(activeId));
     field("active-map-label").textContent = this.store.get(activeId).name.toUpperCase();
     const count = this.store.state.trainingIds.length;
     field("map-plan-summary").textContent = `${count}/4 entrenamiento · ${this.store.state.testId ? "1 prueba" : "sin prueba"}`;
@@ -92,6 +93,7 @@ export class MapUI {
       drawTrack(context, new Track(map));
       const heading = document.createElement("h3");
       heading.textContent = map.name;
+      if (!this.store.isBuiltIn(map.id)) heading.dataset.i18nIgnore = "";
       const origin = document.createElement("small");
       origin.textContent = this.store.isBuiltIn(map.id) ? "Plantilla · editable como copia" : "Tu mapa · guardado";
       const select = document.createElement("select");

@@ -1,3 +1,4 @@
+import { getLanguage } from '../../i18n/i18n.js';
 import { Simulation, FIXED_STEP } from "./simulation.js";
 import { CONTROL_NAMES, CONTROL_LABELS } from "./controls.js";
 import { SENSOR_HOURS, SENSOR_LENGTH } from "./sensor.js";
@@ -70,7 +71,7 @@ const controlElements = CONTROL_NAMES.map((name, index) => {
 });
 
 function decimal(value) {
-  return value.toFixed(2).replace(".", ",");
+  return getLanguage() === "en" ? value.toFixed(2) : value.toFixed(2).replace(".", ",");
 }
 
 function prepareInspector(car) {
@@ -250,6 +251,10 @@ document.addEventListener("visibilitychange", () => {
   }
 });
 window.addEventListener("resize", render);
+document.addEventListener("languagechange", () => {
+  render();
+  if (topologyEditor.dialog.open) topologyEditor.updatePreview();
+});
 
 function frame(time) {
   const elapsed = previousTime === null ? 0 : Math.min((time - previousTime) / 1000, 0.1);

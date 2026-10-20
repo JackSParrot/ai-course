@@ -1,3 +1,4 @@
+import { getLocale } from '../i18n/i18n.js';
 import {NAND,XOR,score,hard,accuracy,boundarySegment,dialValue,dialAngle,dialDragValue,dialKeyValue,XOR_PARAMETER_KEYS,XOR_CHALLENGE,XOR_SOLUTION,xorHiddenModels,manualXor} from './math.js';
 const $=id=>document.getElementById(id),number=id=>Number($(id).value),fmt=(n,d=2)=>Number(n).toFixed(d);
 const state={lesson:1,point:1,networkMode:'RETO MANUAL',highlight:null};
@@ -7,7 +8,7 @@ const networkParameters=()=>Object.fromEntries(XOR_PARAMETER_KEYS.map(key=>[key,
 function renderDials(){
  Object.entries(parameters).forEach(([id,value])=>{
   const dial=$(id+'-dial');dial.style.setProperty('--dial-angle',dialAngle(value)+'deg');dial.setAttribute('aria-valuenow',String(value));
-  dial.setAttribute('aria-valuetext',value.toLocaleString('es-ES',{minimumFractionDigits:1})+'. '+$(id+'-help').textContent);
+  dial.setAttribute('aria-valuetext',value.toLocaleString(getLocale(),{minimumFractionDigits:1})+'. '+$(id+'-help').textContent);
   if(document.activeElement!==$(id))$(id).value=fmt(value,1);
  });
 }
@@ -175,3 +176,5 @@ document.querySelectorAll('[data-xor-point]').forEach(button=>button.addEventLis
 new ResizeObserver(render).observe(document.querySelector('main'));
 window.addEventListener('hashchange',()=>{const n=hashes.indexOf(location.hash);if(n>=0)showLesson(n+1,false);});
 showLesson(Math.max(0,hashes.indexOf(location.hash))+1,false);
+
+document.addEventListener('languagechange', render);

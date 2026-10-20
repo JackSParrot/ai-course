@@ -21,6 +21,10 @@ for(const [app,list]of Object.entries(files))for(const file of list){
  captured.push({app,file,source,buffer,sha256:digest(buffer)});
 }
 for(const item of captured)if(digest(await readFile(item.source))!==item.sha256)throw Error('Source changed while building: '+item.app+'/'+item.file);
+const sharedFiles=['i18n.js','dom.js','en.js','language.css'];
+const shared=await Promise.all(sharedFiles.map(async file=>({file,buffer:await readFile(join(root,'i18n',file))})));
+const languageVersion=digest(Buffer.concat(shared.map(item=>item.buffer))).slice(0,12);
+const languageAssets=prefix=>'<link rel="stylesheet" href="'+prefix+'i18n/language.css?v='+languageVersion+'">\n<script type="module" src="'+prefix+'i18n/dom.js?v='+languageVersion+'"></script>\n';
 const template=await readFile(join(root,'shell/navigation.html'),'utf8');
 const navVersion=digest(await readFile(join(root,'shell/hub-nav.css'))).slice(0,12);
 const landingVersion=digest(await readFile(join(root,'shell/landing.css'))).slice(0,12);
@@ -37,12 +41,13 @@ const manifest={version:1,builtAt:new Date().toISOString(),files:{},sources:{},c
 await mkdir(publicRoot,{recursive:true});
 for(const item of captured){
  let output=item.buffer;
+ if(item.file.endsWith('.js'))output=Buffer.from(output.toString('utf8').replace(/(['"])(\.\.\/(?:\.\.\/)?i18n\/i18n\.js)\1/g,(_,quote,path)=>quote+path+'?v='+languageVersion+quote));
  if(item.app==='digits'&&item.file.endsWith('.js'))output=Buffer.from(output.toString('utf8').replace(/(['"])(\.\/[a-z-]+\.js)\1/g,(_,quote,path)=>quote+path+'?v='+digitsVersion+quote));
  if(item.app==='perceptrons'&&item.file==='lesson.js')output=Buffer.from(output.toString('utf8').replace("'./math.js'","'./math.js?v="+courseVersion+"'"));
  if(item.file==='index.html'){
    let html=output.toString('utf8');if(!html.includes('</head>')||!html.includes('<body>')||!html.includes('</body>'))throw Error('Unexpected HTML document.');
    const nav=navigation(item.app);
-   html=html.replace('</head>','<link rel="stylesheet" href="../hub-nav.css?v='+navVersion+'">\n</head>').replace('<body>','<body>\n'+nav.top).replace('</body>',nav.bottom+'\n</body>');
+   html=html.replace('</head>',languageAssets('../')+'<link rel="stylesheet" href="../hub-nav.css?v='+navVersion+'">\n</head>').replace('<body>','<body>\n'+nav.top).replace('</body>',nav.bottom+'\n</body>');
    if(item.app==='cars')html=html.replace(/Laboratorio 01/i,'Capítulo 03').replace('LABORATORIO <b>01</b>','CAPÍTULO <b>03</b>');
    if(item.app==='digits')html=html.replace(/Laboratorio 02/i,'Capítulo 02').replace('LABORATORIO <b>02</b>','CAPÍTULO <b>02</b>');
    if(item.app==='digits')html=html.replace('href="./styles.css"','href="./styles.css?v='+digitsVersion+'"').replace('src="./src/app.js"','src="./src/app.js?v='+digitsVersion+'"');
@@ -56,9 +61,17 @@ for(const item of captured){
 }
 for(const file of ['index.html','landing.css','hub-nav.css']){
  let bytes=await readFile(join(root,'shell',file));
- if(file==='index.html')bytes=Buffer.from(bytes.toString('utf8').replace('href="./landing.css"','href="./landing.css?v='+landingVersion+'"'));
+ if(file==='index.html')bytes=Buffer.from(bytes.toString('utf8').replace('href="./landing.css"','href="./landing.css?v='+landingVersion+'"').replace('</head>',languageAssets('./')+'</head>'));
  await writeFile(join(publicRoot,file),bytes);
  manifest.files['/'+file]={bytes:bytes.length,sha256:digest(bytes)};
+}
+for(const {file,buffer} of shared){
+ const name='i18n/'+file;
+ // Version internal imports together with the selector to avoid mixed catalog caches.
+ const output=file.endsWith('.js')?Buffer.from(buffer.toString('utf8').replace(/(['"])(\.\/[a-z0-9-]+\.js)\1/g,(_,quote,path)=>quote+path+'?v='+languageVersion+quote)):buffer;
+ await mkdir(join(publicRoot,'i18n'),{recursive:true});
+ await writeFile(join(publicRoot,name),output);
+ manifest.files['/'+name]={bytes:output.length,sha256:digest(output)};
 }
 await writeFile(join(releaseRoot,'publication-manifest.json'),JSON.stringify(manifest,null,2));
 console.log(JSON.stringify({files:Object.keys(manifest.files).length,bytes:Object.values(manifest.files).reduce((n,f)=>n+f.bytes,0),releaseRoot,sourceChanges:0}));

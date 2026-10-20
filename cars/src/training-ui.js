@@ -1,3 +1,4 @@
+import { getLocale } from '../../i18n/i18n.js';
 import { createTrainingSetup, validateTrainingSettings } from "./training-engine.js";
 import { populationPlan } from "./genetics.js";
 import { Renderer, prepareCanvas } from "./renderer.js";
@@ -5,7 +6,7 @@ import { Track, WORLD_WIDTH, WORLD_HEIGHT } from "./track.js";
 import { drawTrainingChart } from "./training-chart.js";
 
 const field = id => document.getElementById(`training-${id}`);
-const number = (value, digits = 1) => value.toLocaleString("es-ES", { minimumFractionDigits: digits, maximumFractionDigits: digits });
+const number = (value, digits = 1) => value.toLocaleString(getLocale(), { minimumFractionDigits: digits, maximumFractionDigits: digits });
 const ORIGIN_NAMES = { random: "Aleatoria", elite: "Élite intacta", mutation: "Copia mutada", saved: "Campeón guardado" };
 const SELECTION_NAMES = { elite: "Conservar + padre", parent: "Puede ser padre", discard: "Descartar", champion: "Campeón" };
 
@@ -56,6 +57,7 @@ export class TrainingUI {
     });
     field("load").addEventListener("click", () => this.load());
     window.addEventListener("resize", () => this.renderGraphics());
+    document.addEventListener("languagechange", () => this.renderGraphics());
     this.render();
     if (modelStore.warning) this.message(modelStore.warning, true);
   }

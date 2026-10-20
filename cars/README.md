@@ -14,6 +14,8 @@ Abre **http://127.0.0.1:5173** en un navegador moderno. También puedes usar `np
 
 El servidor solo escucha en este ordenador. Si el puerto está ocupado, puedes cambiarlo en PowerShell con `$env:PORT = "5174"` antes de arrancar. Para servirlo con otro servidor estático, usa la carpeta raíz del proyecto. Abrir `index.html` con doble clic no basta, porque los módulos de JavaScript necesitan HTTP.
 
+El selector **ES / EN** cambia el idioma sin recargar. El catálogo compartido está en `../i18n/`; conserva esa carpeta si copias el taller. Para usar un servidor estático distinto, sirve el curso completo desde la raíz del repositorio después de `npm run build`.
+
 ## Qué incluye
 
 - Cinco circuitos iniciales y seis coches independientes, cada uno con su propia red.

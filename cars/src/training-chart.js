@@ -1,3 +1,4 @@
+import { translateText, getLocale } from '../../i18n/i18n.js';
 import { prepareCanvas } from "./renderer.js";
 
 // Dos curvas sencillas: el mejor individuo y la media de toda la población.
@@ -11,7 +12,7 @@ export function drawTrainingChart(canvas, history) {
   if (!history.length) {
     context.textAlign = "center";
     context.fillStyle = "#8a947e";
-    context.fillText("Evalúa y selecciona para dibujar la curva.", width / 2, height / 2);
+    context.fillText(translateText("Evalúa y selecciona para dibujar la curva."), width / 2, height / 2);
     return;
   }
   const left = 65, right = width - 22, top = 24, bottom = height - 44;
@@ -28,7 +29,7 @@ export function drawTrainingChart(canvas, history) {
     context.beginPath(); context.moveTo(left, y(value)); context.lineTo(right, y(value)); context.stroke();
     context.textAlign = "right";
     context.fillStyle = "#89947d";
-    context.fillText(Math.round(value).toLocaleString("es-ES"), left - 10, y(value) + 5);
+    context.fillText(Math.round(value).toLocaleString(getLocale()), left - 10, y(value) + 5);
   }
   for (const [key, color, dash] of [["average", "#aba68d", [7, 5]], ["best", "#638448", []]]) {
     context.strokeStyle = color;
@@ -50,7 +51,7 @@ export function drawTrainingChart(canvas, history) {
   context.textAlign = "left";
   context.fillText(`G${history[0].generation}`, left, height - 13);
   context.textAlign = "center";
-  context.fillText("Generación", (left + right) / 2, height - 13);
+  context.fillText(translateText("Generación"), (left + right) / 2, height - 13);
   if (history.length > 1) {
     context.textAlign = "right";
     context.fillText(`G${history.at(-1).generation}`, right, height - 13);

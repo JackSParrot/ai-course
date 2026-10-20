@@ -5,6 +5,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = path.dirname(fileURLToPath(import.meta.url));
+const sharedResources = new Set(["/i18n/i18n.js", "/i18n/en.js", "/i18n/dom.js", "/i18n/language.css"]);
 const port = Number(process.env.PORT || 5173);
 const mimeTypes = {
   ".html": "text/html; charset=utf-8",
@@ -25,14 +26,20 @@ const server = http.createServer(async (request, response) => {
   try {
     const url = new URL(request.url, "http://localhost");
     const pathname = decodeURIComponent(url.pathname);
-    const filename = path.resolve(root, "." + (pathname === "/" ? "/index.html" : pathname));
+    const shared = sharedResources.has(pathname);
+    const filename = shared
+      ? path.resolve(root, "..", "." + pathname)
+      : path.resolve(root, "." + (pathname === "/" ? "/index.html" : pathname));
     const relative = path.relative(root, filename);
-    if (relative.startsWith("..") || path.isAbsolute(relative)) {
+    if (!shared && (relative.startsWith("..") || path.isAbsolute(relative))) {
       response.writeHead(403);
       response.end("Acceso no permitido");
       return;
     }
-    const content = await readFile(filename);
+    let content = await readFile(filename);
+    if (filename === path.join(root, "index.html")) {
+      content = Buffer.from(content.toString("utf8").replace("</head>", '<link rel="stylesheet" href="/i18n/language.css"><script type="module" src="/i18n/dom.js"></script></head>'));
+    }
     response.writeHead(200, {
       "Content-Type": mimeTypes[path.extname(filename)] || "application/octet-stream",
       "Cache-Control": "no-store",

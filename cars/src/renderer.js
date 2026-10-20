@@ -1,3 +1,4 @@
+import { getLanguage, translateText } from '../../i18n/i18n.js';
 import { drawTrack } from "./track-drawing.js";
 import { CAR_LENGTH, CAR_WIDTH } from "./car.js";
 import { clamp, distance } from "./geometry.js";
@@ -174,7 +175,8 @@ export function drawNetwork(canvas, brain, topology) {
       context.fillStyle = "#839079";
       context.font = "10px Consolas, monospace";
       context.textAlign = "center";
-      const title = layerIndex === 0 ? "E" : layerIndex === brain.sizes.length - 1 ? "S" : `C${layerIndex}`;
+      const english = getLanguage() === "en";
+      const title = layerIndex === 0 ? (english ? "I" : "E") : layerIndex === brain.sizes.length - 1 ? (english ? "O" : "S") : `${english ? "H" : "C"}${layerIndex}`;
       context.fillText(`${title} · ${neurons.length}`, neurons[0].x, 15);
       neurons.forEach((position, neuronIndex) => {
         const value = brain.activations[layerIndex][neuronIndex];
@@ -194,7 +196,7 @@ export function drawNetwork(canvas, brain, topology) {
         context.fillText(label, position.x, position.y + 0.5);
         context.fillStyle = "#839079";
         context.font = "9px Consolas, monospace";
-        if (layerIndex === 0) context.fillText(INPUT_OPTIONS.find(input => input.id === topology.inputs[neuronIndex].id).short, 16, position.y);
+        if (layerIndex === 0) context.fillText(translateText(INPUT_OPTIONS.find(input => input.id === topology.inputs[neuronIndex].id).short), 16, position.y);
         if (layerIndex === brain.sizes.length - 1) context.fillText(OUTPUT_OPTIONS.find(output => output.id === topology.outputs[neuronIndex]).short, width - 16, position.y);
       });
     });
