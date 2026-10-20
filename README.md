@@ -2,8 +2,6 @@
 
 Un curso interactivo para entender las redes neuronales: de una sola neurona a reconocer dígitos y conducir coches. **Español e inglés**, con ejercicios visuales y entrenamiento real en el navegador.
 
-**[Abrir la versión web](https://labs.jacksparrot.com/)** · [English](#english) · [Guía de desarrollo](docs/DEVELOPMENT.md)
-
 ## Abrir el curso sin instalar nada
 
 1. Descarga el repositorio: **Code → Download ZIP**.
