@@ -144,6 +144,7 @@ export function drawNetwork(canvas, brain, topology) {
     canvas.style.minWidth = brain.sizes.length > 4 ? `${width}px` : "0";
     canvas.setAttribute("aria-label", `Red ${brain.sizes.join(" → ")}. Activación ${brain.activation === "relu" ? "ReLU" : "sigmoide"}.`);
     const context = prepareCanvas(canvas, width, height);
+    const dark = getComputedStyle(canvas).getPropertyValue("--plot-paper").trim() !== "";
     context.clearRect(0, 0, width, height);
     const positions = brain.sizes.map((size, layer) => {
       return Array.from({ length: size }, (_, neuron) => ({
@@ -157,8 +158,8 @@ export function drawNetwork(canvas, brain, topology) {
         weights.forEach((weight, input) => {
           const start = positions[layerIndex][input];
           const end = positions[layerIndex + 1][neuron];
-          context.strokeStyle = weight >= 0 ? "#718c5e" : "#c78f70";
-          context.globalAlpha = clamp(0.12 + Math.abs(weight) * 0.32, 0, 1);
+          context.strokeStyle = weight >= 0 ? (dark ? "#b4c8a0" : "#718c5e") : (dark ? "#ddb197" : "#c78f70");
+          context.globalAlpha = clamp((dark ? 0.25 : 0.12) + Math.abs(weight) * 0.32, 0, 1);
           context.lineWidth = 0.5 + Math.abs(weight) * 0.8;
           context.setLineDash(weight < 0 ? [3, 3] : []);
           context.beginPath();
@@ -172,7 +173,7 @@ export function drawNetwork(canvas, brain, topology) {
     context.setLineDash([]);
 
     positions.forEach((neurons, layerIndex) => {
-      context.fillStyle = "#839079";
+      context.fillStyle = dark ? "#bec9bf" : "#839079";
       context.font = "10px Consolas, monospace";
       context.textAlign = "center";
       const english = getLanguage() === "en";
@@ -183,18 +184,18 @@ export function drawNetwork(canvas, brain, topology) {
         // Solo el color se limita. Los valores de ReLU y las entradas absolutas
         // conservan su valor real, que también aparece en las tablas del inspector.
         const intensity = clamp(value, 0, 1);
-        circle(context, position.x, position.y, 10, "#fdfdf9");
-        circle(context, position.x, position.y, 10, `rgba(112, 143, 83, ${0.08 + intensity * 0.8})`);
+        circle(context, position.x, position.y, 10, dark ? "#303c3b" : "#fdfdf9");
+        circle(context, position.x, position.y, 10, `rgba(${dark ? "76, 105, 61" : "112, 143, 83"}, ${0.08 + intensity * 0.8})`);
         context.strokeStyle = value > 0.5 ? "#829b6b" : "#bfc9b2";
         context.lineWidth = 1;
         context.stroke();
-        context.fillStyle = value > 0.65 ? "#fff" : "#4b623b";
+        context.fillStyle = dark ? "#f0f3eb" : value > 0.65 ? "#fff" : "#4b623b";
         context.font = "8px Consolas, monospace";
         context.textAlign = "center";
         context.textBaseline = "middle";
         const label = value < 10 ? value.toFixed(1) : value < 1000 ? String(Math.round(value)) : value.toExponential(0);
         context.fillText(label, position.x, position.y + 0.5);
-        context.fillStyle = "#839079";
+        context.fillStyle = dark ? "#bec9bf" : "#839079";
         context.font = "9px Consolas, monospace";
         if (layerIndex === 0) context.fillText(translateText(INPUT_OPTIONS.find(input => input.id === topology.inputs[neuronIndex].id).short), 16, position.y);
         if (layerIndex === brain.sizes.length - 1) context.fillText(OUTPUT_OPTIONS.find(output => output.id === topology.outputs[neuronIndex]).short, width - 16, position.y);

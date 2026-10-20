@@ -26,6 +26,8 @@ const shared=await Promise.all(sharedFiles.map(async file=>({file,buffer:await r
 const languageVersion=digest(Buffer.concat(shared.map(item=>item.buffer))).slice(0,12);
 const languageAssets=prefix=>'<link rel="stylesheet" href="'+prefix+'i18n/language.css?v='+languageVersion+'">\n<script type="module" src="'+prefix+'i18n/dom.js?v='+languageVersion+'"></script>\n';
 const template=await readFile(join(root,'shell/navigation.html'),'utf8');
+const darkVersion=digest(await readFile(join(root,'shell/dark.css'))).slice(0,12);
+const darkAssets=prefix=>'<link rel="stylesheet" href="'+prefix+'dark.css?v='+darkVersion+'">\n';
 const navVersion=digest(await readFile(join(root,'shell/hub-nav.css'))).slice(0,12);
 const landingVersion=digest(await readFile(join(root,'shell/landing.css'))).slice(0,12);
 const courseVersion=digest(Buffer.concat(captured.filter(item=>item.app==='perceptrons').map(item=>item.buffer))).slice(0,12);
@@ -47,7 +49,7 @@ for(const item of captured){
  if(item.file==='index.html'){
    let html=output.toString('utf8');if(!html.includes('</head>')||!html.includes('<body>')||!html.includes('</body>'))throw Error('Unexpected HTML document.');
    const nav=navigation(item.app);
-   html=html.replace('</head>',languageAssets('../')+'<link rel="stylesheet" href="../hub-nav.css?v='+navVersion+'">\n</head>').replace('<body>','<body>\n'+nav.top).replace('</body>',nav.bottom+'\n</body>');
+   html=html.replace('</head>',languageAssets('../')+'<link rel="stylesheet" href="../hub-nav.css?v='+navVersion+'">\n'+darkAssets('../')+'</head>').replace('<body>','<body>\n'+nav.top).replace('</body>',nav.bottom+'\n</body>');
    if(item.app==='cars')html=html.replace(/Laboratorio 01/i,'Capítulo 03').replace('LABORATORIO <b>01</b>','CAPÍTULO <b>03</b>');
    if(item.app==='digits')html=html.replace(/Laboratorio 02/i,'Capítulo 02').replace('LABORATORIO <b>02</b>','CAPÍTULO <b>02</b>');
    if(item.app==='digits')html=html.replace('href="./styles.css"','href="./styles.css?v='+digitsVersion+'"').replace('src="./src/app.js"','src="./src/app.js?v='+digitsVersion+'"');
@@ -59,9 +61,9 @@ for(const item of captured){
  manifest.files['/'+name]={bytes:output.length,sha256:digest(output)};
  (item.app==='perceptrons'?manifest.courseSources:manifest.sources)[name]={sha256:item.sha256};
 }
-for(const file of ['index.html','landing.css','hub-nav.css']){
+for(const file of ['index.html','landing.css','hub-nav.css','dark.css']){
  let bytes=await readFile(join(root,'shell',file));
- if(file==='index.html')bytes=Buffer.from(bytes.toString('utf8').replace('href="./landing.css"','href="./landing.css?v='+landingVersion+'"').replace('</head>',languageAssets('./')+'</head>'));
+ if(file==='index.html')bytes=Buffer.from(bytes.toString('utf8').replace('href="./landing.css"','href="./landing.css?v='+landingVersion+'"').replace('</head>',languageAssets('./')+darkAssets('./')+'</head>'));
  await writeFile(join(publicRoot,file),bytes);
  manifest.files['/'+file]={bytes:bytes.length,sha256:digest(bytes)};
 }

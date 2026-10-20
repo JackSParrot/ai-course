@@ -22,9 +22,11 @@ function canvasContext(id){
 function plot(id,samples,classifier,{models=[],probe=null}={}){
  const result=canvasContext(id);if(!result)return;
  const {ctx,width,height}=result,left=38,top=15,right=18,bottom=33,plotW=width-left-right,plotH=height-top-bottom,lo=-.2,hi=1.2;
+ const theme=getComputedStyle($(id)),dark=theme.getPropertyValue('--plot-paper').trim()!=='';
+ const color=(token,fallback)=>theme.getPropertyValue(token).trim()||fallback;
  const X=x=>left+(x-lo)/(hi-lo)*plotW,Y=y=>top+(hi-y)/(hi-lo)*plotH;
- ctx.fillStyle='#fcfcf8';ctx.fillRect(0,0,width,height);
- const paleZero=[242,219,204],paleOne=[207,225,194];
+ ctx.fillStyle=color('--plot-paper','#fcfcf8');ctx.fillRect(0,0,width,height);
+ const paleZero=dark?[79,59,48]:[242,219,204],paleOne=dark?[45,69,51]:[207,225,194];
  for(let px=0;px<plotW;px+=5)for(let py=0;py<plotH;py+=5){
    const x=lo+(px+2.5)/plotW*(hi-lo),y=hi-(py+2.5)/plotH*(hi-lo);
    const p=classifier([x,y]);
@@ -33,20 +35,20 @@ function plot(id,samples,classifier,{models=[],probe=null}={}){
  }
  ctx.font='10px Consolas,monospace';ctx.textAlign='center';ctx.textBaseline='middle';
  for(const t of [0,.5,1]){
-   ctx.strokeStyle='#82947735';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(X(t),top);ctx.lineTo(X(t),top+plotH);ctx.moveTo(left,Y(t));ctx.lineTo(left+plotW,Y(t));ctx.stroke();
-   ctx.fillStyle='#75846a';ctx.fillText(String(t),X(t),height-17);ctx.fillText(String(t),left-18,Y(t));
+   ctx.strokeStyle=color('--plot-grid','#82947735');ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(X(t),top);ctx.lineTo(X(t),top+plotH);ctx.moveTo(left,Y(t));ctx.lineTo(left+plotW,Y(t));ctx.stroke();
+   ctx.fillStyle=color('--plot-text','#75846a');ctx.fillText(String(t),X(t),height-17);ctx.fillText(String(t),left-18,Y(t));
  }
- ctx.strokeStyle='#aebba1';ctx.strokeRect(left,top,plotW,plotH);
- ctx.fillStyle='#556b4b';ctx.fillText('x₁',width-10,height-16);ctx.fillText('x₂',20,8);
+ ctx.strokeStyle=color('--plot-grid','#aebba1');ctx.strokeRect(left,top,plotW,plotH);
+ ctx.fillStyle=color('--plot-text','#556b4b');ctx.fillText('x₁',width-10,height-16);ctx.fillText('x₂',20,8);
  models.forEach((model,i)=>{
    const line=boundarySegment(model,lo,hi);if(!line.length)return;
-   ctx.strokeStyle=i?'#977059':'#354b3f';ctx.lineWidth=2;ctx.setLineDash(models.length>1?[7,4]:[]);
+   ctx.strokeStyle=i?color('--plot-second-line','#977059'):color('--plot-line','#354b3f');ctx.lineWidth=2;ctx.setLineDash(models.length>1?[7,4]:[]);
    ctx.beginPath();ctx.moveTo(X(line[0][0]),Y(line[0][1]));ctx.lineTo(X(line[1][0]),Y(line[1][1]));ctx.stroke();ctx.setLineDash([]);
  });
  samples.forEach(s=>{
    const x=X(s.x[0]),y=Y(s.x[1]),wrong=classifier(s.x)!==s.y;
-   if(wrong){ctx.strokeStyle='#bd6646';ctx.lineWidth=2.5;ctx.beginPath();ctx.arc(x,y,16,0,Math.PI*2);ctx.stroke();}
-   ctx.fillStyle=s.y?'#456b45':'#b57453';ctx.strokeStyle='#fffef8';ctx.lineWidth=2;ctx.beginPath();ctx.arc(x,y,11,0,Math.PI*2);ctx.fill();ctx.stroke();
+   if(wrong){ctx.strokeStyle=color('--plot-second-line','#bd6646');ctx.lineWidth=2.5;ctx.beginPath();ctx.arc(x,y,16,0,Math.PI*2);ctx.stroke();}
+   ctx.fillStyle=s.y?'#456b45':dark?'#8c5a44':'#b57453';ctx.strokeStyle='#fffef8';ctx.lineWidth=2;ctx.beginPath();ctx.arc(x,y,11,0,Math.PI*2);ctx.fill();ctx.stroke();
    ctx.font='bold 11px Consolas,monospace';ctx.fillStyle='#fff';ctx.fillText(String(s.y),x,y+.5);
  });
  if(probe){
@@ -63,10 +65,13 @@ function renderDecision(){
  const term=(n,label,first=false)=>(first?(n<0?'−':''):(n<0?' − ':' + '))+fmt(Math.abs(n),1)+label;
  $('boundary-equation').textContent='z = '+term(model.weights[0],' × x₁',true)+term(model.weights[1],' × x₂')+term(model.bias,'');
  const z=score(model,probe),output=hard(z);
- $('signal-x1').textContent=fmt(probe[0]);$('signal-x2').textContent=fmt(probe[1]);
+ probe.forEach((value,i)=>{
+  $('signal-x'+(i+1)).textContent=value===0||value===1?String(value):fmt(value);
+  $('input-toggle-'+(i+1)).setAttribute('aria-checked',String(value>0));
+ });
  $('contribution-one').textContent='w₁ × x₁ = '+fmt(model.weights[0]*probe[0]);
  $('contribution-two').textContent='w₂ × x₂ = '+fmt(model.weights[1]*probe[1]);
- $('contribution-bias').textContent='b × 1 = '+fmt(model.bias);
+ $('contribution-bias').textContent='b = '+fmt(model.bias);
  $('diagram-sum').textContent=fmt(z);$('diagram-output').textContent=String(output);
  $('diagram-output').parentElement.dataset.output=String(output);
  $('diagram-activation').textContent=z>=0?'z ≥ 0':'z < 0';
@@ -78,7 +83,8 @@ function renderDecision(){
  w2===0?'w₂ = 0: x₂ no influye. La frontera es vertical.':w1===0?'w₁ = 0: x₁ no influye. La frontera es horizontal.':'En la frontera, z = 0 y la salida es 1.';
  $('probe-sum').textContent='z = '+fmt(z);$('probe-output').textContent=output;
  const classifier=x=>hard(score(model,x));$('nand-score').textContent=accuracy(classifier,NAND)+' / 4';
- rows('nand-rows',NAND,classifier);plot('boundary-canvas',NAND,classifier,{models:[model],probe});
+ const selected=NAND.findIndex(sample=>sample.x.every((value,i)=>value===probe[i]));
+ rows('nand-rows',NAND,classifier,selected);plot('boundary-canvas',NAND,classifier,{models:[model],probe});
 }
 function highlightNetwork(){
  const active=state.highlight;
@@ -156,7 +162,13 @@ Object.keys(parameters).forEach(id=>{
  input.addEventListener('keydown',event=>{if(event.key==='Enter'){event.preventDefault();commit();}});
 });
 document.querySelectorAll('[data-dial-step]').forEach(button=>button.addEventListener('click',()=>setParameter(button.dataset.for,parameters[button.dataset.for]+Number(button.dataset.dialStep)*.1)));
-['probe-1','probe-2'].forEach(id=>$(id).addEventListener('input',renderDecision));
+['probe-1','probe-2'].forEach((id,i)=>{
+ $(id).addEventListener('input',renderDecision);
+ $('input-toggle-'+(i+1)).addEventListener('click',()=>{
+  $(id).value=number(id)>0?'0':'1';
+  renderDecision();
+ });
+});
 $('restore-nand').addEventListener('click',()=>{
  Object.assign(parameters,{'weight-1':-1,'weight-2':-1,bias:1.5});
  Object.entries(parameters).forEach(([id,value])=>{$(id).value=fmt(value,1);$(id).removeAttribute('aria-invalid');});
@@ -178,3 +190,5 @@ window.addEventListener('hashchange',()=>{const n=hashes.indexOf(location.hash);
 showLesson(Math.max(0,hashes.indexOf(location.hash))+1,false);
 
 document.addEventListener('languagechange', render);
+
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change', render);

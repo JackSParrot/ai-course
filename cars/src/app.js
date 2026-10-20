@@ -342,3 +342,8 @@ trainingUI = new TrainingUI(mapStore, topologyStore, modelStore, {
 trackCanvas.setAttribute("aria-label", `Circuito ${simulation.track.name} con seis coches. Los cinco rayos muestran los sensores del coche seleccionado.`);
 render();
 requestAnimationFrame(frame);
+
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+  render();
+  if (topologyEditor.dialog.open) topologyEditor.updatePreview();
+});

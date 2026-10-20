@@ -1,5 +1,6 @@
 // Spanish source messages are stable keys; keep page structure shared.
 export default {
+  "Pulsa x₁ o x₂ para alternar su entrada entre 0 y 1.": "Click x₁ or x₂ to switch its input between 0 and 1.",
   "Neural Labs — Un curso para entender las redes": "Neural Labs — A course to understand neural networks",
   "TRES CAPÍTULOS · APRENDER HACIENDO": "THREE CHAPTERS · LEARN BY DOING",
   "UN CURSO DE REDES NEURONALES, A LA VISTA": "A NEURAL NETWORK COURSE, IN PLAIN SIGHT",
@@ -110,7 +111,7 @@ export default {
   "Sesgo b": "Bias b",
   "Reducir sesgo b": "Decrease bias b",
   "Aumentar sesgo b": "Increase bias b",
-  "Se multiplica por la constante 1: añade b a la suma. No es una tercera entrada de datos.": "Multiplied by the constant 1: adds b to the sum. It is not a third data input.",
+  "Se añade una vez a la suma, con independencia de x₁ y x₂. No es una tercera entrada de datos.": "Added to the sum once, independently of x₁ and x₂. It is not a third data input.",
   "suma z": "sum z",
   "activación": "activation",
   "salida y": "output y",

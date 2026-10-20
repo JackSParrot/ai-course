@@ -17,7 +17,15 @@ npm start
 
 Abre **http://127.0.0.1:5200/**. Detén el servidor con **Ctrl+C**. En PowerShell, si la política de scripts bloquea `npm`, utiliza `npm.cmd` con los mismos argumentos; no hace falta cambiar esa política.
 
-También puedes ejecutar `node build.mjs` y después `node server.mjs`. En Windows, `START.cmd` hace ambas cosas desde una terminal. Abrir los HTML directamente con doble clic no sirve: los módulos, los Web Workers y la carga de datos necesitan HTTP.
+También puedes preparar el contenido y arrancar el servidor con un solo lanzador:
+
+- **macOS/Linux:** ejecuta `./serve.sh` desde la carpeta del proyecto.
+- **macOS, con doble clic:** abre `START.command`; se ejecutará en Terminal.
+- **Windows:** ejecuta `START.cmd`.
+
+Los lanzadores funcionan desde cualquier directorio, regeneran el contenido antes de servirlo y mantienen el servidor abierto hasta pulsar **Ctrl+C**. Requieren Node.js 20 o posterior. Por ejemplo, `LABS_PORT=5201 ./serve.sh` usa otro puerto en macOS/Linux.
+
+También puedes ejecutar `node build.mjs` y después `node server.mjs`. Abrir los HTML directamente con doble clic no sirve: los módulos, los Web Workers y la carga de datos necesitan HTTP.
 
 El servidor escucha solo en este ordenador. Si el puerto está ocupado, elige otro antes de arrancar:
 
@@ -27,6 +35,8 @@ npm.cmd start
 ```
 
 En macOS/Linux: `LABS_PORT=5201 npm start`.
+
+El curso adapta automáticamente su paleta al modo claro u oscuro del sistema o navegador. La paleta oscura compartida está en `shell/dark.css`: fondos gris verdoso, texto claro y acentos suaves con mayor contraste.
 
 ## Los capítulos
 
@@ -74,7 +84,7 @@ npm test
 
 `npm test` reconstruye primero el sitio y ejecuta todas las pruebas con el runner incluido en Node. Las suites verifican matemáticas, gradientes por diferencias finitas, separación y hashes de los datos, modelos independientes, entrenamiento real, editores, guardado/recuperación, las tres imágenes del inspector, coches y recursos HTTP. Los servidores de prueba usan puertos efímeros de loopback y se cierran al terminar.
 
-El build genera **59 recursos** mediante una lista explícita y escribe sus tamaños y SHA-256 en `publication-manifest.json`. El servidor valida esos archivos al arrancar y solo expone esa lista: no publica código del servidor, pruebas, Git, variables de entorno ni directorios completos. También comprueba rutas relativas, módulos y ambos Web Workers.
+El build genera **60 recursos** mediante una lista explícita y escribe sus tamaños y SHA-256 en `publication-manifest.json`. El servidor valida esos archivos al arrancar y solo expone esa lista: no publica código del servidor, pruebas, Git, variables de entorno ni directorios completos. También comprueba rutas relativas, módulos y ambos Web Workers.
 
 Para generar una salida separada dentro del repositorio:
 

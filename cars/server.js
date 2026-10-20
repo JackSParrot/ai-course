@@ -26,9 +26,9 @@ const server = http.createServer(async (request, response) => {
   try {
     const url = new URL(request.url, "http://localhost");
     const pathname = decodeURIComponent(url.pathname);
-    const shared = sharedResources.has(pathname);
+    const shared = sharedResources.has(pathname) || pathname === "/dark.css";
     const filename = shared
-      ? path.resolve(root, "..", "." + pathname)
+      ? pathname === "/dark.css" ? path.resolve(root, "../shell/dark.css") : path.resolve(root, "..", "." + pathname)
       : path.resolve(root, "." + (pathname === "/" ? "/index.html" : pathname));
     const relative = path.relative(root, filename);
     if (!shared && (relative.startsWith("..") || path.isAbsolute(relative))) {
@@ -38,7 +38,7 @@ const server = http.createServer(async (request, response) => {
     }
     let content = await readFile(filename);
     if (filename === path.join(root, "index.html")) {
-      content = Buffer.from(content.toString("utf8").replace("</head>", '<link rel="stylesheet" href="/i18n/language.css"><script type="module" src="/i18n/dom.js"></script></head>'));
+      content = Buffer.from(content.toString("utf8").replace("</head>", '<link rel="stylesheet" href="/i18n/language.css"><link rel="stylesheet" href="/dark.css"><script type="module" src="/i18n/dom.js"></script></head>'));
     }
     response.writeHead(200, {
       "Content-Type": mimeTypes[path.extname(filename)] || "application/octet-stream",

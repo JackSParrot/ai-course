@@ -7,11 +7,13 @@ export function drawTrainingChart(canvas, history) {
   const width = 600;
   const height = 330;
   const context = prepareCanvas(canvas, width, height);
+  const theme = getComputedStyle(canvas);
+  const color = (token, fallback) => theme.getPropertyValue(token).trim() || fallback;
   context.clearRect(0, 0, width, height);
   context.font = "16px 'Segoe UI', sans-serif";
   if (!history.length) {
     context.textAlign = "center";
-    context.fillStyle = "#8a947e";
+    context.fillStyle = color("--plot-text", "#8a947e");
     context.fillText(translateText("Evalúa y selecciona para dibujar la curva."), width / 2, height / 2);
     return;
   }
@@ -25,13 +27,13 @@ export function drawTrainingChart(canvas, history) {
   context.lineWidth = 1;
   for (let tick = 0; tick <= 4; tick++) {
     const value = minimum + span * tick / 4;
-    context.strokeStyle = "#e1e7d7";
+    context.strokeStyle = color("--plot-grid", "#e1e7d7");
     context.beginPath(); context.moveTo(left, y(value)); context.lineTo(right, y(value)); context.stroke();
     context.textAlign = "right";
-    context.fillStyle = "#89947d";
+    context.fillStyle = color("--plot-text", "#89947d");
     context.fillText(Math.round(value).toLocaleString(getLocale()), left - 10, y(value) + 5);
   }
-  for (const [key, color, dash] of [["average", "#aba68d", [7, 5]], ["best", "#638448", []]]) {
+  for (const [key, color, dash] of [["average", color("--plot-second-line", "#aba68d"), [7, 5]], ["best", color("--plot-line", "#638448"), []]]) {
     context.strokeStyle = color;
     context.fillStyle = color;
     context.lineWidth = 3;
@@ -47,7 +49,7 @@ export function drawTrainingChart(canvas, history) {
       context.beginPath(); context.arc(x(index), y(item[key]), 4, 0, Math.PI * 2); context.fill();
     });
   }
-  context.fillStyle = "#89947d";
+  context.fillStyle = color("--plot-text", "#89947d");
   context.textAlign = "left";
   context.fillText(`G${history[0].generation}`, left, height - 13);
   context.textAlign = "center";

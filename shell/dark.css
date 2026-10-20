@@ -1,0 +1,244 @@
+/* Native dark mode: shared surfaces and quiet, high-contrast accents. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --theme-page: #192122;
+    --theme-surface: #242e2f;
+    --theme-raised: #303c3b;
+    --theme-field: #1d2828;
+    --theme-text: #e8ece5;
+    --theme-muted: #bec9bf;
+    --theme-line: #66776f;
+    --theme-sage: #b4c8a0;
+    --theme-clay: #ddb197;
+    --theme-good-bg: #314534;
+    --theme-warm-bg: #483b33;
+    --theme-button: #adc296;
+    --theme-on-accent: #1c291d;
+    --chart-1: #ddb197;
+    --chart-2: #a1c5c3;
+    --chart-3: #bfb0d0;
+    --chart-4: #c9bf8d;
+    --chart-5: #adc4d4;
+    --chart-6: #d4b0c2;
+    --chart-7: #b3c99c;
+    --chart-8: #c7b8a7;
+    --paper: var(--theme-surface);
+    --ink: var(--theme-text);
+    --muted: var(--theme-muted);
+    --line: var(--theme-line);
+    --accent: var(--theme-clay);
+    --coral: var(--theme-clay);
+    --selected: var(--theme-clay);
+    --confusion-match: var(--theme-good-bg);
+    --confusion-miss: var(--theme-surface);
+    --plot-paper: #242e2f;
+    --plot-text: #bec9bf;
+    --plot-grid: #4e625b;
+    --plot-line: #b4c8a0;
+    --plot-second-line: #ddb197;
+    background: var(--theme-page);
+    color: var(--theme-text);
+  }
+  body { background: var(--theme-page); color: var(--theme-text); }
+  ::selection { background: #52654e; color: #ffffff; }
+
+  /* Panels, tables and editors remain distinct from the page. */
+  :is(.card, .workspace, .inspector, .training-grid, .training-lab,
+      .map-library, .topology-bar, .concept-card, .perceptron-card,
+      .plot-card, .control-card, .probe-card, .network-diagram-card,
+      .network-parameter-group, .math-detail, dialog, .map-editor,
+      .topology-editor, .topology-footer, .editor-settings) {
+    background: var(--theme-surface);
+    border-color: var(--theme-line);
+    color: var(--theme-text);
+  }
+  :is(.hero-route, .course-note, .analogy, .takeaway, .chapter-bridge,
+      .lesson-tabs, .xor-switch, .network-readout, .network-focus-status,
+      .live-calculation, .learning-step, .update-detail, .split-cards > div,
+      .type-sidebar, .type-preview, .topology-types, .topology-preview,
+      .type-chip, .input-mode, .output-row, .training-steps > div,
+      .training-plan, .training-mutation, .connection-detail,
+      .tensor-maps figure, .code-explainer pre, .final-bar, .bias-readout) {
+    background: var(--theme-raised);
+    border-color: var(--theme-line);
+    color: var(--theme-text);
+  }
+  :is(th, .training-table th, .truth-table .selected, tr.selected,
+      .training-table .selected-candidate, .tensor-maps .contribution-map,
+      .contribution-sum, .neuron-output, .calculation-node, .output-node,
+      .network-node.active, .output-row.active, .purpose-tag.training, .training-state, .badge) {
+    background: var(--theme-good-bg);
+    border-color: var(--theme-line);
+    color: var(--theme-text);
+  }
+  :is(td, th, .truth-table td, .truth-table th, .training-table td,
+      .guide-grid article, .guide-steps article, .course-note > div + div,
+      .training-table-scroll, .map-card, .network-parameter-group) {
+    border-color: var(--theme-line);
+  }
+  :is(.purpose-tag.test, .output-node[data-output="0"], .bias-readout) {
+    background: var(--theme-warm-bg);
+    color: var(--theme-clay);
+    border-color: #9c7c67;
+  }
+  :is(.purpose-tag, .hero-route > div > span, .training-steps b, .card li) {
+    background: var(--theme-raised);
+    color: var(--theme-muted);
+    border-color: var(--theme-line);
+  }
+  .hero-route i { border-color: var(--theme-line); }
+  :is(.hero-route p, .hero-route small, .course-note p, .analogy p,
+      .takeaway p, .chapter-bridge p:not(.eyebrow)) { color: var(--theme-muted); }
+  .card:hover { box-shadow: 0 12px 28px #00000024; }
+  dialog { box-shadow: 0 20px 65px #00000050; }
+  dialog::backdrop { background: #080f10b8; }
+
+  /* Form fields, focus and selection use solid fills rather than glows. */
+  :is(input:not([type=checkbox]):not([type=range]), select,
+      .topology-field input, .topology-field select, .hidden-layer input,
+      .editor-settings input[type=text], .editor-settings input[type=number],
+      .editor-settings select, .training-settings input, .training-settings select,
+      .training-evolution select, .training-pace select, .car-assignment select,
+      .topology-input-row select, .dial-inputs input) {
+    background: var(--theme-field);
+    color: var(--theme-text);
+    border-color: var(--theme-line);
+  }
+  input::placeholder { color: #abb9ad; opacity: 1; }
+  option { background: var(--theme-field); color: var(--theme-text); }
+  :is(input[type=range], input[type=checkbox], progress) { accent-color: var(--theme-sage); }
+  :is(button, a, input, select, summary, canvas):focus-visible {
+    outline-color: var(--theme-clay);
+  }
+  :is(button, .button-outline, .secondary, .dial-inputs button, .control-button,
+      .example-picker button, .topology-type, .type-option) {
+    border-color: var(--theme-line);
+    color: var(--theme-text);
+  }
+  :is(.secondary, .dial-inputs button, .control-button, .example-picker button) {
+    background: var(--theme-raised);
+  }
+  :is(button:hover, .button-icon:hover, .button-quiet:hover, .button-outline:hover,
+      .secondary:hover, .dial-inputs button:hover, .car-pick:hover) {
+    background: #3d4c45;
+    color: var(--theme-text);
+    border-color: #8da183;
+  }
+  :is(button[aria-pressed=true], .control-button[aria-pressed=true],
+      .editor-tool[aria-pressed=true], .example-picker button[aria-pressed=true],
+      .type-sidebar .type-option.selected, .topology-type[aria-pressed=true],
+      .lesson-tabs button[aria-current], .xor-switch button[aria-pressed=true],
+      .training-steps [aria-current=step]) {
+    background: var(--theme-good-bg);
+    border-color: var(--theme-sage);
+    color: var(--theme-text);
+    box-shadow: none;
+  }
+  :is(.primary, button.primary, .button-primary, .training-actions .button-primary,
+      .start-course, .language-selector button[aria-pressed=true]) {
+    background: var(--theme-button);
+    border-color: var(--theme-button);
+    color: var(--theme-on-accent);
+  }
+  :is(.primary:hover, button.primary:hover, .button-primary:hover,
+      .training-actions .button-primary:hover, .start-course:hover) {
+    background: #c0d0b0;
+    color: var(--theme-on-accent);
+  }
+  :is(button:disabled, .button-icon:disabled, .training-lab button:disabled,
+      .topology-editor button:disabled, .training-settings :disabled,
+      .topology-input-row select:disabled) { opacity: .65; }
+  .language-selector { background: var(--theme-field); border-color: var(--theme-line); }
+  .language-selector button { color: var(--theme-text); }
+
+  /* Small labels are intentionally brighter than the original light palette. */
+  :is(legend, .neuron-calculation, .brand-slash, .slash, .code-braces, .stack > span, .button-quiet,
+      .text-button, .skip-link, .plot-top, .truth-table caption, .truth-table th,
+      .equation span, .takeaway > span, .lesson-tabs button, .xor-switch button,
+      .network-reading, .network-parameter-group legend,
+      .network-parameter-group > p, .xor-parameters .parameter-name span,
+      .manual-actions p, .manual-actions aside > span, .manual-actions .text-button,
+      .concept-title > span, .concept-card figcaption, .machine-heading > span,
+      .parameter-name, .contribution, .live-calculation > span, .live-calculation p,
+      .note, .note-icon, .experiment-note, .telemetry small, .live-label,
+      .panel-heading h3 > span, .panel-meta, .sensor-hour, .range-caption,
+      .architecture i, .network-labels, .weight-legend, .control-hint,
+      .control-button .control-symbol, .control-button .control-value,
+      .type-chip span, .input-values th, .network-description, .actuator-caption,
+      .topology-heading .eyebrow, .topology-bar .eyebrow, .topology-type small, .topology-fields legend span,
+      .topology-help, .scale-tools, .neuron-order, #topology-layers > p,
+      .map-card small, #map-plan-summary, .editor-tool-help, .editor-start-info small,
+      .coordinate-editor summary, .editor-save-note, .map-help,
+      .training-heading .eyebrow, .training-steps p, .training-settings label,
+      .training-evolution > label, .training-help, .training-plan,
+      .training-pace, .training-explanation, .training-metrics span,
+      .training-chart-heading span, .training-chart-legend, .training-mutation p,
+      .training-scoring p, .training-detail > p, .training-population-heading p,
+      .training-results p, .neuron-context, .tensor-maps figcaption, .map-scale,
+      .input-source, .neuron-calculation > span, .neuron-calculation small,
+      .neuron-output span, .contribution-legend, .sign-note, .contribution-sum > span,
+      .contribution-sum small, .training-table th, footer, footer b) {
+    color: var(--theme-muted);
+  }
+  :is(.accent, .intro .eyebrow, .intro > .eyebrow, .lesson-tabs button span,
+      .hero-route > div > span, .contribution-bias, .boundary-note,
+      .tensor-maps figcaption span, .negative, #negative-contributions,
+      .zero, .truth-table td.incorrect, #notice.error, [id$=-error],
+      .map-message.error, .editor-validation.invalid, #topology-validation.error,
+      .training-message.error) { color: var(--theme-clay); }
+  :is(.one, .positive, .truth-table td.correct, .truth-table caption strong,
+      .probe-result strong, .status, .live-calculation > strong, .calculation-node,
+      .output-row.active, .input-values td:last-child, .control-button[aria-pressed=true] .control-symbol,
+      .experiment-note strong, .training-plan strong, .training-metrics strong,
+      .training-mutation code, .training-table button,
+      .map-message, .editor-validation, #topology-validation, #topology-shape,
+      .topology-message, .training-message, #notice, .connection-detail output,
+      .neuron-output output, #contribution-total, #positive-contributions) {
+    color: var(--theme-sage);
+  }
+  :is(.training-steps [aria-current=step] b, .output-row.active .output-indicator,
+      .prob-fill, .sensor-bar-fill) { background: var(--theme-button); color: var(--theme-on-accent); }
+  :is(.sensor-bar, .prob-track, #training-progress, #training-progress::-webkit-progress-bar) {
+    background: var(--theme-field);
+  }
+  .training-chart-legend span:first-child { color: var(--theme-sage); }
+  .training-chart-legend span:last-child { color: var(--theme-clay); }
+  .prob-row.winner .prob-fill { background: var(--theme-clay); }
+  #training-progress::-webkit-progress-value { background: var(--theme-sage); }
+  :is(.dark-board, .circuit-shell, .training-arena) { color: #d1dbcf; }
+  :is(.network-view .small, .circuit-bottomline, .section-number, .run-state.running) { color: #c1d1b7; }
+  .dark-board button { border-color: #7a9184; color: #e0e8dc; }
+
+  #hub-nav, .course-bottom-nav { background: var(--theme-raised); color: var(--theme-text); border-color: var(--theme-line); }
+  #hub-nav :is(p, .course-current) { color: var(--theme-muted); }
+  #hub-nav .course-home { border-color: var(--theme-line); }
+  #hub-nav li a[aria-current=page] { color: var(--theme-clay); }
+
+  /* SVG diagrams stay readable without changing the data represented by colour. */
+  :is(.diagram-label, .diagram-note, .compact-label) { fill: var(--theme-muted); }
+  :is(.diagram-symbol, .compact-symbol) { fill: #263b2e; }
+  .network-edge text { fill: var(--theme-muted); stroke: var(--theme-surface); }
+  .network-edge.is-highlight text { fill: var(--theme-clay); }
+  .network-input circle, .network-neuron circle { fill: var(--theme-raised); stroke: #91a584; }
+  .network-neuron[data-active="1"] circle { fill: var(--theme-good-bg); }
+  .network-input text, .network-neuron text { fill: var(--theme-text); }
+  .has-selected .network-edge:not(.is-highlight) { opacity: .8; }
+  .xor-parameters .is-selected { background: var(--theme-good-bg); box-shadow: inset 0 0 0 1px var(--theme-clay); }
+  .network-edge.is-highlight { color: var(--theme-clay); }
+  .rotary, .parameter-bias .rotary, .network-parameter[data-network-key^="b"] .rotary {
+    background: radial-gradient(circle at 40% 28%, #5b6c60, #33433b);
+    border-color: #91a584;
+    box-shadow: inset 0 1px 3px #ffffff14, 0 2px 5px #00000030;
+  }
+  .parameter-bias .rotary, .network-parameter[data-network-key^="b"] .rotary { border-color: #b4947c; }
+  .dial-pointer { background: #dfebd2; }
+  .parameter-bias .dial-pointer, .network-parameter[data-network-key^="b"] .dial-pointer { background: var(--theme-clay); }
+  .signal-node { background: var(--theme-raised); border-color: var(--theme-line); color: var(--theme-text); }
+  .signal-bias { background: var(--theme-warm-bg); color: var(--theme-clay); }
+  .concept-card figcaption strong { color: var(--theme-text); }
+  #learning-chart text { fill: var(--theme-muted); }
+  #learning-chart line { stroke: var(--plot-grid); }
+  .topology-preview .network-scroll { background: var(--theme-field); }
+  .contribution-legend i { color: #1c291d; border-color: var(--theme-line); }
+}

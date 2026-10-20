@@ -58,6 +58,7 @@ export class TrainingUI {
     field("load").addEventListener("click", () => this.load());
     window.addEventListener("resize", () => this.renderGraphics());
     document.addEventListener("languagechange", () => this.renderGraphics());
+    matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => this.renderGraphics());
     this.render();
     if (modelStore.warning) this.message(modelStore.warning, true);
   }
