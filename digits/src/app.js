@@ -1,3 +1,4 @@
+import {NetworkViewer} from './network-viewer.js';
 import {inspectNeuron,neuronSelection,finiteIndex,connectionAt,numberText} from './inspector.js';
 import {PRESETS,Network,clone,sizes,parameterCount,inputVector} from './model.js';
 import {loadManifest,loadSplit,validateCustom,counts} from './data.js';
@@ -27,6 +28,7 @@ class PixelPad{
 }
 const mainPad=new PixelPad($('draw-canvas'),Array(256).fill(0),()=>{sourceLabel=null;$('input-label').textContent='Dibujo libre';inference();});
 const imagePad=new PixelPad($('image-canvas'),Array(256).fill(0),p=>{imagePixels=Array.from(p);},()=>eraser?0:Number($('brush-value').value),()=>Number($('brush-size').value));
+const networkViewer=new NetworkViewer((layer,neuron)=>{$('layer-picker').value=layer;$('neuron-picker').value=neuron;inference();});
 function activeNetwork(){return nets[modelIndex];}
 function selection(){return neuronSelection(activeNetwork(),$('layer-picker').value,$('neuron-picker').value);}
 function layerOptions(net){
@@ -40,7 +42,7 @@ function inference(){const net=activeNetwork();if(!net)return;
  $('prediction').textContent=confidence<threshold?'?':f.prediction;$('confidence').textContent=pct(confidence);$('parameter-count').textContent=parameterCount(net.topology).toLocaleString();$('shape').textContent=sizes(net.topology).join(' → ');$('epoch-count').textContent=(snapshot.models[modelIndex].epoch+snapshot.models[modelIndex].cursor/(train.length+snapshot.custom.filter(s=>s.role==='train').length)).toFixed(2);$('model-state').textContent=snapshot.models[modelIndex].batches?'PESOS APRENDIDOS':'SIN ENTRENAR';$('prediction-note').textContent=snapshot.models[modelIndex].batches?'Cada dibujo se predice sin actualizar pesos. Softmax no es una garantía de acierto; un trazo distinto de MNIST puede confundir a la red.':'Una red sin entrenar solo tiene pesos aleatorios. Una probabilidad alta no garantiza que acierte.';
  $('probabilities').innerHTML=Array.from(f.probabilities,(p,i)=>`<div class="prob-row ${i===f.prediction?'winner':''}"><span>${i}</span><div class="prob-track"><div class="prob-fill" style="width:${p*100}%"></div></div><span>${pct(p)}</span></div>`).join('');
 
- networkNodes=drawNetwork($('network-canvas'),net,f,{layer,neuron});renderNeuronInspector();if($('contribution-dialog').open)renderContributions();}
+ networkNodes=drawNetwork($('network-canvas'),net,f,{layer,neuron});networkViewer.update(net,f,{layer,neuron});renderNeuronInspector();if($('contribution-dialog').open)renderContributions();}
 function renderNeuronInspector(){
  const r=inspection;if(!r)return;connectionIndex=finiteIndex(connectionIndex,r.terms.length);const i=connectionIndex,t=r.terms[i],num=numberText;
  $('neuron-context').textContent=`${r.modelName} · ${r.output?'Salida':'Oculta '+(r.layer+1)} · neurona ${r.neuron} · lote ${snapshot.models[modelIndex].batches}`;

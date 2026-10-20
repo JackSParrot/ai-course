@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createServer} from '../server.mjs';
-import {createPeerGuard} from '../peer-guard.mjs';
+import {createServer} from '../scripts/server.mjs';
+import {createPeerGuard} from '../scripts/peer-guard.mjs';
 
 async function runServer(options, body) {
   const server=await createServer(options);

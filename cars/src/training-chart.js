@@ -33,9 +33,9 @@ export function drawTrainingChart(canvas, history) {
     context.fillStyle = color("--plot-text", "#89947d");
     context.fillText(Math.round(value).toLocaleString(getLocale()), left - 10, y(value) + 5);
   }
-  for (const [key, color, dash] of [["average", color("--plot-second-line", "#aba68d"), [7, 5]], ["best", color("--plot-line", "#638448"), []]]) {
-    context.strokeStyle = color;
-    context.fillStyle = color;
+  for (const [key, lineColor, dash] of [["average", color("--plot-second-line", "#aba68d"), [7, 5]], ["best", color("--plot-line", "#638448"), []]]) {
+    context.strokeStyle = lineColor;
+    context.fillStyle = lineColor;
     context.lineWidth = 3;
     context.setLineDash(dash);
     context.beginPath();

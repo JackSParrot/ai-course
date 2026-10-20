@@ -1,8 +1,9 @@
+import {buildPortable} from './portable/build.mjs';
 import {readFile,writeFile,mkdir} from 'node:fs/promises';
 import {resolve,join,dirname,sep} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {createHash} from 'node:crypto';
-const root=dirname(fileURLToPath(import.meta.url));
+const root=resolve(dirname(fileURLToPath(import.meta.url)),'..');
 const outArg=process.argv.find(arg=>arg.startsWith('--out='));
 const releaseRoot=outArg?resolve(root,outArg.slice(6)):root;
 if(releaseRoot!==root&&!releaseRoot.startsWith(root+sep))throw Error('Build output must stay inside this project.');
@@ -11,7 +12,7 @@ const sources={cars:join(root,'cars'),digits:join(root,'digits'),perceptrons:joi
 // Deliberate allowlist: no repository roots, private checkpoints or original download caches.
 const files={
 cars:['index.html','favicon.svg','styles.css','map-editor.css','topology-editor.css','training.css',...['app','car-settings','car','controls','genetics','geometry','map-editor','map-store','map-ui','maps','neural-network','renderer','sensor','simulation','topology-editor','topology-store','topology','track-drawing','track','trained-models','training-chart','training-engine','training-score','training-ui','training-worker'].map(n=>'src/'+n+'.js')],
-digits:['index.html','favicon.svg','styles.css',...['app','data','editors','experiment','inspector','math','model','view','worker'].map(n=>'src/'+n+'.js'),'data/manifest.json','data/train.bin','data/validation.bin','data/test.bin','data/PROVENANCE.md'],
+digits:['index.html','favicon.svg','styles.css',...['app','data','editors','experiment','inspector','network-viewer','math','model','view','worker'].map(n=>'src/'+n+'.js'),'data/manifest.json','data/train.bin','data/validation.bin','data/test.bin','data/PROVENANCE.md'],
 perceptrons:['index.html','course.css','lesson.js','math.js']
 };
 const chapters=[{app:'perceptrons',title:'Perceptrones'},{app:'digits',title:'Aprender a leer'},{app:'cars',title:'Coches'}];
@@ -76,4 +77,5 @@ for(const {file,buffer} of shared){
  manifest.files['/'+name]={bytes:output.length,sha256:digest(output)};
 }
 await writeFile(join(releaseRoot,'publication-manifest.json'),JSON.stringify(manifest,null,2));
-console.log(JSON.stringify({files:Object.keys(manifest.files).length,bytes:Object.values(manifest.files).reduce((n,f)=>n+f.bytes,0),releaseRoot,sourceChanges:0}));
+const portable=await buildPortable(root,releaseRoot);
+console.log(JSON.stringify({...portable,files:Object.keys(manifest.files).length,bytes:Object.values(manifest.files).reduce((n,f)=>n+f.bytes,0),releaseRoot,sourceChanges:0}));

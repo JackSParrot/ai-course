@@ -4,7 +4,51 @@ const isDarkCanvas=canvas=>typeof getComputedStyle==='function'&&getComputedStyl
 export const COLORS=['var(--chart-1,#da704b)','var(--chart-2,#64a4a0)','var(--chart-3,#9c89bf)','var(--chart-4,#b4a342)','var(--chart-5,#739cc0)','var(--chart-6,#c788a5)','var(--chart-7,#55955e)','var(--chart-8,#887465)'];
 export const escapeHTML=v=>String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 export function drawPixels(canvas,pixels,cursor=null){const ctx=canvas.getContext('2d'),s=canvas.width/16;ctx.fillStyle='#142a29';ctx.fillRect(0,0,canvas.width,canvas.height);for(let i=0;i<256;i++){const v=pixels[i]/255;ctx.fillStyle=`rgb(${Math.round(20+v*217)},${Math.round(42+v*196)},${Math.round(41+v*180)})`;ctx.fillRect(i%16*s,Math.floor(i/16)*s,s,s);}ctx.strokeStyle='#8da89020';ctx.lineWidth=1;for(let i=0;i<=16;i++){ctx.beginPath();ctx.moveTo(i*s,0);ctx.lineTo(i*s,canvas.height);ctx.moveTo(0,i*s);ctx.lineTo(canvas.width,i*s);ctx.stroke();}if(cursor!==null){ctx.strokeStyle='#ff986f';ctx.lineWidth=2;ctx.strokeRect((cursor%16)*s+1,Math.floor(cursor/16)*s+1,s-2,s-2);}}
-export function drawNetwork(canvas,network,trace=null,selected={layer:0,neuron:0},dark=true){dark=dark||isDarkCanvas(canvas);const c=canvas.getContext('2d'),w=canvas.width,h=canvas.height,sz=sizes(network.topology),nodes=[];c.clearRect(0,0,w,h);const fg=dark?'#cedbc2':'#637a54';sz.forEach((n,l)=>{const count=l===sz.length-1?10:Math.min(8,n);nodes.push(Array.from({length:count},(_,i)=>({x:34+l*(w-68)/(sz.length-1),y:48+i*(h-94)/Math.max(1,count-1),i:count===n?i:Math.floor(i*(n-1)/(count-1)),layer:l-1})));});for(let l=1;l<nodes.length;l++){const layer=network.layers[l-1];for(const a of nodes[l-1])for(const b of nodes[l]){const v=layer.w[b.i*sz[l-1]+a.i];c.strokeStyle=v>=0?`rgba(154,192,129,${Math.min(.65,(dark?.22:.08)+Math.abs(v)*.35)})`:`rgba(230,139,105,${Math.min(.65,(dark?.22:.08)+Math.abs(v)*.35)})`;c.lineWidth=dark?1.1:.8;c.beginPath();c.moveTo(a.x,a.y);c.lineTo(b.x,b.y);c.stroke();}}for(let l=0;l<nodes.length;l++){c.fillStyle=fg;c.font='11px Consolas';c.textAlign='center';c.fillText((l===0?(getLanguage()==='en'?'I':'E'):l===nodes.length-1?(getLanguage()==='en'?'O':'S'):`${getLanguage()==='en'?'H':'C'}${l}`)+` · ${sz[l]}`,nodes[l][0].x,19);for(const n of nodes[l]){const a=trace?.a[l]?.[n.i]??0;c.fillStyle=`rgba(170,202,141,${Math.min(.85,.16+Math.abs(a)*.6)})`;c.beginPath();c.arc(n.x,n.y,l===0?7:9,0,Math.PI*2);c.fill();c.strokeStyle=n.layer===selected.layer&&n.i===selected.neuron?'#ff986f':fg;c.lineWidth=n.layer===selected.layer&&n.i===selected.neuron?2.5:.7;c.stroke();c.fillStyle=fg;c.font='9px Consolas';c.fillText(l===nodes.length-1?String(n.i):String(n.i),n.x+(l===nodes.length-1?17:-16),n.y+3);}}return nodes.flat().filter(n=>n.layer>=0);}
+// Full mode keeps every neuron at a readable spacing in a pannable world.
+export function networkLayout(network,{full=false,width=560,height=360}={}){
+ const sz=sizes(network.topology),worldWidth=full?Math.max(900,(sz.length-1)*280+120):width,worldHeight=full?Math.max(...sz)*32+100:height;
+ const nodes=sz.map((n,l)=>{
+  const count=full?n:l===sz.length-1?10:Math.min(8,n);
+  return Array.from({length:count},(_,i)=>({x:(full?60:34)+l*(worldWidth-(full?120:68))/(sz.length-1),y:full?60+i*32:48+i*(height-94)/Math.max(1,count-1),i:count===n?i:Math.floor(i*(n-1)/(count-1)),layer:l-1}));
+ });
+ return {sizes:sz,nodes,width:worldWidth,height:worldHeight};
+}
+export function drawNetwork(canvas,network,trace=null,selected={layer:0,neuron:0},dark=true,view={}){
+ dark=dark||isDarkCanvas(canvas);
+ const c=canvas.getContext('2d'),{sizes:sz,nodes}=networkLayout(network,{...view,width:canvas.width,height:canvas.height}),full=!!view.full,scale=view.scale??1,x=view.x??0,y=view.y??0;
+ c.clearRect(0,0,canvas.width,canvas.height);c.save();c.translate(x,y);c.scale(scale,scale);
+ const fg=dark?'#cedbc2':'#637a54',visible=n=>!full||(n.y*scale+y>-20&&n.y*scale+y<canvas.height+20);
+ for(const highlighted of [false,true])for(let l=1;l<nodes.length;l++){
+  const layer=network.layers[l-1];
+  for(const a of nodes[l-1])for(const b of nodes[l]){
+   const active=full&&b.layer===selected.layer&&b.i===selected.neuron;
+   if(active!==highlighted)continue;
+   // Skip edges wholly above or below the viewport, without dropping crossing edges.
+   if(Math.min(a.y,b.y)*scale+y>canvas.height)continue;
+   if(Math.max(a.y,b.y)*scale+y<0)continue;
+   const v=layer.w[b.i*sz[l-1]+a.i],alpha=full?(active?.7:.07):Math.min(.65,(dark?.22:.08)+Math.abs(v)*.35);
+   c.strokeStyle=v>=0?`rgba(154,192,129,${alpha})`:`rgba(230,139,105,${alpha})`;c.lineWidth=full?(active?1.5:.7)/Math.max(1,scale):dark?1.1:.8;
+   c.beginPath();c.moveTo(a.x,a.y);c.lineTo(b.x,b.y);c.stroke();
+  }
+ }
+ for(let l=0;l<nodes.length;l++){
+  c.fillStyle=fg;c.font='11px Consolas';c.textAlign='center';
+  if(!full)c.fillText((l===0?(getLanguage()==='en'?'I':'E'):l===nodes.length-1?(getLanguage()==='en'?'O':'S'):`${getLanguage()==='en'?'H':'C'}${l}`)+` · ${sz[l]}`,nodes[l][0].x,full?Math.max(24,(24-y)/scale):19);
+  for(const n of nodes[l]){
+   if(!visible(n))continue;
+   const a=trace?.a[l]?.[n.i]??0,active=n.layer===selected.layer&&n.i===selected.neuron;
+   c.fillStyle=full?'#1c302c':`rgba(170,202,141,${Math.min(.85,.16+Math.abs(a)*.6)})`;c.beginPath();c.arc(n.x,n.y,l===0?7:9,0,Math.PI*2);c.fill();
+   if(full){c.fillStyle=`rgba(170,202,141,${Math.min(.85,.16+Math.abs(a)*.6)})`;c.fill();}
+   c.strokeStyle=active?'#ff986f':fg;c.lineWidth=active?2.5:.7;c.stroke();c.fillStyle=fg;c.font=full?'11px Consolas':'9px Consolas';c.fillText(String(n.i),n.x+(l===nodes.length-1?20:-20),n.y+3);
+  }
+ }
+ if(full){
+  c.fillStyle='#192c29';c.fillRect(-x/scale,-y/scale,canvas.width/scale,38/scale);
+  c.fillStyle=fg;c.font='11px Consolas';c.textAlign='center';
+  nodes.forEach((layer,l)=>c.fillText((l===0?(getLanguage()==='en'?'I':'E'):l===nodes.length-1?(getLanguage()==='en'?'O':'S'):`${getLanguage()==='en'?'H':'C'}${l}`)+` · ${sz[l]}`,layer[0].x,(24-y)/scale));
+ }
+ c.restore();return nodes.flat().filter(n=>n.layer>=0);
+}
 export function drawInspectorMap(canvas,values,grid,selected,range,masked=[],showSign=false){
  const dark=isDarkCanvas(canvas);
  const base=dark?[44,57,53]:[240,243,233],empty=dark?'#303c3b':'#e0e3db';

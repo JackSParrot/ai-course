@@ -1,20 +1,22 @@
-# Neural Racing · Laboratorio 01
+# Neural Racing · Capítulo 03
 
 Un pequeño proyecto para entender cómo una red neuronal convierte lo que ve un coche en decisiones. HTML, CSS y JavaScript, sin librerías, frameworks, dependencias externas ni compilación.
 
 ## Abrir el proyecto
 
-Necesitas Node.js 20 o posterior. Desde esta carpeta:
+Para usar el curso completo sin instalación, descarga el repositorio y abre **`Neural-Labs.html`**, en la raíz, con doble clic. Selecciona el capítulo **03 · Coches**.
 
-```text
-node server.js
+Para trabajar con las fuentes, desde la raíz del repositorio:
+
+```sh
+npm ci
+npm run build
+npm start
 ```
 
-Abre **http://127.0.0.1:5173** en un navegador moderno. También puedes usar `npm.cmd start` en PowerShell (`npm start` en otros terminales). No hace falta instalar paquetes. Para detener el servidor, pulsa Ctrl+C en su terminal.
+Necesitas Node.js 20 o posterior. Abre **http://127.0.0.1:5200/cars/**. En PowerShell puedes usar `npm.cmd` en lugar de `npm`. Detén el servidor con Ctrl+C.
 
-El servidor solo escucha en este ordenador. Si el puerto está ocupado, puedes cambiarlo en PowerShell con `$env:PORT = "5174"` antes de arrancar. Para servirlo con otro servidor estático, usa la carpeta raíz del proyecto. Abrir `index.html` con doble clic no basta, porque los módulos de JavaScript necesitan HTTP.
-
-El selector **ES / EN** cambia el idioma sin recargar. El catálogo compartido está en `../i18n/`; conserva esa carpeta si copias el taller. Para usar un servidor estático distinto, sirve el curso completo desde la raíz del repositorio después de `npm run build`.
+El selector **ES / EN** cambia el idioma sin recargar. El catálogo compartido está en `../i18n/`; el build incluye todos los recursos necesarios. Consulta la [guía de desarrollo](../docs/DEVELOPMENT.md) para servir el curso con otro servidor estático o regenerar el archivo portable.
 
 ## Qué incluye
 

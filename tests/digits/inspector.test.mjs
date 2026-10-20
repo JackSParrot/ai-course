@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {Network,PRESETS,clone,inputVector} from '../digits/src/model.js';
-import {inspectNeuron,incomingGrid,connectionAt,finiteIndex,neuronSelection,numberText} from '../digits/src/inspector.js';
-import {drawInspectorMap} from '../digits/src/view.js';
+import {Network,PRESETS,clone,inputVector} from '../../digits/src/model.js';
+import {inspectNeuron,incomingGrid,connectionAt,finiteIndex,neuronSelection,numberText} from '../../digits/src/inspector.js';
+import {drawInspectorMap} from '../../digits/src/view.js';
 const close=(a,b)=>assert.ok(Math.abs(a-b)<1e-10*Math.max(1,Math.abs(a),Math.abs(b)),`${a} != ${b}`);
 function fixture(activation='relu'){
  const n=new Network({...clone(PRESETS[1]),hidden:[2],activation,inputMode:'raw'});

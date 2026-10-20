@@ -1,15 +1,36 @@
 import { getLocale } from '../i18n/i18n.js';
-import {NAND,XOR,score,hard,accuracy,boundarySegment,dialValue,dialAngle,dialDragValue,dialKeyValue,XOR_PARAMETER_KEYS,XOR_CHALLENGE,XOR_SOLUTION,xorHiddenModels,manualXor} from './math.js';
+import {NAND,OR,XOR,score,hard,accuracy,boundarySegment,dialValue,dialAngle,dialDragValue,dialKeyValue,XOR_PARAMETER_KEYS,XOR_CHALLENGE,XOR_SOLUTION,xorHiddenModels,manualXor} from './math.js';
 const $=id=>document.getElementById(id),number=id=>Number($(id).value),fmt=(n,d=2)=>Number(n).toFixed(d);
-const state={lesson:1,point:1,networkMode:'RETO MANUAL',highlight:null};
+const state={lesson:0,gate:'nand',point:1,networkMode:'RETO MANUAL',highlight:null};
 const parameters={'weight-1':-1,'weight-2':-1,bias:1.5,...Object.fromEntries(XOR_PARAMETER_KEYS.map(key=>['xor-'+key,XOR_CHALLENGE[key]]))};
+// Every control points to one shared parameter; both views edit the same model.
+const controlParameters={...Object.fromEntries(Object.keys(parameters).map(id=>[id,id])),'plot-weight-1':'weight-1','plot-weight-2':'weight-2','plot-bias':'bias'};
+const singleKeys=['weight-1','weight-2','bias'];
+const singleValues=()=>Object.fromEntries(singleKeys.map(key=>[key,parameters[key]]));
+const singleSaved={nand:singleValues()},singleStarts={nand:singleValues()};
+const gates={
+ nand:{name:'NAND',samples:NAND,solution:{'weight-1':-1,'weight-2':-1,bias:1.5}},
+ or:{name:'OR',samples:OR,solution:{'weight-1':1,'weight-2':1,bias:-.5}},
+ xor:{name:'XOR',samples:XOR,solution:null}
+};
+function enterGate(goal){
+ if(goal===state.gate)return;
+ singleSaved[state.gate]=singleValues();
+ if(!singleSaved[goal]){
+  singleSaved[goal]=singleValues();
+  singleStarts[goal]={...singleSaved[goal]};
+ }
+ state.gate=goal;
+ Object.assign(parameters,singleSaved[goal]);
+}
 const decisionModel=()=>({weights:[parameters['weight-1'],parameters['weight-2']],bias:parameters.bias});
 const networkParameters=()=>Object.fromEntries(XOR_PARAMETER_KEYS.map(key=>[key,parameters['xor-'+key]]));
 function renderDials(){
- Object.entries(parameters).forEach(([id,value])=>{
+ Object.entries(controlParameters).forEach(([id,key])=>{
+  const value=parameters[key];
   const dial=$(id+'-dial');dial.style.setProperty('--dial-angle',dialAngle(value)+'deg');dial.setAttribute('aria-valuenow',String(value));
-  dial.setAttribute('aria-valuetext',value.toLocaleString(getLocale(),{minimumFractionDigits:1})+'. '+$(id+'-help').textContent);
-  if(document.activeElement!==$(id))$(id).value=fmt(value,1);
+  dial.setAttribute('aria-valuetext',value.toLocaleString(getLocale(),{minimumFractionDigits:1})+'. '+$(key+'-help').textContent);
+  if(document.activeElement!==$(id)){$(id).value=fmt(value,1);$(id).removeAttribute('aria-invalid');}
  });
 }
 function canvasContext(id){
@@ -60,7 +81,11 @@ function rows(id,samples,classifier,selected=-1){
 }
 function renderDecision(){
  renderDials();
+ const gate=gates[state.gate],samples=gate.samples;
  const model=decisionModel(),probe=[number('probe-1'),number('probe-2')];
+ $('single-goal-title').textContent='Objetivo: '+gate.name;
+ $('boundary-canvas').setAttribute('aria-label','Frontera de '+gate.name+': el fondo es la predicción; los puntos muestran las respuestas esperadas.');
+ $('single-solution').parentElement.hidden=!gate.solution;
  ['probe-1','probe-2'].forEach(id=>$(id+'-value').textContent=fmt(number(id)));
  const term=(n,label,first=false)=>(first?(n<0?'−':''):(n<0?' − ':' + '))+fmt(Math.abs(n),1)+label;
  $('boundary-equation').textContent='z = '+term(model.weights[0],' × x₁',true)+term(model.weights[1],' × x₂')+term(model.bias,'');
@@ -82,9 +107,9 @@ function renderDecision(){
  !boundarySegment(model).length?'La frontera queda fuera de esta ventana; aquí todos los puntos tienen la misma respuesta.':
  w2===0?'w₂ = 0: x₂ no influye. La frontera es vertical.':w1===0?'w₁ = 0: x₁ no influye. La frontera es horizontal.':'En la frontera, z = 0 y la salida es 1.';
  $('probe-sum').textContent='z = '+fmt(z);$('probe-output').textContent=output;
- const classifier=x=>hard(score(model,x));$('nand-score').textContent=accuracy(classifier,NAND)+' / 4';
- const selected=NAND.findIndex(sample=>sample.x.every((value,i)=>value===probe[i]));
- rows('nand-rows',NAND,classifier,selected);plot('boundary-canvas',NAND,classifier,{models:[model],probe});
+ const classifier=x=>hard(score(model,x));$('nand-score').textContent=accuracy(classifier,samples)+' / 4';
+ const selected=samples.findIndex(sample=>sample.x.every((value,i)=>value===probe[i]));
+ rows('nand-rows',samples,classifier,selected);plot('boundary-canvas',samples,classifier,{models:[model],probe});
 }
 function highlightNetwork(){
  const active=state.highlight;
@@ -113,32 +138,52 @@ function renderXor(){
  $('xor-inspection').textContent='Ejemplo ('+sample.x.join(', ')+'): activaciones ['+r.hidden.join(', ')+']. La salida suma '+fmt(r.outputScore)+' y responde '+r.output+'. Esperado: '+sample.y+'.';
  highlightNetwork();
 }
-function render(){if(state.lesson===1)renderDecision();else renderXor();}
-const hashes=['#decidir','#combinar'];
+function render(){
+ if(state.lesson===0)return;
+ if(state.lesson===4)renderXor();else renderDecision();
+}
+const hashes=['#introduccion','#decidir','#or','#una-recta','#combinar'];
 function showLesson(n,interacted=true){
- state.lesson=n;document.querySelectorAll('.lesson').forEach((section,i)=>section.hidden=i!==n-1);
+ if(!Number.isInteger(n)||n<0||n>4)return;
+ state.lesson=n;
+ if(n>=1&&n<=3){
+  const goal=['nand','or','xor'][n-1];
+  enterGate(goal);
+  const host=document.querySelector('[data-single-host="'+goal+'"]');
+  if($('single-workspace').parentElement!==host)host.append($('single-workspace'));
+ }
+ document.querySelectorAll('.lesson').forEach(section=>section.hidden=section.id!=='lesson-'+n);
  document.querySelectorAll('.lesson-tabs button').forEach(button=>{if(Number(button.dataset.lesson)===n)button.setAttribute('aria-current','step');else button.removeAttribute('aria-current');});
  render();
- if(interacted){history.replaceState(null,'',hashes[n-1]);$('title-'+n).focus({preventScroll:true});document.querySelector('.lesson-tabs').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'start'});}
+ if(interacted){
+  history.replaceState(null,'',hashes[n]);
+  $('title-'+n).focus({preventScroll:true});
+  document.querySelector('.lesson-tabs').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'start'});
+ }
+}
+function readRoute(){
+ if(location.hash==='#nand'){showLesson(1,false);return;}
+ const n=hashes.indexOf(location.hash);showLesson(n<0?0:n,false);
 }
 document.querySelectorAll('[data-lesson]').forEach(button=>button.addEventListener('click',()=>showLesson(Number(button.dataset.lesson))));
 function setParameter(id,raw,{keepInput=false}={}){
  const next=dialValue(raw);if(next===null)return false;
- parameters[id]=next;
- if(id.startsWith('xor-'))state.networkMode='AJUSTE MANUAL';
+ const key=controlParameters[id];
+ parameters[key]=next;
+ if(key.startsWith('xor-'))state.networkMode='AJUSTE MANUAL';
  if(!keepInput)$(id).value=fmt(next,1);
  $(id).removeAttribute('aria-invalid');render();return true;
 }
-Object.keys(parameters).forEach(id=>{
+Object.entries(controlParameters).forEach(([id,key])=>{
  const dial=$(id+'-dial'),input=$(id);let drag=null;
  dial.addEventListener('keydown',event=>{
-   const next=dialKeyValue(parameters[id],event.key);
+   const next=dialKeyValue(parameters[key],event.key);
    if(next!==null){event.preventDefault();setParameter(id,next);}
  });
  dial.addEventListener('pointerdown',event=>{
    if(!event.isPrimary||event.button!==0)return;
    event.preventDefault();dial.focus({preventScroll:true});
-   drag={id:event.pointerId,value:parameters[id],y:event.clientY};
+   drag={id:event.pointerId,value:parameters[key],y:event.clientY};
    dial.setPointerCapture(event.pointerId);dial.classList.add('dragging');
  });
  dial.addEventListener('pointermove',event=>{
@@ -156,12 +201,12 @@ Object.keys(parameters).forEach(id=>{
    else input.setAttribute('aria-invalid','true');
  });
  const commit=()=>{
-   if(!setParameter(id,input.value)){input.value=fmt(parameters[id],1);input.removeAttribute('aria-invalid');}
+   if(!setParameter(id,input.value)){input.value=fmt(parameters[key],1);input.removeAttribute('aria-invalid');}
  };
  input.addEventListener('change',commit);input.addEventListener('blur',commit);
  input.addEventListener('keydown',event=>{if(event.key==='Enter'){event.preventDefault();commit();}});
 });
-document.querySelectorAll('[data-dial-step]').forEach(button=>button.addEventListener('click',()=>setParameter(button.dataset.for,parameters[button.dataset.for]+Number(button.dataset.dialStep)*.1)));
+document.querySelectorAll('[data-dial-step]').forEach(button=>button.addEventListener('click',()=>setParameter(button.dataset.for,parameters[controlParameters[button.dataset.for]]+Number(button.dataset.dialStep)*.1)));
 ['probe-1','probe-2'].forEach((id,i)=>{
  $(id).addEventListener('input',renderDecision);
  $('input-toggle-'+(i+1)).addEventListener('click',()=>{
@@ -170,9 +215,12 @@ document.querySelectorAll('[data-dial-step]').forEach(button=>button.addEventLis
  });
 });
 $('restore-nand').addEventListener('click',()=>{
- Object.assign(parameters,{'weight-1':-1,'weight-2':-1,bias:1.5});
- Object.entries(parameters).forEach(([id,value])=>{$(id).value=fmt(value,1);$(id).removeAttribute('aria-invalid');});
+ Object.assign(parameters,singleStarts[state.gate]);
  renderDecision();
+});
+$('single-solution').addEventListener('click',()=>{
+ const solution=gates[state.gate].solution;
+ if(solution){Object.assign(parameters,solution);renderDecision();}
 });
 document.querySelectorAll('[data-network-key]').forEach(control=>{
  control.addEventListener('focusin',()=>{state.highlight={key:control.dataset.networkKey,node:control.dataset.networkNode};highlightNetwork();});
@@ -186,8 +234,8 @@ $('xor-reset').addEventListener('click',()=>loadNetwork(XOR_CHALLENGE,'RETO MANU
 $('xor-solution').addEventListener('click',()=>loadNetwork(XOR_SOLUTION,'EJEMPLO RESUELTO · CARGADO A MANO'));
 document.querySelectorAll('[data-xor-point]').forEach(button=>button.addEventListener('click',()=>{state.point=Number(button.dataset.xorPoint);renderXor();}));
 new ResizeObserver(render).observe(document.querySelector('main'));
-window.addEventListener('hashchange',()=>{const n=hashes.indexOf(location.hash);if(n>=0)showLesson(n+1,false);});
-showLesson(Math.max(0,hashes.indexOf(location.hash))+1,false);
+window.addEventListener('hashchange',readRoute);
+readRoute();
 
 document.addEventListener('languagechange', render);
 

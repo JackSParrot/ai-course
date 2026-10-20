@@ -5,14 +5,17 @@
   "type": "module",
   "description": "Curso interactivo de redes neuronales: perceptrones, dígitos y coches.",
   "scripts": {
-    "build": "node build.mjs",
-    "start": "node server.mjs",
-    "pretest": "node build.mjs",
+    "build": "node scripts/build.mjs",
+    "start": "node scripts/server.mjs",
+    "pretest": "node scripts/build.mjs",
     "test": "node --test",
     "data:prepare": "node scripts/prepare-data.mjs"
   },
   "engines": {
     "node": ">=20"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "esbuild": "^0.28.2"
+  }
 }

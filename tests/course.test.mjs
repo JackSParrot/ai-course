@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
-import {NAND,XOR,score,hard,accuracy,boundarySegment,dialValue,dialAngle,dialDragValue,dialKeyValue,XOR_PARAMETER_KEYS,XOR_CHALLENGE,XOR_SOLUTION,xorHiddenModels,manualXor} from '../course/math.js';
+import {NAND,OR,XOR,score,hard,accuracy,boundarySegment,dialValue,dialAngle,dialDragValue,dialKeyValue,XOR_PARAMETER_KEYS,XOR_CHALLENGE,XOR_SOLUTION,xorHiddenModels,manualXor} from '../course/math.js';
 
 test('NAND uses two weighted inputs and one additive bias',()=>{
  const model={weights:[-1,-1],bias:1.5};
@@ -9,6 +9,14 @@ test('NAND uses two weighted inputs and one additive bias',()=>{
  assert.deepEqual(NAND.map(s=>hard(score(model,s.x))),[1,1,1,0]);
  assert.equal(score(model,[1,0]),.5);
  assert.deepEqual(XOR.map(s=>s.y),[0,1,1,0]);
+});
+test('the same neuron can implement OR by changing only its weights and bias',()=>{
+ const nand={weights:[-1,-1],bias:1.5},or={weights:[1,1],bias:-.5};
+ assert.deepEqual(OR.map(({x,y})=>[...x,y]),[[0,0,0],[1,0,1],[0,1,1],[1,1,1]]);
+ assert.equal(accuracy(x=>hard(score(nand,x)),NAND),4);
+ assert.equal(accuracy(x=>hard(score(nand,x)),OR),2);
+ assert.equal(accuracy(x=>hard(score(or,x)),OR),4);
+ assert.equal(accuracy(x=>hard(score(or,x)),XOR),3);
 });
 test('boundaries remain finite for vertical, horizontal, missing and zero-weight cases',()=>{
  for(const model of [{weights:[-1,-1],bias:1.5},{weights:[2,0],bias:-1},{weights:[0,2],bias:-1}]){
@@ -93,13 +101,13 @@ test('a single affine threshold cannot solve the XOR truth table',()=>{
  assert.equal(best,3);
  // XOR needs b<0, a1+a2+b<0, a1+b>=0 and a2+b>=0. The latter imply a1+a2+b>=-b>0.
 });
-test('diagrams and accessible dials expose exactly three NAND and all nine XOR parameters',async()=>{
+test('diagrams and accessible dials expose shared NAND controls in both views and all nine XOR parameters',async()=>{
  const html=await readFile(new URL('../course/index.html',import.meta.url),'utf8');
  assert.ok(html.indexOf('id="biological-neuron"')<html.indexOf('id="mathematical-perceptron"'));
  assert.ok(html.indexOf('id="mathematical-perceptron"')<html.indexOf('id="interactive-title"'));
  assert.ok(html.indexOf('class="network-diagram-card"')<html.indexOf('id="network-controls-title"'));
- assert.equal([...html.matchAll(/class="rotary" role="slider"/g)].length,12);
- for(const id of ['weight-1','weight-2','bias',...XOR_PARAMETER_KEYS.map(key=>'xor-'+key)]){
+ assert.equal([...html.matchAll(/class="rotary" role="slider"/g)].length,15);
+ for(const id of ['weight-1','weight-2','bias','plot-weight-1','plot-weight-2','plot-bias',...XOR_PARAMETER_KEYS.map(key=>'xor-'+key)]){
   assert.ok(html.includes('id="'+id+'-dial"'),id);
   assert.ok(html.includes('id="'+id+'" type="number" min="-3" max="3" step="0.1"'),id);
   assert.equal([...html.matchAll(new RegExp('data-for="'+id+'"','g'))].length,2,id);
@@ -107,12 +115,27 @@ test('diagrams and accessible dials expose exactly three NAND and all nine XOR p
  for(const key of XOR_PARAMETER_KEYS)assert.equal([...html.matchAll(new RegExp('data-xor-ref="'+key+'"','g'))].length,2,key);
  const ids=[...html.matchAll(/\bid="([^"]+)"/g)].map(x=>x[1]);assert.equal(new Set(ids).size,ids.length);
 });
-test('chapter one has two manual lessons and sends automatic learning to the digit chapter',async()=>{
+test('chapter one separates the introduction and four manual exercises before digit training',async()=>{
  const html=await readFile(new URL('../course/index.html',import.meta.url),'utf8'),js=await readFile(new URL('../course/lesson.js',import.meta.url),'utf8');
- assert.equal([...html.matchAll(/class="lesson" aria-labelledby/g)].length,2);
- assert.doesNotMatch(html,/training-canvas|learning-rate|train-one|train-run|lesson-tab-3|Aprender del error/);
+ assert.equal([...html.matchAll(/class="(?:intro )?lesson" aria-labelledby/g)].length,5);
+ assert.doesNotMatch(html,/training-canvas|learning-rate|train-one|train-run|lesson-tab-5|Aprender del error/);
  assert.doesNotMatch(js,/trainStep|gradient|setInterval|initialLearner|#aprender/);
  assert.ok(html.includes('El entrenamiento empieza con los números.'));
  assert.ok(html.includes('href="../digits/"'));
  const landing=await readFile(new URL('../shell/index.html',import.meta.url),'utf8');assert.doesNotMatch(landing,/Mira bajar el error|Aprendizaje visible/);
+});
+
+test('gate introductions precede their controls and explain the correct NAND, OR and XOR targets',async()=>{
+ const html=await readFile(new URL('../course/index.html',import.meta.url),'utf8');
+ const tableRows=id=>{
+  const body=html.match(new RegExp('<table id="'+id+'"[^>]*>[\\s\\S]*?<tbody>([\\s\\S]*?)</tbody>'))?.[1];
+  assert.ok(body,id);
+  return [...body.matchAll(/<tr>([\s\S]*?)<\/tr>/g)].map(row=>[...row[1].matchAll(/<td[^>]*>(\d)<\/td>/g)].map(cell=>Number(cell[1])));
+ };
+ assert.deepEqual(tableRows('nand-goal-table'),NAND.map(({x,y})=>[...x,y]));
+ assert.deepEqual(tableRows('or-goal-table'),OR.map(({x,y})=>[...x,y]));
+ assert.deepEqual(tableRows('xor-goal-table'),XOR.map(({x,y})=>[...x,x.some(Boolean)?1:0,y]));
+ assert.ok(html.indexOf('id="nand-intro-title"')<html.indexOf('class="perceptron-card"'));
+ assert.ok(html.indexOf('id="xor-intro-title"')<html.indexOf('class="network-diagram-card"'));
+ assert.ok(html.includes('Piensa en 0 como «no» y en 1 como «sí».'));
 });

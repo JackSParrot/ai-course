@@ -2,6 +2,7 @@
 export const NAND = Object.freeze([
   {x:[0,0], y:1}, {x:[1,0], y:1}, {x:[0,1], y:1}, {x:[1,1], y:0}
 ]);
+export const OR = Object.freeze(NAND.map(({x}) => ({x:[...x], y:x.some(Boolean) ? 1 : 0})));
 export const XOR = Object.freeze(NAND.map(({x}) => ({x:[...x], y:x[0] !== x[1] ? 1 : 0})));
 export function score(model,x) {
   const terms=[model.weights[0]*x[0],model.weights[1]*x[1],model.bias];
