@@ -5,7 +5,24 @@ export const WORLD_WIDTH = 1060;
 export const WORLD_HEIGHT = 720;
 export const MIN_TRACK_WIDTH = 70;
 export const MAX_TRACK_WIDTH = 160;
-export const MAX_MAP_POINTS = 24;
+export const MAX_MAP_POINTS = 64;
+export const TRACK_AREA = { left: 18, top: 68, right: WORLD_WIDTH - 18, bottom: WORLD_HEIGHT - 68 };
+export function mapDimensions(map) {
+  return { width: map.worldWidth ?? WORLD_WIDTH, height: map.worldHeight ?? WORLD_HEIGHT };
+}
+export function trackArea(map) {
+  const { width, height } = mapDimensions(map);
+  return { left: 18, top: 68, right: width - 18, bottom: height - 68 };
+}
+
+function mapError(message, pointIndices = [], locations = [], preview = null, code = "geometry") {
+  return Object.assign(new Error(message), { pointIndices, locations, preview, code });
+}
+
+function nearestControls(points, locations) {
+  return [...new Set(locations.map(location => points.reduce((best, point, index) =>
+    distance(point, location) < distance(points[best], location) ? index : best, 0)))].sort((a, b) => a - b);
+}
 
 export function polygonEdges(polygon) {
   return polygon.map((point, index) => [point, polygon[(index + 1) % polygon.length]]);
@@ -44,20 +61,21 @@ function offsetPath(points, offset) {
     const normalB = { x: -(next.y - point.y) / after, y: (next.x - point.x) / after };
     const normal = { x: normalA.x + normalB.x, y: normalA.y + normalB.y };
     const divisor = normal.x * normalB.x + normal.y * normalB.y;
-    if (divisor < 0.05) throw new Error("Hay un giro demasiado cerrado. Separa los puntos de esa curva.");
+    if (divisor < 0.05) throw mapError("Hay un giro demasiado cerrado. Separa los puntos de esa curva.", [], [point]);
     return { x: point.x + normal.x * offset / divisor, y: point.y + normal.y * offset / divisor };
   });
 }
 
-function hasCrossings(polygon) {
+function crossingLocations(polygon) {
   const edges = polygonEdges(polygon);
+  const locations = [];
   for (let i = 0; i < edges.length; i++) {
     for (let j = i + 2; j < edges.length; j++) {
       if (i === 0 && j === edges.length - 1) continue;
-      if (segmentsTouch(...edges[i], ...edges[j])) return true;
+      if (segmentsTouch(...edges[i], ...edges[j])) locations.push(...edges[i], ...edges[j]);
     }
   }
-  return false;
+  return [...new Set(locations)];
 }
 
 function validateDefinition(map) {
@@ -65,15 +83,18 @@ function validateDefinition(map) {
   if (typeof map.id !== "string" || map.id.length > 100) throw new Error("El identificador del mapa no es válido.");
   if (typeof map.name !== "string" || !map.name.trim() || map.name.length > 48) throw new Error("Escribe un nombre de entre 1 y 48 caracteres.");
   if (!Number.isFinite(map.width) || map.width < MIN_TRACK_WIDTH || map.width > MAX_TRACK_WIDTH) throw new Error("El ancho debe estar entre 70 y 160 unidades.");
-  if (!Array.isArray(map.points) || map.points.length < 3 || map.points.length > MAX_MAP_POINTS) throw new Error("Dibuja entre 3 y 24 puntos para cerrar el circuito.");
+  const size = mapDimensions(map);
+  if (!Number.isInteger(size.width) || !Number.isInteger(size.height) || size.width < WORLD_WIDTH || size.height < WORLD_HEIGHT || size.width > WORLD_WIDTH * 3 || size.height > WORLD_HEIGHT * 3 || size.width * WORLD_HEIGHT !== size.height * WORLD_WIDTH) throw new Error("El tamaño del terreno no es válido.");
+  if (!Array.isArray(map.points) || map.points.length < 3 || map.points.length > MAX_MAP_POINTS) throw new Error("Dibuja entre 3 y 64 puntos para cerrar el circuito.");
   if (!Number.isInteger(map.startIndex) || map.startIndex < 0 || map.startIndex >= map.points.length || typeof map.reversed !== "boolean") throw new Error("La salida o el sentido no son válidos.");
   for (const point of map.points) {
-    if (!point || !Number.isFinite(point.x) || !Number.isFinite(point.y) || point.x < 0 || point.x > WORLD_WIDTH || point.y < 0 || point.y > WORLD_HEIGHT) throw new Error("Todos los puntos deben estar dentro del lienzo.");
+    if (!point || !Number.isFinite(point.x) || !Number.isFinite(point.y) || point.x < 0 || point.x > size.width || point.y < 0 || point.y > size.height) throw new Error("Todos los puntos deben estar dentro del lienzo.");
   }
-  for (const [a, b] of polygonEdges(map.points)) {
-    if (distance(a, b) < 35) throw new Error("Hay dos puntos demasiado juntos. Sepáralos al menos 35 unidades.");
+  for (const [index, [a, b]] of polygonEdges(map.points).entries()) {
+    if (distance(a, b) < 35) throw mapError("Hay dos puntos demasiado juntos. Sepáralos al menos 35 unidades.", [index, (index + 1) % map.points.length], [a, b]);
   }
-  if (hasCrossings(map.points)) throw new Error("El recorrido se cruza. Mueve los puntos para formar un circuito sin cruces.");
+  const crossings = crossingLocations(map.points);
+  if (crossings.length) throw mapError("El recorrido se cruza. Mueve los extremos de los tramos marcados para deshacer el cruce.", nearestControls(map.points, crossings), crossings);
 }
 
 export class Track {
@@ -82,20 +103,33 @@ export class Track {
     this.definition = copyMap(definition);
     this.name = definition.name;
     this.width = definition.width;
+    this.worldWidth = mapDimensions(definition).width;
+    this.worldHeight = mapDimensions(definition).height;
+    const area = trackArea(definition);
     this.center = roundedPath(definition.points, definition.width);
     if (definition.reversed) this.center.reverse();
-    const sideA = offsetPath(this.center, definition.width / 2);
-    const sideB = offsetPath(this.center, -definition.width / 2);
+    let sideA, sideB;
+    try {
+      sideA = offsetPath(this.center, definition.width / 2);
+      sideB = offsetPath(this.center, -definition.width / 2);
+    } catch (error) {
+      error.pointIndices = nearestControls(definition.points, error.locations || []);
+      throw error;
+    }
     this.outer = Math.abs(polygonArea(sideA)) > Math.abs(polygonArea(sideB)) ? sideA : sideB;
     this.inner = this.outer === sideA ? sideB : sideA;
     this.borders = [...polygonEdges(this.outer), ...polygonEdges(this.inner)];
 
-    if ([...this.outer, ...this.inner].some(point => point.x < 18 || point.x > WORLD_WIDTH - 18 || point.y < 68 || point.y > WORLD_HEIGHT - 68)) throw new Error("La carretera sale del área útil. Aleja los puntos del borde o reduce el ancho.");
-    if (hasCrossings(this.outer) || hasCrossings(this.inner) || Math.abs(polygonArea(this.inner)) < 2500 || polygonArea(this.inner) * polygonArea(this.outer) <= 0) throw new Error("La carretera se solapa o tiene una curva demasiado cerrada. Abre las curvas o reduce el ancho.");
-    if (this.inner.some(point => !pointInPolygon(point, this.outer))) throw new Error("Los bordes de la carretera se solapan.");
+    const fail = (message, locations, code) => { throw mapError(message, nearestControls(definition.points, locations), locations, this, code); };
+    const outside = [...this.outer, ...this.inner].filter(point => point.x < area.left || point.x > area.right || point.y < area.top || point.y > area.bottom);
+    if (outside.length) fail("La carretera sale del área útil. Mueve los puntos marcados hacia el centro, reduce el ancho o pulsa Encajar pista.", outside, "bounds");
+    const crossings = [...crossingLocations(this.outer), ...crossingLocations(this.inner)];
+    if (crossings.length || Math.abs(polygonArea(this.inner)) < 2500 || polygonArea(this.inner) * polygonArea(this.outer) <= 0) fail("La carretera se solapa o tiene una curva demasiado cerrada. Separa los puntos marcados para ampliar la curva o reduce el ancho de pista.", crossings.length ? crossings : this.inner);
+    const overlapping = this.inner.filter(point => !pointInPolygon(point, this.outer));
+    if (overlapping.length) fail("Los bordes de la carretera se solapan. Separa los tramos marcados o reduce el ancho.", overlapping);
     for (const a of polygonEdges(this.outer)) {
       for (const b of polygonEdges(this.inner)) {
-        if (segmentsTouch(...a, ...b)) throw new Error("Los bordes de la carretera se tocan. Separa los tramos.");
+        if (segmentsTouch(...a, ...b)) fail("Los bordes de la carretera se tocan. Separa los tramos marcados o reduce el ancho.", [...a, ...b]);
       }
     }
 
@@ -104,7 +138,7 @@ export class Track {
     this.startDistance = this.closestDistance(definition.points[definition.startIndex]);
     this.start = this.poseAt(this.startDistance);
     for (let i = 0; i < 6; i++) {
-      if (this.touchesCar(this.carCornersAt(this.getStart(i)))) throw new Error("No caben los coches en esa salida. Elige otro punto de salida o abre la curva.");
+      if (this.touchesCar(this.carCornersAt(this.getStart(i)))) throw mapError("No caben los coches en esa salida. Usa Salida para elegir un punto en una recta o amplía la curva.", [definition.startIndex], [this.getStart(i)], this, "start");
     }
   }
 
@@ -168,5 +202,10 @@ export class Track {
 
 export function validateMap(map) {
   try { return { valid: true, track: new Track(map), message: "Circuito válido. Listo para guardar y conducir." }; }
-  catch (error) { return { valid: false, track: null, message: error.message }; }
+  catch (error) {
+    const pointIndices = error.pointIndices || [];
+    const label = pointIndices.length ? ` Puntos: ${pointIndices.map(index => index + 1).join(", ")}.` : "";
+    return { valid: false, track: null, preview: error.preview || null, message: error.message + label,
+      pointIndices, locations: error.locations || [], code: error.code || "definition" };
+  }
 }

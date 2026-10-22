@@ -13,7 +13,7 @@ async function runServer(options, body) {
 test('origin accepts only the actual allowed TCP peer and records it once',async()=>{
   const observed=[];
   await runServer({allowedPeers:['127.0.0.1'],onAllowedPeer:ip=>observed.push(ip)},async origin=>{
-    for(const path of ['/','/perceptrons/','/digits/','/cars/'])assert.equal((await fetch(origin+path)).status,200);
+    for(const path of ['/','/perceptrons/','/digits/','/maze/','/cars/'])assert.equal((await fetch(origin+path)).status,200);
   });
   assert.deepEqual(observed,['127.0.0.1']);
 });

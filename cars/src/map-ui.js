@@ -89,8 +89,9 @@ export class MapUI {
       canvas.height = 180;
       canvas.setAttribute("aria-label", `Vista del circuito ${map.name}`);
       const context = canvas.getContext("2d");
-      context.scale(0.25, 0.25);
-      drawTrack(context, new Track(map));
+      const track = new Track(map);
+      context.scale(canvas.width / track.worldWidth, canvas.height / track.worldHeight);
+      drawTrack(context, track);
       const heading = document.createElement("h3");
       heading.textContent = map.name;
       if (!this.store.isBuiltIn(map.id)) heading.dataset.i18nIgnore = "";

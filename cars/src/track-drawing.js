@@ -9,19 +9,19 @@ export function polygonPath(context, points) {
   context.closePath();
 }
 
-export function drawGrid(context) {
+export function drawGrid(context, width = WORLD_WIDTH, height = WORLD_HEIGHT) {
   context.fillStyle = "#142a29";
-  context.fillRect(0, 0, WORLD_WIDTH, WORLD_HEIGHT);
+  context.fillRect(0, 0, width, height);
   context.fillStyle = "#a9c4b016";
-  for (let x = 20; x < WORLD_WIDTH; x += 20) {
-    for (let y = 20; y < WORLD_HEIGHT; y += 20) context.fillRect(x, y, 1, 1);
+  for (let x = 20; x < width; x += 20) {
+    for (let y = 20; y < height; y += 20) context.fillRect(x, y, 1, 1);
   }
 }
 
 // El editor y la simulación dibujan exactamente los mismos bordes.
 export function drawTrack(context, track) {
   context.save();
-  drawGrid(context);
+  drawGrid(context, track.worldWidth, track.worldHeight);
   polygonPath(context, track.outer);
   context.lineWidth = 26;
   context.strokeStyle = "#0d2020";
@@ -37,16 +37,16 @@ export function drawTrack(context, track) {
   context.clip();
   context.strokeStyle = "#aac89205";
   context.lineWidth = 40;
-  for (let x = 0; x < 1500; x += 80) {
-    context.beginPath(); context.moveTo(x, 0); context.lineTo(x - 600, 720); context.stroke();
+  for (let x = 0; x < track.worldWidth + track.worldHeight; x += 80) {
+    context.beginPath(); context.moveTo(x, 0); context.lineTo(x - track.worldHeight, track.worldHeight); context.stroke();
   }
   context.textAlign = "center";
   context.fillStyle = "#b8c5a959";
   context.font = "600 44px 'Segoe UI', sans-serif";
-  context.fillText("NEURAL", 530, 355);
+  context.fillText("NEURAL", track.worldWidth / 2, track.worldHeight / 2 - 5);
   context.fillStyle = "#8aab8577";
   context.font = "12px Consolas, monospace";
-  context.fillText("R A C I N G   L A B", 530, 385);
+  context.fillText("R A C I N G   L A B", track.worldWidth / 2, track.worldHeight / 2 + 25);
   context.restore();
 
   for (const boundary of [track.outer, track.inner]) {

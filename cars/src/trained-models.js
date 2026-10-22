@@ -19,12 +19,16 @@ export function validateChampions(bundle) {
     if (ids.has(champion.type.id)) throw new Error("Hay campeones repetidos para el mismo tipo.");
     ids.add(champion.type.id);
     networkFromData(champion.network, champion.type);
+    const bidirectional = Array.isArray(champion.results) && champion.results.some(result => result.direction !== undefined);
     if (typeof champion.id !== "string" || !champion.id || champion.id.length > 64
       || !Number.isInteger(champion.generation) || champion.generation < 1 || champion.generation > bundle.settings.generations
-      || !Number.isFinite(champion.fitness?.score) || !Array.isArray(champion.results) || champion.results.length !== bundle.maps.length * 2) throw new Error("Los resultados del campeón están incompletos.");
+      || !Number.isFinite(champion.fitness?.score) || !Array.isArray(champion.results) || champion.results.length !== bundle.maps.length * (bidirectional ? 4 : 2)) throw new Error("Los resultados del campeón están incompletos.");
     const attempts = new Set();
     for (const result of champion.results) {
-      const key = `${result.mapId}:${result.start}`;
+      const key = `${result.mapId}:${result.direction ?? 0}:${result.start}`;
+      const map = bundle.maps.find(map => map.id === result.mapId);
+      if (bidirectional && (![0, 1].includes(result.direction) || typeof result.reversed !== "boolean"
+        || result.reversed !== (result.direction === 1 ? !map?.reversed : map?.reversed))) throw new Error("El sentido de un intento guardado no es válido.");
       if (!bundle.maps.some(map => map.id === result.mapId && map.name === result.mapName) || ![1, 2].includes(result.start) || attempts.has(key)
         || !Number.isFinite(result.progress) || result.progress < 0 || result.progress > 1
         || !Number.isInteger(result.checkpoints) || result.checkpoints < 0 || result.checkpoints > 32

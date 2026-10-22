@@ -169,12 +169,17 @@ test("selección y reproducción son fases separadas, con élites intactas y des
   assert.throws(() => trainer.select(), /evaluar/);
   assert.throws(() => trainer.reproduce(), /seleccionar/);
   evaluate(trainer);
-  assert.equal(trainer.completedCases, 18);
+  assert.equal(trainer.completedCases, 36);
   assert.ok(trainer.snapshot().groups.every(group => group.population.every(candidate => candidate.selection === null)));
   assert.ok(trainer.snapshot().groups.every(group => group.view.typeId === group.type.id && group.view.active === 0));
   const originals = trainer.groups.map(group => group.ranking.map(candidate => ({ id: candidate.id, brain: networkData(candidate.brain) })));
   trainer.groups.forEach(group => group.population.forEach(candidate => {
-    assert.equal(candidate.results.length, 6);
+    assert.equal(candidate.results.length, 12);
+    for (const map of config.maps) {
+      const results = candidate.results.filter(result => result.mapId === map.id);
+      assert.deepEqual(results.map(result => [result.direction, result.start]), [[0, 1], [0, 2], [1, 1], [1, 2]]);
+      assert.deepEqual(results.map(result => result.reversed), [map.reversed, map.reversed, !map.reversed, !map.reversed]);
+    }
     assert.ok(candidate.results.every(result => result.elapsed <= EPISODE_SECONDS + 0.02));
   }));
   trainer.select();
@@ -261,6 +266,13 @@ test("guardar, recargar y validar campeones conserva pesos y resultados sin fing
   assert.deepEqual(restored.saved.champions, bundle.champions);
   assert.deepEqual(restored.saved.maps, bundle.maps);
   assert.doesNotThrow(() => validateChampions(restored.saved));
+  const legacy = structuredClone(bundle);
+  for (const champion of legacy.champions) {
+    champion.results = champion.results.filter(result => result.direction === 0).map(({ direction, reversed, ...result }) => result);
+    champion.fitness = aggregateResults(champion.results);
+  }
+  assert.doesNotThrow(() => validateChampions(legacy), "los campeones anteriores siguen pudiendo recuperarse");
+  assert.deepEqual(legacy.champions.map(c => c.network), bundle.champions.map(c => c.network));
   const failed = new TrainedModelStore({ getItem: () => null, setItem: () => { throw new Error("sin espacio"); } });
   assert.throws(() => failed.save(bundle), /espacio/);
   assert.equal(failed.saved, null);
@@ -270,6 +282,8 @@ test("guardar, recargar y validar campeones conserva pesos y resultados sin fing
     data => { data.champions[0].results[0].score.total += 50; },
     data => { data.champions[0].results[0].elapsed = -1; },
     data => { data.champions[0].results[0] = structuredClone(data.champions[0].results[1]); },
+    data => { data.champions[0].results[0].direction = 2; },
+    data => { data.champions[0].results[0].reversed = !data.champions[0].results[0].reversed; },
   ]) {
     const broken = structuredClone(bundle);
     corrupt(broken);

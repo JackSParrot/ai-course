@@ -13,7 +13,11 @@ export const BUILT_IN_MAPS = [
   map("sweep", "Curvas enlazadas", 98, [[330, 156], [670, 156], [900, 250], [900, 540], [655, 555], [530, 418], [190, 530], [160, 280]]),
   map("rectangle", "Cuatro esquinas", 112, [[460, 160], [875, 160], [895, 550], [165, 550], [165, 160]]),
   map("reserve", "Circuito sorpresa", 98, [[365, 160], [670, 160], [865, 295], [840, 510], [580, 550], [240, 510], [175, 265]]),
+  { ...map("chicane", "Chicane en S", 100, [[319, 252], [599, 252], [719, 444], [959, 444], [1079, 252], [1271, 252], [1271, 796], [319, 796]]), worldWidth: 1590, worldHeight: 1080 },
+  { ...map("technical", "Mixto técnico", 100, [[335, 268], [719, 268], [719, 460], [1039, 460], [1039, 268], [1263, 268], [1263, 788], [919, 788], [799, 628], [599, 788], [335, 788]]), worldWidth: 1590, worldHeight: 1080 },
 ];
+
+export const DEFAULT_TRAINING_IDS = ["oval", "sweep", "chicane", "technical"];
 
 export function copyMap(map) {
   return { ...map, points: map.points.map(point => ({ ...point })) };

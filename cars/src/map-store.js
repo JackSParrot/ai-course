@@ -1,4 +1,4 @@
-import { BUILT_IN_MAPS, copyMap, mapGeometryKey } from "./maps.js";
+import { BUILT_IN_MAPS, DEFAULT_TRAINING_IDS, copyMap, mapGeometryKey } from "./maps.js";
 import { Track } from "./track.js";
 
 export const MAP_STORAGE_KEY = "neural-racing.maps.v1";
@@ -6,7 +6,7 @@ const BUILT_IN_IDS = BUILT_IN_MAPS.map(map => map.id);
 
 function initialState() {
   return { version: 1, maps: BUILT_IN_MAPS.map(copyMap),
-    trainingIds: ["oval", "triangle", "sweep", "rectangle"], testId: "reserve", activeId: "oval" };
+    trainingIds: [...DEFAULT_TRAINING_IDS], testId: "reserve", activeId: "oval" };
 }
 
 function cloneState(state) {
@@ -52,6 +52,13 @@ export class MapStore {
         const parsed = JSON.parse(saved);
         validateMapState(parsed);
         this.state = cloneState(parsed);
+        const missing = BUILT_IN_MAPS.filter(map => !this.state.maps.some(saved => saved.id === map.id));
+        // Upgrade the old default selection, while retaining custom plans and all saved maps.
+        const oldDefault = ["oval", "triangle", "sweep", "rectangle"];
+        if (missing.some(map => DEFAULT_TRAINING_IDS.includes(map.id)) && this.state.trainingIds.length === 4
+          && oldDefault.every(id => this.state.trainingIds.includes(id))) this.state.trainingIds = [...DEFAULT_TRAINING_IDS];
+        this.state.maps.push(...missing.map(copyMap));
+        validateMapState(this.state);
       }
     } catch {
       // Conservar los datos originales si no se pueden leer; no sobrescribirlos.

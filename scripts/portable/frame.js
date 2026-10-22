@@ -20,6 +20,12 @@
   }
  };
  document.addEventListener('click',event=>{
+  // Fragment links in srcdoc otherwise resolve against the outer file and nest the course.
+  const local=event.target.closest?.('a[href^="#"]');
+  if(local&&event.button===0&&!event.ctrlKey&&!event.metaKey&&!event.shiftKey&&!event.altKey){
+   let target;try{target=document.getElementById(decodeURIComponent(local.getAttribute('href').slice(1)));}catch{}
+   if(target){event.preventDefault();target.scrollIntoView({block:'start'});target.setAttribute('tabindex','-1');target.focus({preventScroll:true});return;}
+  }
   const anchor=event.target.closest?.('a[data-portable-page]');if(!anchor||event.button!==0||event.ctrlKey||event.metaKey||event.shiftKey||event.altKey)return;
   event.preventDefault();send('portable-navigate',{page:anchor.dataset.portablePage});
  });

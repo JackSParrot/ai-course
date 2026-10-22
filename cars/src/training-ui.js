@@ -2,7 +2,7 @@ import { getLocale } from '../../i18n/i18n.js';
 import { createTrainingSetup, validateTrainingSettings } from "./training-engine.js";
 import { populationPlan } from "./genetics.js";
 import { Renderer, prepareCanvas } from "./renderer.js";
-import { Track, WORLD_WIDTH, WORLD_HEIGHT } from "./track.js";
+import { Track } from "./track.js";
 import { drawTrainingChart } from "./training-chart.js";
 
 const field = id => document.getElementById(`training-${id}`);
@@ -196,7 +196,9 @@ export class TrainingUI {
     const plan = populationPlan(settings.population);
     field("plan").replaceChildren();
     const summary = document.createElement("strong");
-    summary.textContent = `${types.length} tipos × ${settings.population} redes · ${maps.length} mapas × 2 salidas por tipo y generación.`;
+    const bidirectional = !this.bundle || this.state || this.bundle.champions[0]?.results.some(result => result.direction !== undefined);
+    summary.textContent = bidirectional ? `${types.length} tipos × ${settings.population} redes · ${maps.length} mapas × 2 sentidos × 2 salidas por tipo y generación.`
+      : `${types.length} tipos × ${settings.population} redes · ${maps.length} mapas × 2 salidas · guardado anterior, un solo sentido.`;
     const mapNames = document.createElement("span");
     mapNames.textContent = `Mapas de entrenamiento: ${maps.map(map => map.name).join(" · ") || "Selecciona 3 o 4 en la biblioteca"}.`;
     const separation = document.createElement("span");
@@ -326,11 +328,11 @@ export class TrainingUI {
     const results = candidate?.results ?? [];
     field("detail-title").textContent = candidate ? `Por qué puntúa así · ${candidate.id}` : "Desglose de una red";
     field("detail-note").textContent = candidate?.fitness
-      ? `75 % × media (${number(candidate.fitness.average)}) + 25 % × peor intento (${number(candidate.fitness.worst)}) = ${number(candidate.fitness.score)} puntos. Mismo peso para cada mapa y salida.`
+      ? `75 % × media (${number(candidate.fitness.average)}) + 25 % × peor intento (${number(candidate.fitness.worst)}) = ${number(candidate.fitness.score)} puntos. Mismo peso para cada mapa, sentido y salida.`
       : "Los resultados aparecen al acabar cada intento. La puntuación final requiere todos los mapas y salidas.";
     field("detail-body").replaceChildren(...results.map(result => {
       const row = document.createElement("tr");
-      row.append(cell(`${result.mapName} · salida ${result.start}`),
+      row.append(cell(`${result.mapName} · ${result.direction === 1 ? "sentido inverso" : "sentido original"} · salida ${result.start}`),
         ...["advance", "lap", "time", "collision", "inactivity", "total"].map(key => cell(number(result.score[key]))));
       return row;
     }));
@@ -370,32 +372,34 @@ export class TrainingUI {
     const view = this.state?.phase === "evaluate" ? this.state.view : group?.view;
     const mapIndex = view?.mapIndex ?? 0;
     const map = maps[mapIndex] ?? this.mapStore.get(this.mapStore.state.activeId);
+    const visibleMap = view ? { ...map, reversed: view.reversed ?? map.reversed } : map;
+    const renderKey = `${mapIndex}:${visibleMap.reversed}`;
     if (!this.renderer) {
-      this.renderer = new Renderer(field("canvas"), null, new Track(map));
-      this.renderedMap = mapIndex;
-    } else if (this.renderedMap !== mapIndex) {
-      this.renderer.setTrack(new Track(map));
-      this.renderedMap = mapIndex;
+      this.renderer = new Renderer(field("canvas"), null, new Track(visibleMap));
+      this.renderedMap = renderKey;
+    } else if (this.renderedMap !== renderKey) {
+      this.renderer.setTrack(new Track(visibleMap));
+      this.renderedMap = renderKey;
     }
     if (view) {
       this.renderer.drawWorld(view.cars, view.selectedId, true);
       if (view.checkpoint < 32) {
-        const context = prepareCanvas(field("canvas"), WORLD_WIDTH, WORLD_HEIGHT);
+        const context = prepareCanvas(field("canvas"), this.renderer.worldWidth, this.renderer.worldHeight);
         context.strokeStyle = "#f5d985";
         context.lineWidth = 4;
         context.setLineDash([10, 6]);
         context.beginPath(); context.moveTo(view.nextGate.a.x, view.nextGate.a.y); context.lineTo(view.nextGate.b.x, view.nextGate.b.y); context.stroke();
         context.setLineDash([]);
       }
-      field("case-label").textContent = `${view.typeName} · ${map.name} · salida ${view.start}`;
+      field("case-label").textContent = `${view.typeName} · ${map.name} · ${view.direction === 1 ? "sentido inverso" : "sentido original"} · salida ${view.start}`;
       field("case-clock").textContent = `${number(view.elapsed)} s`;
       field("live-caption").textContent = `${view.active} redes conduciendo. Líder: ${view.checkpoint}/32 puntos de control. Los coches se superponen porque todos parten del mismo lugar y no chocan entre sí.`;
     } else {
-      const context = prepareCanvas(field("canvas"), WORLD_WIDTH, WORLD_HEIGHT);
+      const context = prepareCanvas(field("canvas"), this.renderer.worldWidth, this.renderer.worldHeight);
       context.drawImage(this.renderer.background, 0, 0);
       field("case-label").textContent = `${map.name} · esperando evaluación`;
       field("case-clock").textContent = "0,0 s";
-      field("live-caption").textContent = "Cada red hará dos intentos por mapa. La línea amarilla será el siguiente punto de control del líder.";
+      field("live-caption").textContent = "Cada red recorre cada mapa en ambos sentidos y desde dos salidas. La línea amarilla será el siguiente punto de control del líder.";
     }
   }
 }

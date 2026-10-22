@@ -14,7 +14,7 @@ const html=await readFile(output,'utf8'),pack=JSON.parse(html.match(/<script id=
 const bytes=url=>Buffer.from(url.slice(url.indexOf(',')+1),'base64');
 
 test('one portable file contains every page, styles, locale and all hash-verified MNIST data',()=>{
- assert.deepEqual(Object.keys(pack.pages),['home','perceptrons','digits','cars']);
+ assert.deepEqual(Object.keys(pack.pages),['home','perceptrons','digits','maze','cars','autoencoder','superresolution']);
  for(const page of Object.values(pack.pages)){
   assert.doesNotMatch(page.html,/<script[^>]*src=|<link[^>]*rel="stylesheet"/);
   assert.ok(page.html.includes('<style>'));assert.ok(page.html.includes('data-portable-page='));
@@ -26,7 +26,7 @@ test('one portable file contains every page, styles, locale and all hash-verifie
   assert.equal(pixels.length,split.count*256,role);
   assert.equal(createHash('sha256').update(pixels).digest('hex'),split.sha256,role);
  }
- assert.deepEqual(Object.keys(pack.workers),['digits','cars']);
+ assert.deepEqual(Object.keys(pack.workers),['digits','cars','images']);
  for(const worker of Object.values(pack.workers)){new Script(worker);assert.doesNotMatch(worker,/import\.meta/);}
  assert.match(pack.pages.digits.html,/download="PROVENANCE.md"/);
 });
@@ -40,8 +40,20 @@ test('portable routing preserves inline code, deep slide links, language and bac
  assert.ok(frame.srcdoc.includes(pack.pages.perceptrons.code)); // Includes literal $& in the translator.
  events.message({source:{},data:{kind:'portable-navigate',page:'cars'}});assert.ok(frame.srcdoc.includes(pack.pages.perceptrons.code));
  events.message({source:frame.contentWindow,data:{kind:'portable-navigate',page:'cars'}});assert.equal(calls.at(-1)[2],'#/cars');
+ events.message({source:frame.contentWindow,data:{kind:'portable-navigate',page:'maze'}});assert.equal(calls.at(-1)[2],'#/maze');
  location.hash='#/digits';events.popstate();assert.ok(frame.srcdoc.includes(pack.pages.digits.code));
  events.message({source:frame.contentWindow,data:{kind:'portable-language',language:'es'}});assert.ok(calls.at(-1)[2].includes('lang=es'));
+});
+
+test('portable explanation anchors stay inside their chapter rather than nesting the host file',async()=>{
+ const source=await readFile(new URL('../scripts/portable/frame.js',import.meta.url),'utf8');
+ const events={},messages=[],actions=[];
+ const target={scrollIntoView:()=>actions.push('scroll'),setAttribute:(key,value)=>actions.push([key,value]),focus:()=>actions.push('focus')};
+ const anchor={getAttribute:()=> '#guide'};
+ const sandbox={URL,decodeURIComponent,document:{querySelectorAll:()=>[],addEventListener:(kind,fn)=>events[kind]=fn,getElementById:id=>id==='guide'?target:null},parent:{__NEURAL_PORTABLE_PACKAGE__:pack,__NEURAL_PORTABLE_ROUTE__:{language:'es',slide:''},location:{href:'file:///tmp/Neural-Labs.html#/maze'},postMessage:message=>messages.push(message)},addEventListener:()=>{}};
+ runInNewContext(source,sandbox);
+ events.click({button:0,target:{closest:selector=>selector==='a[href^="#"]'?anchor:null},preventDefault:()=>actions.push('prevent')});
+ assert.deepEqual(actions,['prevent','scroll',['tabindex','-1'],'focus']);assert.equal(messages.length,0);
 });
 
 function trainer(name){
@@ -64,6 +76,16 @@ test('the embedded image trainer loads its embedded dataset and updates real wei
  const trained=await next(worker,{type:'step'});
  assert.equal(trained.experiment.models[0].batches,1);
  assert.notDeepEqual(trained.experiment.models[0].network.layers[0].w,initial.experiment.models[0].network.layers[0].w);
+});
+
+for(const task of ['autoencoder','superresolution'])test('portable '+task+' worker trains, pauses, and resets without external assets',async t=>{
+ const worker=trainer('images');t.after(()=>worker.terminate());
+ const initial=await next(worker,{kind:'init',task});assert.equal(initial.kind,'ready');assert.equal(initial.epoch,0);assert.equal(initial.model.task,task);
+ const trained=await next(worker,{kind:'train',epochs:1},m=>m.epoch===1&&!m.running);
+ assert.ok(trained.history.at(-1).validation<initial.history[0].validation);assert.notDeepEqual(trained.model.weights,initial.model.weights);
+ await next(worker,{kind:'train',epochs:30},m=>m.running);
+ const paused=await next(worker,{kind:'pause'},m=>!m.running);assert.equal(paused.running,false);
+ const reset=await next(worker,{kind:'init',task});assert.deepEqual(reset.model,initial.model);assert.equal(reset.epoch,0);
 });
 test('the embedded car trainer evaluates a population without importing external modules',async t=>{
  const worker=trainer('cars');t.after(()=>worker.terminate());

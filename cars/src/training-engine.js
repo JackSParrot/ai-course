@@ -30,11 +30,12 @@ export function createTrainingSetup(mapStore, topologyState, settings = DEFAULT_
 }
 
 export class PopulationEpisode {
-  constructor(track, population, type, startIndex, mapIndex) {
+  constructor(track, population, type, startIndex, mapIndex, direction = 0) {
     this.track = track;
     this.elapsed = 0;
     this.mapIndex = mapIndex;
     this.startIndex = startIndex;
+    this.direction = direction;
     const start = track.getStart(START_POSITIONS[startIndex]);
     // Todos los candidatos reciben exactamente la misma salida; no chocan entre sí.
     this.runners = population.map((individual, index) => {
@@ -68,7 +69,7 @@ export class PopulationEpisode {
 
   results() {
     return this.runners.map(runner => {
-      const result = { mapId: this.track.definition.id, mapName: this.track.name, start: this.startIndex + 1,
+      const result = { mapId: this.track.definition.id, mapName: this.track.name, start: this.startIndex + 1, direction: this.direction, reversed: this.track.definition.reversed,
         progress: runner.progress.fraction, checkpoints: runner.progress.passed, finished: runner.progress.finished,
         crashed: runner.car.crashed, stalled: runner.stalled, elapsed: runner.elapsed };
       return { ...result, score: scoreEpisode(result) };
@@ -77,7 +78,7 @@ export class PopulationEpisode {
 
   view() {
     const leader = this.runners.reduce((best, runner) => runner.progress.bestDistance > best.progress.bestDistance ? runner : best);
-    return { mapIndex: this.mapIndex, start: this.startIndex + 1, elapsed: this.elapsed,
+    return { mapIndex: this.mapIndex, start: this.startIndex + 1, direction: this.direction, reversed: this.track.definition.reversed, elapsed: this.elapsed,
       active: this.runners.filter(runner => !runner.stopped).length, selectedId: leader.car.id,
       checkpoint: leader.progress.passed, nextGate: leader.progress.nextGate,
       cars: this.runners.map(({ car }) => ({ id: car.id, color: car.color, x: car.x, y: car.y, angle: car.angle,
@@ -94,7 +95,7 @@ export class GeneticTrainer {
     setup.types.forEach(validateTopology);
     if (new Set(setup.types.map(type => type.id)).size !== setup.types.length) throw new Error("No se puede repetir un tipo de población.");
     this.maps = setup.maps.map(copyMap);
-    this.tracks = this.maps.map(map => new Track(map));
+    this.tracks = this.maps.flatMap(map => [new Track(map), new Track({ ...map, reversed: !map.reversed })]);
     this.settings = { ...setup.settings };
     this.plan = populationPlan(this.settings.population);
     this.generation = 1;
@@ -119,10 +120,11 @@ export class GeneticTrainer {
   }
 
   beginEpisode() {
-    const mapIndex = Math.floor(this.caseIndex / START_POSITIONS.length);
+    const trackIndex = Math.floor(this.caseIndex / START_POSITIONS.length);
+    const mapIndex = Math.floor(trackIndex / 2);
     const startIndex = this.caseIndex % START_POSITIONS.length;
     const group = this.groups[this.groupIndex];
-    this.episode = new PopulationEpisode(this.tracks[mapIndex], group.population, group.type, startIndex, mapIndex);
+    this.episode = new PopulationEpisode(this.tracks[trackIndex], group.population, group.type, startIndex, mapIndex, trackIndex % 2);
   }
 
   // Paso 1. Solo conducir y medir: durante una evaluación NO se cambian pesos.
@@ -136,7 +138,7 @@ export class GeneticTrainer {
     this.lastView = { ...this.episode.view(), typeId: group.type.id, typeName: group.type.name };
     group.view = this.lastView;
     this.caseIndex++;
-    if (this.caseIndex === this.maps.length * START_POSITIONS.length) {
+    if (this.caseIndex === this.tracks.length * START_POSITIONS.length) {
       group.population.forEach(individual => { individual.fitness = aggregateResults(individual.results); });
       group.ranking = [...group.population].sort((a, b) => b.fitness.score - a.fitness.score || a.id.localeCompare(b.id));
       this.groupIndex++;
@@ -199,7 +201,7 @@ export class GeneticTrainer {
     const current = this.groups[this.groupIndex];
     const view = this.phase === "evaluate" ? { ...this.episode.view(), typeId: current.type.id, typeName: current.type.name } : this.lastView;
     return { phase: this.phase, generation: this.generation, settings: this.settings, plan: this.plan,
-      completedCases: this.completedCases, totalCases: this.groups.length * this.maps.length * START_POSITIONS.length, view,
+      completedCases: this.completedCases, totalCases: this.groups.length * this.tracks.length * START_POSITIONS.length, view,
       groups: this.groups.map(group => ({ type: group.type, history: group.history, champion: group.champion, view: group.view,
         population: (group.ranking.length ? group.ranking : group.population).map((candidate, index) => ({
           id: candidate.id, origin: candidate.origin, parentId: candidate.parentId, changes: candidate.changes, example: candidate.example,

@@ -3,7 +3,6 @@ import { Simulation, FIXED_STEP } from "./simulation.js";
 import { CONTROL_NAMES, CONTROL_LABELS } from "./controls.js";
 import { SENSOR_HOURS, SENSOR_LENGTH } from "./sensor.js";
 import { Renderer } from "./renderer.js";
-import { WORLD_WIDTH, WORLD_HEIGHT } from "./track.js";
 import { MapStore } from "./map-store.js";
 import { MapUI } from "./map-ui.js";
 import { TopologyStore } from "./topology-store.js";
@@ -235,8 +234,8 @@ showSensors.addEventListener("change", render);
 // También se puede seleccionar un coche directamente sobre el circuito.
 trackCanvas.addEventListener("click", event => {
   const bounds = trackCanvas.getBoundingClientRect();
-  const x = (event.clientX - bounds.left) * WORLD_WIDTH / bounds.width;
-  const y = (event.clientY - bounds.top) * WORLD_HEIGHT / bounds.height;
+  const x = (event.clientX - bounds.left) * simulation.track.worldWidth / bounds.width;
+  const y = (event.clientY - bounds.top) * simulation.track.worldHeight / bounds.height;
   const nearest = [...simulation.cars].sort((a, b) => Math.hypot(a.x - x, a.y - y) - Math.hypot(b.x - x, b.y - y))[0];
   if (Math.hypot(nearest.x - x, nearest.y - y) < 35) selectCar(nearest.id);
 });

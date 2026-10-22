@@ -68,3 +68,16 @@
 .editor-save-note { font-size: 10px; color: var(--muted); line-height: 1.7; margin: 0; }
 @media (max-width: 850px) { .map-editor { width: calc(100vw - 24px); max-height: calc(100dvh - 24px); } .editor-layout { grid-template-columns: 1fr; } .editor-settings { border-left: 0; border-top: 1px solid var(--line); } .editor-heading { padding: 20px; } .map-selection #edit-map-button { margin-left: 0; } .map-selection { gap: 8px; } }
 @media (max-width: 540px) { .map-library { padding: 17px; } .map-library-heading { align-items: flex-start; } .map-library-heading h2 { font-size: 18px; max-width: 170px; } .map-library-heading .eyebrow { font-size: 7px; letter-spacing: .7px; } .map-library-heading .button { font-size: 10px; min-width: 0; padding: 9px; } .map-selection > label { display: block; width: 100%; } .map-selection select { width: 100%; max-width: none; margin-top: 8px; } .map-selection .button { font-size: 10px; padding: 7px 9px; } .map-library-details summary { flex-wrap: wrap; font-size: 11px; gap: 8px; } #map-plan-summary { order: 2; width: 100%; font-size: 9px; margin-left: 0; } .map-library-details summary::after { margin-left: auto; } .map-cards { grid-template-columns: 1fr 1fr; gap: 8px; } .map-card { padding: 8px; } .map-card h3 { font-size: 10px; } .map-card select { font-size: 10px; } .editor-heading { padding: 16px; } .editor-heading h2 { font-size: 19px; } .editor-heading .button { padding: 7px 9px; font-size: 10px; } .editor-workspace { padding: 10px; } .editor-toolbar { gap: 3px; } .editor-tool { font-size: 9px; padding: 6px 7px; min-height: 30px; } .editor-toolbar-space { display: none; } .editor-toolbar .button-icon { width: 28px; min-height: 30px; padding: 4px; } .editor-tool-help { font-size: 10px; } }
+
+.editor-legend { font-size: 11px; line-height: 1.6; color: var(--muted); margin: 12px 2px; }
+.editor-preview-controls { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+.editor-preview-controls .button, .editor-repair-actions .button { font-size: 11px; white-space: normal; }
+.editor-repair-actions { display: grid; gap: 8px; margin-bottom: 12px; }
+.editor-repair-actions [hidden] { display: none; }
+.editor-view-controls { display:flex; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px; font-size:11px; }
+.editor-view-controls strong { margin-right:auto; }
+.editor-view-controls select { padding:6px; }
+.editor-view-controls .button { font-size:11px; padding:7px 10px; }
+.editor-viewport { overflow:auto; max-height:60dvh; border-radius:7px; overscroll-behavior:contain; }
+.editor-viewport #editor-canvas { max-width:none; border-radius:0; }
+#editor-canvas[data-tool="pan"] { cursor:grab; }

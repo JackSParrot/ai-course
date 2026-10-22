@@ -38,11 +38,15 @@ export class Renderer {
   }
 
   setTrack(track) {
+    this.worldWidth = track.worldWidth;
+    this.worldHeight = track.worldHeight;
+    this.background.width = track.worldWidth;
+    this.background.height = track.worldHeight;
     drawTrack(this.background.getContext("2d"), track);
   }
 
   drawWorld(cars, selectedId, showSensors) {
-    const context = prepareCanvas(this.trackCanvas, WORLD_WIDTH, WORLD_HEIGHT);
+    const context = prepareCanvas(this.trackCanvas, this.worldWidth, this.worldHeight);
     context.drawImage(this.background, 0, 0);
     const selected = cars.find(car => car.id === selectedId);
     if (showSensors) this.drawSensors(context, selected);
@@ -77,8 +81,8 @@ export class Renderer {
       // del rayo salga de la pantalla o el coche se acerque mucho al borde.
       const labelDistance = Math.max(64, distance(ray.start, end) + 18);
       const fullLength = distance(ray.start, ray.end);
-      const labelX = clamp(ray.start.x + (ray.end.x - ray.start.x) * labelDistance / fullLength, 22, WORLD_WIDTH - 22);
-      const labelY = clamp(ray.start.y + (ray.end.y - ray.start.y) * labelDistance / fullLength, 65, WORLD_HEIGHT - 65);
+      const labelX = clamp(ray.start.x + (ray.end.x - ray.start.x) * labelDistance / fullLength, 22, this.worldWidth - 22);
+      const labelY = clamp(ray.start.y + (ray.end.y - ray.start.y) * labelDistance / fullLength, 65, this.worldHeight - 65);
       circle(context, labelX, labelY, 10, "#122b28df");
       context.fillStyle = "#c0d996";
       context.fillText(String(ray.hour), labelX, labelY);

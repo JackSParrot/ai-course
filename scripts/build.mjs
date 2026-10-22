@@ -8,21 +8,24 @@ const outArg=process.argv.find(arg=>arg.startsWith('--out='));
 const releaseRoot=outArg?resolve(root,outArg.slice(6)):root;
 if(releaseRoot!==root&&!releaseRoot.startsWith(root+sep))throw Error('Build output must stay inside this project.');
 const publicRoot=join(releaseRoot,'public');
-const sources={cars:join(root,'cars'),digits:join(root,'digits'),perceptrons:join(root,'course')};
+const sources={cars:join(root,'cars'),digits:join(root,'digits'),maze:join(root,'maze'),perceptrons:join(root,'course'),autoencoder:join(root,'autoencoder'),superresolution:join(root,'superresolution')};
 // Deliberate allowlist: no repository roots, private checkpoints or original download caches.
 const files={
+autoencoder:['index.html','styles.css',...['app','network','data','viewer','worker'].map(n=>'src/'+n+'.js')],
+superresolution:['index.html','src/app.js'],
+maze:['index.html','styles.css','src/evolution.js','src/app.js'],
 cars:['index.html','favicon.svg','styles.css','map-editor.css','topology-editor.css','training.css',...['app','car-settings','car','controls','genetics','geometry','map-editor','map-store','map-ui','maps','neural-network','renderer','sensor','simulation','topology-editor','topology-store','topology','track-drawing','track','trained-models','training-chart','training-engine','training-score','training-ui','training-worker'].map(n=>'src/'+n+'.js')],
 digits:['index.html','favicon.svg','styles.css',...['app','data','editors','experiment','inspector','network-viewer','math','model','view','worker'].map(n=>'src/'+n+'.js'),'data/manifest.json','data/train.bin','data/validation.bin','data/test.bin','data/PROVENANCE.md'],
 perceptrons:['index.html','course.css','lesson.js','math.js']
 };
-const chapters=[{app:'perceptrons',title:'Perceptrones'},{app:'digits',title:'Aprender a leer'},{app:'cars',title:'Coches'}];
+const chapters=[{app:'perceptrons',title:'Perceptrones'},{app:'digits',title:'Aprender a leer'},{app:'maze',title:'Algoritmos genéticos'},{app:'cars',title:'Coches'},{app:'autoencoder',title:'Autoencoder'},{app:'superresolution',title:'Superresolución'}];
 const digest=b=>createHash('sha256').update(b).digest('hex'),captured=[];
 for(const [app,list]of Object.entries(files))for(const file of list){
  const source=join(sources[app],file),buffer=await readFile(source);
  captured.push({app,file,source,buffer,sha256:digest(buffer)});
 }
 for(const item of captured)if(digest(await readFile(item.source))!==item.sha256)throw Error('Source changed while building: '+item.app+'/'+item.file);
-const sharedFiles=['i18n.js','dom.js','en.js','language.css'];
+const sharedFiles=['i18n.js','dom.js','en.js','images.js','language.css'];
 const shared=await Promise.all(sharedFiles.map(async file=>({file,buffer:await readFile(join(root,'i18n',file))})));
 const languageVersion=digest(Buffer.concat(shared.map(item=>item.buffer))).slice(0,12);
 const languageAssets=prefix=>'<link rel="stylesheet" href="'+prefix+'i18n/language.css?v='+languageVersion+'">\n<script type="module" src="'+prefix+'i18n/dom.js?v='+languageVersion+'"></script>\n';
@@ -36,9 +39,9 @@ const digitsVersion=digest(Buffer.concat(captured.filter(item=>item.app==='digit
 function navigation(app){
  const index=chapters.findIndex(c=>c.app===app),number=String(index+1).padStart(2,'0');
  const previous=index>0?'<a class="course-previous" href="../'+chapters[index-1].app+'/">← Anterior: '+chapters[index-1].title+'</a>':'<a class="course-previous" href="../">← Índice del curso</a>';
- const next=index<2?'<a class="course-next" href="../'+chapters[index+1].app+'/">Siguiente: '+chapters[index+1].title+' →</a>':'<a class="course-next" href="../">Volver al curso →</a>';
+ const next=index<chapters.length-1?'<a class="course-next" href="../'+chapters[index+1].app+'/">Siguiente: '+chapters[index+1].title+' →</a>':'<a class="course-next" href="../">Volver al curso →</a>';
  const links=chapters.map((c,i)=>'<li><a href="../'+c.app+'/"'+(c.app===app?' aria-current="page"':'')+'>'+String(i+1).padStart(2,'0')+' · '+c.title+'</a></li>').join('');
- return {top:template.replace('{{chapter-links}}',links).replace('{{chapter-label}}','CAPÍTULO '+number+' / 03').replace('{{previous-link}}',previous).replace('{{next-link}}',next),bottom:'<nav class="course-bottom-nav" aria-label="Continuar el curso">'+previous+(index===1?'<a class="course-home" href="../">Índice del curso</a>':'')+next+'</nav>'};
+ return {top:template.replace('{{chapter-links}}',links).replace('{{chapter-label}}','CAPÍTULO '+number+' / '+String(chapters.length).padStart(2,'0')).replace('{{previous-link}}',previous).replace('{{next-link}}',next),bottom:'<nav class="course-bottom-nav" aria-label="Continuar el curso">'+previous+(index>0&&index<chapters.length-1?'<a class="course-home" href="../">Índice del curso</a>':'')+next+'</nav>'};
 }
 const manifest={version:1,builtAt:new Date().toISOString(),files:{},sources:{},courseSources:{}};
 await mkdir(publicRoot,{recursive:true});
@@ -48,10 +51,10 @@ for(const item of captured){
  if(item.app==='digits'&&item.file.endsWith('.js'))output=Buffer.from(output.toString('utf8').replace(/(['"])(\.\/[a-z-]+\.js)\1/g,(_,quote,path)=>quote+path+'?v='+digitsVersion+quote));
  if(item.app==='perceptrons'&&item.file==='lesson.js')output=Buffer.from(output.toString('utf8').replace("'./math.js'","'./math.js?v="+courseVersion+"'"));
  if(item.file==='index.html'){
-   let html=output.toString('utf8');if(!html.includes('</head>')||!html.includes('<body>')||!html.includes('</body>'))throw Error('Unexpected HTML document.');
+   let html=output.toString('utf8');if(!html.includes('</head>')||!/<body(?:\s[^>]*)?>/.test(html)||!html.includes('</body>'))throw Error('Unexpected HTML document.');
    const nav=navigation(item.app);
-   html=html.replace('</head>',languageAssets('../')+'<link rel="stylesheet" href="../hub-nav.css?v='+navVersion+'">\n'+darkAssets('../')+'</head>').replace('<body>','<body>\n'+nav.top).replace('</body>',nav.bottom+'\n</body>');
-   if(item.app==='cars')html=html.replace(/Laboratorio 01/i,'Capítulo 03').replace('LABORATORIO <b>01</b>','CAPÍTULO <b>03</b>');
+   html=html.replace('</head>',languageAssets('../')+'<link rel="stylesheet" href="../hub-nav.css?v='+navVersion+'">\n'+darkAssets('../')+'</head>').replace(/<body(?:\s[^>]*)?>/,tag=>tag+'\n'+nav.top).replace('</body>',nav.bottom+'\n</body>');
+   if(item.app==='cars')html=html.replace(/Laboratorio 01/i,'Capítulo 04').replace('LABORATORIO <b>01</b>','CAPÍTULO <b>04</b>');
    if(item.app==='digits')html=html.replace(/Laboratorio 02/i,'Capítulo 02').replace('LABORATORIO <b>02</b>','CAPÍTULO <b>02</b>');
    if(item.app==='digits')html=html.replace('href="./styles.css"','href="./styles.css?v='+digitsVersion+'"').replace('src="./src/app.js"','src="./src/app.js?v='+digitsVersion+'"');
    if(item.app==='perceptrons')html=html.replace('href="./course.css"','href="./course.css?v='+courseVersion+'"').replace('src="./lesson.js"','src="./lesson.js?v='+courseVersion+'"');
