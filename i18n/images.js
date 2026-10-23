@@ -1,5 +1,16 @@
 // Shared source messages for chapters 05 and 06.
 export default {
+ 'ANTES DEL AUTOENCODER':'BEFORE THE AUTOENCODER',
+ '¿Qué es una red convolucional?':'What is a convolutional network?',
+ 'Es una red que aprende a encontrar patrones en una imagen mirando pequeños grupos de píxeles vecinos. No empieza mirando la imagen entera: recorre sus partes con pequeños filtros.':'It is a network that learns to find patterns in an image by looking at small groups of neighbouring pixels. It starts by scanning small parts of the image with filters.',
+ '1. Mira un trocito':'1. Look at a small patch',
+ 'La ventana marcada contiene 3 × 3 píxeles. El filtro tiene un peso para cada uno: multiplica los valores por sus pesos y suma los resultados.':'The highlighted window contains 3 × 3 pixels. The filter has one weight for each pixel: it multiplies the values by their weights and adds up the results.',
+ '2. Repite el mismo filtro':'2. Reuse the same filter',
+ 'El filtro se desplaza por la imagen sin cambiar sus pesos. Así puede encontrar el mismo patrón en distintos lugares; este ejemplo resalta un borde vertical.':'The filter moves across the image without changing its weights. This lets it find the same pattern in different places; this example highlights a vertical edge.',
+ '3. Crea un mapa':'3. Build a feature map',
+ 'Cada posición produce un número. Juntos forman un mapa de respuestas: aquí los valores más altos señalan el borde. Varios filtros crean varios mapas.':'Each position produces a number. Together they form a response map: here, higher values mark the edge. Multiple filters create multiple maps.',
+ 'Filtro elegido a mano para ilustrarlo: mostramos solo las sumas, sin relleno en los bordes. En la red del taller, los pesos se aprenden al entrenar.':'This filter was chosen by hand for illustration: we show only the sums, with no padding at the edges. In the workshop network, the weights are learned during training.',
+ 'Al encadenar capas, los patrones sencillos pueden combinarse en formas más complejas. Ahora usaremos estas capas para construir las dos mitades del autoencoder: comprimir y reconstruir.':'By stacking layers, simple patterns can combine into more complex shapes. We will now use these layers to build the two halves of the autoencoder: compress and reconstruct.',
  'Expandir red':'Expand network', 'Alejar red':'Zoom out', 'Acercar red':'Zoom in', 'Ajustar vista':'Fit view', 'Entradas reales':'Actual inputs', 'Entrenando':'Training', 'Activación manual':'Manual activation',
  'Centrar selección':'Centre selection',
  'época':'epoch',
