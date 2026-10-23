@@ -10,14 +10,14 @@ const server=await createServer();await new Promise(ok=>server.listen(0,'127.0.0
 function raw(path,method='GET'){return new Promise((ok,fail)=>{const req=http.request({hostname:'127.0.0.1',port,path,method},r=>{let b='';r.on('data',x=>b+=x);r.on('end',()=>ok({status:r.statusCode,body:b,headers:r.headers}));});req.on('error',fail);req.end();});}
 test.after(()=>new Promise(ok=>server.close(ok)));
 test('all six chapters form one continuous route including image reconstruction and super-resolution',async()=>{
- const chapters=['perceptrons','digits','maze','cars','autoencoder','superresolution'];
+ const chapters=['perceptrons','digits','autoencoder','superresolution','maze','cars'];
  for(const [index,chapter]of chapters.entries()){
   const html=await(await fetch(origin+'/'+chapter+'/')).text();
   assert.ok(html.includes('CAPÍTULO '+String(index+1).padStart(2,'0')+' / 06'),chapter);
   if(index>0)assert.ok(html.includes('class="course-previous" href="../'+chapters[index-1]+'/"'),chapter);
   if(index<chapters.length-1)assert.ok(html.includes('class="course-next" href="../'+chapters[index+1]+'/"'),chapter);
  }
- const home=await(await fetch(origin+'/')).text();assert.ok(home.includes('href="./maze/"'));assert.ok(home.includes('CAPÍTULO 04 · COCHES'));
+ const home=await(await fetch(origin+'/')).text();assert.ok(home.includes('href="./maze/"'));assert.ok(home.includes('CAPÍTULO 06 · COCHES'));
 });
 test('changed course assets use content-versioned URLs for returning visitors',async()=>{
  const home=await(await fetch(origin+'/')).text();

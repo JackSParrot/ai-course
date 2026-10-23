@@ -41,7 +41,7 @@ export async function buildPortable(root,releaseRoot){
  const workers={};
  for(const [name,entry]of Object.entries({digits:'digits/src/worker.js',cars:'cars/src/training-worker.js',images:'autoencoder/src/worker.js'}))workers[name]=await bundle('import '+JSON.stringify('./'+entry)+';');
  const provenance=(await asset('/digits/data/PROVENANCE.md')).toString('base64');
- const entries={home:null,perceptrons:'course/lesson.js',digits:'digits/src/app.js',maze:'maze/src/app.js',cars:'cars/src/app.js',autoencoder:'autoencoder/src/app.js',superresolution:'superresolution/src/app.js'},pages={};
+ const entries={home:null,perceptrons:'course/lesson.js',digits:'digits/src/app.js',autoencoder:'autoencoder/src/app.js',superresolution:'superresolution/src/app.js',maze:'maze/src/app.js',cars:'cars/src/app.js'},pages={};
  for(const [name,entry]of Object.entries(entries)){
   const path=name==='home'?'/index.html':'/'+name+'/index.html';let html=(await asset(path)).toString('utf8');
   const styles=[...html.matchAll(/<link\b[^>]*rel="stylesheet"[^>]*>/g)];

@@ -2,7 +2,7 @@
 
 # Guía de desarrollo de Neural Labs
 
-Seis capítulos en HTML, CSS y JavaScript: **Perceptrones**, **Aprender a leer**, **Algoritmos genéticos**, **Coches**, **Autoencoder** y **Superresolución**. Las redes, el entrenamiento y la inferencia se ejecutan en el navegador. No requiere servicios de IA, cuentas ni claves de API.
+Seis capítulos en HTML, CSS y JavaScript: **Perceptrones**, **Aprender a leer**, **Autoencoder**, **Superresolución**, **Algoritmos genéticos** y **Coches**. Las redes, el entrenamiento y la inferencia se ejecutan en el navegador. No requiere servicios de IA, cuentas ni claves de API.
 
 Este repositorio contiene las fuentes editables de los seis capítulos, sus datos y sus pruebas. La web existente está en [labs.jacksparrot.com](https://labs.jacksparrot.com/); hacer un commit o un push aquí no actualiza ni reinicia ese servicio.
 
@@ -53,15 +53,14 @@ El curso adapta automáticamente su paleta al modo claro u oscuro del sistema o 
 
 1. **Perceptrones — `/perceptrons/`**. Cinco slides: introducción al axón y al perceptrón; NAND; OR con la misma neurona, conservando los pesos al cambiar de función; intento de XOR con una sola recta; y una red manual 2→2→1 con nueve parámetros que sí permite resolver XOR. Los controles junto al gráfico y los de la neurona están sincronizados, y cada ejercicio conserva sus ajustes al navegar. Muestra contribuciones, activaciones, fronteras y tablas de verdad.
 2. **Aprender a leer — `/digits/`**. Dibujo libre, editor de imágenes, biblioteca de ejemplos y editor de topologías. Backpropagation y SGD escritos desde cero, entrenamiento visible en un Web Worker y comparación de modelos independientes. Incluye las cinco topologías 256→10, 256→32→10, 256→64→10, 256→128→10 y 256→64→32→10, además de topologías editables. El botón «Expandir red» muestra todas las neuronas y conexiones con desplazamiento manual, zoom y el inspector visible junto al gráfico (debajo en pantallas estrechas). Las tres imágenes y los valores exactos se actualizan al seleccionar una neurona; al cerrar, el inspector vuelve al panel original. El inspector muestra tres imágenes alineadas: **pesos**, **entradas reales** y **productos/contribuciones**, junto con su suma y el sesgo.
-3. **Algoritmos genéticos — `/maze/`**. Introducción a la evolución, planteamiento del reto y simulación de generaciones. Dos campos abiertos de 38 × 38 casillas tienen obstáculos y varias rutas mínimas de 70 pasos; cada explorador hereda exactamente 100 movimientos. La población se reproduce simultáneamente con colores, direcciones y rastros sincronizados. Incluye editor, ruleta de selección, cruce visible, mutación independiente, historial y guardado local.
-4. **Coches — `/cars/`**. Sensores, conducción por red neuronal, editor de circuitos, biblioteca de mapas, editor de tipos/topologías e inspector. El entrenador compara poblaciones mediante selección y mutación. [Guía detallada](../cars/README.md).
+3. **Autoencoder — `/autoencoder/`**. Red convolucional 24×24×1 → 12×12×4 → 6×6×4 → ampliar ×2 → convolución 12×12×4 → ampliar ×2 → convolución 24×24×1. El cuello contiene 144 activaciones frente a 576 píxeles. Se puede editar su código y reconstruir solo con el decodificador; el inspector refleja las activaciones modificadas.
+4. **Superresolución — `/superresolution/`**. Otra red, entrenada desde cero con pares 12×12 y 24×24: convolución a 8 mapas → ampliar ×2 → convolución de salida. Compara bloques, bilineal y red, con MSE por imagen cuando existe original. Dibujar en baja resolución elimina la referencia de alta resolución y oculta sus métricas.
+5. **Algoritmos genéticos — `/maze/`**. Introducción a la evolución, planteamiento del reto y simulación de generaciones. Dos campos abiertos de 38 × 38 casillas tienen obstáculos y varias rutas mínimas de 70 pasos; cada explorador hereda exactamente 100 movimientos. La población se reproduce simultáneamente con colores, direcciones y rastros sincronizados. Incluye editor, ruleta de selección, cruce visible, mutación independiente, historial y guardado local.
+6. **Coches — `/cars/`**. Sensores, conducción por red neuronal, editor de circuitos, biblioteca de mapas, editor de tipos/topologías e inspector. El entrenador compara poblaciones mediante selección y mutación. [Guía detallada](../cars/README.md).
 
 Los talleres permiten guardar trabajo en el almacenamiento local del navegador. Los guardados pertenecen a su origen completo —protocolo, host y puerto— y no se transfieren automáticamente al cambiar de dirección. Usa las opciones de exportar/importar cuando estén disponibles. El servidor del curso no recibe dibujos, pesos ni experimentos.
 
-## Capítulos de imágenes
-
-5. **Autoencoder — `/autoencoder/`**. Red convolucional 24×24×1 → 12×12×4 → 6×6×4 → ampliar ×2 → convolución 12×12×4 → ampliar ×2 → convolución 24×24×1. El cuello contiene 144 activaciones frente a 576 píxeles. Se puede editar su código y reconstruir solo con el decodificador; el inspector refleja las activaciones modificadas.
-6. **Superresolución — `/superresolution/`**. Otra red, entrenada desde cero con pares 12×12 y 24×24: convolución a 8 mapas → ampliar ×2 → convolución de salida. Compara bloques, bilineal y red, con MSE por imagen cuando existe original. Dibujar en baja resolución elimina la referencia de alta resolución y oculta sus métricas.
+## Detalles de los experimentos de imágenes
 
 Ambas comparten el motor propio `autoencoder/src/network.js`: convoluciones 3×3, tanh, sigmoid, MSE, backpropagation y Adam con lotes de 8. Los datos procedurales tienen 128 ejemplos de entrenamiento, 24 de validación y 24 de prueba, con semillas separadas y sin imágenes coincidentes. El worker entrena por lotes y admite pausa entre lotes. La curva mide exclusivamente validación. El guardado conserva pesos por capítulo; cargar reinicia el optimizador y la sesión de medidas, sin simular una continuación exacta.
 
@@ -80,10 +79,10 @@ Las traducciones están en `i18n/en.js`: el texto español original es la clave.
 ```text
 course/           Capítulo 01: HTML, estilos, controles y matemáticas
 digits/           Capítulo 02: interfaz, red, entrenamiento, editores y MNIST
-maze/             Capítulo 03: laberinto y algoritmos genéticos
-cars/             Capítulo 04: fuentes y pruebas del laboratorio de coches
-autoencoder/      Capítulo 05 y motor compartido de imágenes
-superresolution/  Capítulo 06: ampliación aprendida y comparaciones
+autoencoder/      Capítulo 03 y motor compartido de imágenes
+superresolution/  Capítulo 04: ampliación aprendida y comparaciones
+maze/             Capítulo 05: laberinto y algoritmos genéticos
+cars/             Capítulo 06: fuentes y pruebas del laboratorio de coches
 shell/            Portada, estilos comunes y navegación entre capítulos
 i18n/             Catálogo inglés, selector y traducción compartida
 tests/            Perceptrones, publicación HTTP y restricciones del servidor

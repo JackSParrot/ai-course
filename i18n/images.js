@@ -1,4 +1,4 @@
-// Shared source messages for chapters 05 and 06.
+// Shared source messages for chapters 03 and 04.
 export default {
  'ANTES DEL AUTOENCODER':'BEFORE THE AUTOENCODER',
  '¿Qué es una red convolucional?':'What is a convolutional network?',
@@ -18,14 +18,14 @@ export default {
  'SUPERRESOLUCIÓN':'SUPER-RESOLUTION',
  'SEIS CAPÍTULOS · APRENDER HACIENDO':'SIX CHAPTERS · LEARN BY DOING',
  'Los seis capítulos del curso':'The six chapters of the course',
- 'Recorrido: perceptrones, dígitos, laberinto, coches, autoencoder y superresolución':'Route: perceptrons, digits, maze, cars, autoencoder and super-resolution',
- 'De una sola neurona a leer números, conducir y reconstruir imágenes.':'From a single neuron to reading numbers, driving and reconstructing images.',
+ 'Recorrido: perceptrones, dígitos, autoencoder, superresolución, laberinto y coches':'Route: perceptrons, digits, autoencoder, super-resolution, maze and cars',
+ 'De una sola neurona a leer números, reconstruir imágenes y conducir.':'From a single neuron to reading numbers, reconstructing images and driving.',
  'Un código.':'A code.', 'Comprimir y reconstruir':'Compress and reconstruct', 'Más píxeles.':'More pixels.', 'Aprender a ampliar':'Learn to upscale',
  'Comprimir.':'Compress.', 'Reconstruir.':'Reconstruct.', 'Menos píxeles.':'Fewer pixels.', 'Más posibilidades.':'More possibilities.',
  'Descubre filtros convolucionales y un código de 1024 activaciones. Explora todas las capas y modifica la representación interna.':'Discover convolutional filters and a code of 1024 activations. Explore every layer and modify the internal representation.',
  'Entrena con parejas de imágenes pequeñas y grandes. Compara la red con ampliar por bloques y con interpolación bilineal.':'Train on pairs of small and large images. Compare the network with nearest-neighbour and bilinear interpolation.',
  'Filtros compartidos':'Shared filters', 'Código interno':'Latent code', 'Reconstrucción':'Reconstruction', 'Entrada 32 × 32':'32 × 32 input', 'Salida 64 × 64':'64 × 64 output', 'Comparación visual':'Visual comparison', 'Explorar el autoencoder':'Explore the autoencoder', 'Explorar la superresolución':'Explore super-resolution', 'a ampliar.':'to upscale.',
- '05 / APRENDER UNA REPRESENTACIÓN':'05 / LEARN A REPRESENTATION', '06 / APRENDER A AMPLIAR':'06 / LEARN TO UPSCALE',
+ '03 / APRENDER UNA REPRESENTACIÓN':'03 / LEARN A REPRESENTATION', '04 / APRENDER A AMPLIAR':'04 / LEARN TO UPSCALE',
  'Una red recibe una imagen de 64 × 64, la convierte en 1024 activaciones y aprende a reconstruirla. Mira qué conserva, qué pierde y qué cambia al tocar su código interno.':'A network receives a 64 × 64 image, turns it into 1024 activations and learns to reconstruct it. See what it keeps, what it loses and what changes when you edit its latent code.',
  'Una red recibe una imagen de 32 × 32 y aprende a producir otra de 64 × 64. Compara su resultado con ampliar por bloques y con interpolación bilineal.':'A network receives a 32 × 32 image and learns to produce a 64 × 64 image. Compare its output with nearest-neighbour and bilinear interpolation.',
  'Ir al experimento →':'Go to the experiment →', 'ANTES DE ENTRENAR':'BEFORE TRAINING',

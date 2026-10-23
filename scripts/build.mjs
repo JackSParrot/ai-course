@@ -18,7 +18,7 @@ cars:['index.html','favicon.svg','styles.css','map-editor.css','topology-editor.
 digits:['index.html','favicon.svg','styles.css',...['app','data','editors','experiment','inspector','network-viewer','math','model','view','worker'].map(n=>'src/'+n+'.js'),'data/manifest.json','data/train.bin','data/validation.bin','data/test.bin','data/PROVENANCE.md'],
 perceptrons:['index.html','course.css','lesson.js','math.js']
 };
-const chapters=[{app:'perceptrons',title:'Perceptrones'},{app:'digits',title:'Aprender a leer'},{app:'maze',title:'Algoritmos genéticos'},{app:'cars',title:'Coches'},{app:'autoencoder',title:'Autoencoder'},{app:'superresolution',title:'Superresolución'}];
+const chapters=[{app:'perceptrons',title:'Perceptrones'},{app:'digits',title:'Aprender a leer'},{app:'autoencoder',title:'Autoencoder'},{app:'superresolution',title:'Superresolución'},{app:'maze',title:'Algoritmos genéticos'},{app:'cars',title:'Coches'}];
 const digest=b=>createHash('sha256').update(b).digest('hex'),captured=[];
 for(const [app,list]of Object.entries(files))for(const file of list){
  const source=join(sources[app],file),buffer=await readFile(source);
@@ -54,7 +54,7 @@ for(const item of captured){
    let html=output.toString('utf8');if(!html.includes('</head>')||!/<body(?:\s[^>]*)?>/.test(html)||!html.includes('</body>'))throw Error('Unexpected HTML document.');
    const nav=navigation(item.app);
    html=html.replace('</head>',languageAssets('../')+'<link rel="stylesheet" href="../hub-nav.css?v='+navVersion+'">\n'+darkAssets('../')+'</head>').replace(/<body(?:\s[^>]*)?>/,tag=>tag+'\n'+nav.top).replace('</body>',nav.bottom+'\n</body>');
-   if(item.app==='cars')html=html.replace(/Laboratorio 01/i,'Capítulo 04').replace('LABORATORIO <b>01</b>','CAPÍTULO <b>04</b>');
+   if(item.app==='cars')html=html.replace(/Laboratorio 01/i,'Capítulo 06').replace('LABORATORIO <b>01</b>','CAPÍTULO <b>06</b>');
    if(item.app==='digits')html=html.replace(/Laboratorio 02/i,'Capítulo 02').replace('LABORATORIO <b>02</b>','CAPÍTULO <b>02</b>');
    if(item.app==='digits')html=html.replace('href="./styles.css"','href="./styles.css?v='+digitsVersion+'"').replace('src="./src/app.js"','src="./src/app.js?v='+digitsVersion+'"');
    if(item.app==='perceptrons')html=html.replace('href="./course.css"','href="./course.css?v='+courseVersion+'"').replace('src="./lesson.js"','src="./lesson.js?v='+courseVersion+'"');
