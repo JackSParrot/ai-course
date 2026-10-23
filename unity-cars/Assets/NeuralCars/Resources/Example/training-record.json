@@ -1,0 +1,9 @@
+{
+    "seed": 42,
+    "generation": 4,
+    "population": 24,
+    "trainingTrack": "oval",
+    "method": "selection-and-mutation",
+    "score": 1253.9671630859375,
+    "fixedStep": 0.01666666753590107
+}

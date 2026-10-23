@@ -1,0 +1,22 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <Style src="Lab.uss" />
+    <ui:VisualElement name="lab" class="lab">
+        <ui:VisualElement class="header">
+            <ui:VisualElement class="heading"><ui:Label name="eyebrow" class="eyebrow" /><ui:Label name="title" class="title" /><ui:Label name="subtitle" class="subtitle" /></ui:VisualElement>
+            <ui:Button name="language" class="language" text="ES / EN" />
+        </ui:VisualElement>
+        <ui:VisualElement class="workspace">
+            <ui:VisualElement class="driving">
+                <ui:VisualElement class="card toolbar" name="controls" />
+                <ui:VisualElement class="card race-card"><ui:Label name="mode" class="section-title" /><ui:VisualElement name="race-host" class="race-host" /><ui:Label name="race-info" class="readout" /></ui:VisualElement>
+                <ui:VisualElement class="card training-card"><ui:Label name="training-title" class="section-title" /><ui:Label name="training-explanation" class="body" /><ui:VisualElement name="training-controls" class="toolbar" /><ui:Label name="training-info" class="readout" /></ui:VisualElement>
+            </ui:VisualElement>
+            <ui:ScrollView class="inspector">
+                <ui:VisualElement class="card"><ui:Label name="network-title" class="section-title" /><ui:Label name="io" class="readout" /><ui:VisualElement name="network-host" /><ui:Label name="legend" class="body" /><ui:Label name="neuron" class="readout" /></ui:VisualElement>
+                <ui:VisualElement class="card"><ui:Label name="save-title" class="section-title" /><ui:Label name="save-explanation" class="body" /><ui:VisualElement name="save-controls" class="toolbar" /><ui:TextField name="folder" class="folder" /><ui:VisualElement name="file-controls" class="toolbar" /><ui:Label name="file-preview" class="code" /></ui:VisualElement>
+                <ui:VisualElement class="card"><ui:Label name="inside-title" class="section-title" /><ui:Label name="inside" class="body" /></ui:VisualElement>
+            </ui:ScrollView>
+        </ui:VisualElement>
+        <ui:Label name="status" class="status" />
+    </ui:VisualElement>
+</ui:UXML>

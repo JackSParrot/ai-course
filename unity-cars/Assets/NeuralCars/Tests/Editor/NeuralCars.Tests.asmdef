@@ -1,0 +1,8 @@
+{
+    "name": "NeuralCars.Tests",
+    "rootNamespace": "NeuralCars.Tests",
+    "references": ["NeuralCars.Runtime"],
+    "includePlatforms": ["Editor"],
+    "defineConstraints": ["UNITY_INCLUDE_TESTS"],
+    "optionalUnityReferences": ["TestAssemblies"]
+}

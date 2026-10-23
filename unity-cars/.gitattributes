@@ -1,0 +1,5 @@
+# Unity serializes empty YAML fields with a trailing space.
+*.meta whitespace=-blank-at-eol
+*.asset whitespace=-blank-at-eol
+*.unity whitespace=-blank-at-eol
+*.scenetemplate whitespace=-blank-at-eol

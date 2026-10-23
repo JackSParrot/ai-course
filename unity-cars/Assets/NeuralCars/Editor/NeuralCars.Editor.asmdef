@@ -1,0 +1,6 @@
+{
+    "name": "NeuralCars.Editor",
+    "rootNamespace": "NeuralCars.Editor",
+    "references": ["NeuralCars.Runtime"],
+    "includePlatforms": ["Editor"]
+}

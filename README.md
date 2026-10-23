@@ -23,6 +23,10 @@ Ese único archivo incluye el curso completo, ambos idiomas y los datos de entre
 
 Usa **ES / EN** para cambiar el idioma. Los cálculos ocurren en tu navegador. Exporta tus experimentos para llevarlos a otro equipo o entre la web y el archivo portable.
 
+### Los coches dentro de Unity
+
+La carpeta **[`unity-cars/`](unity-cars/README.md)** contiene un proyecto Unity 2D en C# para ver cómo se ejecuta una red neuronal dentro de un juego y cómo se guardan y cargan sus pesos. Incluye entrenamiento genético, un inspector visual y dos JSON legibles: descripción de la red y parámetros. Empieza por la [guía explicativa](unity-cars/docs/COMO-FUNCIONA.md). Abre esa carpeta en Unity 6000.6.2f1; permite compilar para Windows y Android. Es un ejercicio adicional al curso del navegador.
+
 ## Modificar el proyecto
 
 Necesitas Node.js 20 o posterior:
@@ -52,6 +56,8 @@ An interactive course about neural networks, from a single neuron to handwritten
 **No installation:** download the repository ZIP, extract it and double-click **`Neural-Labs.html`**. The single file contains all six chapters, training data and training code. It works offline, with no server or Node.js required. Chapters 3 and 4 explore convolutional autoencoders and image super-resolution, with every layer and activation available for inspection. The course ends with genetic algorithms in a maze and neural networks that drive cars.
 
 **Development:** with Node.js 20+, run `npm ci`, `npm run build` and `npm test`. The build updates the portable HTML and creates `public/`. Use `npm start` to serve the web version locally. Source code is organized by chapter; build tools live in `scripts/`.
+
+**Unity companion:** [`unity-cars/`](unity-cars/README.md) is a separate 2D C# project for Unity 6000.6.2f1. Inspect inference, train by selection and mutation, and save/reload the network description and parameters as two readable JSON files. Start with the [explanatory guide](unity-cars/docs/COMO-FUNCIONA.md#english). It runs in the Unity Editor and builds for Windows and Android.
 
 ## Licencias · Licenses
 

@@ -1,0 +1,6 @@
+{
+    "name": "NeuralCars.Runtime",
+    "rootNamespace": "NeuralCars",
+    "references": [],
+    "autoReferenced": true
+}

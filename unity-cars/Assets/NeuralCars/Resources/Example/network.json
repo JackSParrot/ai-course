@@ -1,0 +1,26 @@
+{
+    "version": 1,
+    "modelId": "neural-cars-genetic-seed42-v1",
+    "sizes": [
+        5,
+        6,
+        4
+    ],
+    "activation": "sigmoid",
+    "inputs": [
+        "distance-10h/220",
+        "distance-11h/220",
+        "distance-12h/220",
+        "distance-1h/220",
+        "distance-2h/220"
+    ],
+    "outputs": [
+        "accelerate",
+        "brake",
+        "left",
+        "right"
+    ],
+    "sensorLength": 220.0,
+    "actionThreshold": 0.5,
+    "trainingMethod": "genetic-selection-and-mutation"
+}

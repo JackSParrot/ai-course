@@ -1,0 +1,56 @@
+.lab { flex-grow: 1; background-color: #0d141e; color: #edf3f5; padding: 22px; font-size: 15px; }
+.header { flex-direction: row; justify-content: space-between; margin-bottom: 17px; flex-shrink: 0; }
+.heading { flex-grow: 1; }
+.eyebrow { color: #69d9bd; font-size: 12px; letter-spacing: 2px; margin-bottom: 5px; }
+.title { font-size: 31px; -unity-font-style: bold; margin-bottom: 3px; min-height: 41px; }
+.subtitle { color: #b1bfcb; font-size: 15px; white-space: normal; min-height: 24px; }
+.language { width: 95px; height: 36px; }
+.workspace { flex-grow: 1; flex-direction: row; min-height: 0; }
+.driving { flex-grow: 1; flex-basis: 0; min-width: 500px; margin-right: 16px; }
+.inspector { width: 490px; min-width: 400px; }
+.card { background-color: #162230; border-radius: 12px; padding: 15px; margin-bottom: 12px; border-width: 1px; border-color: #293e4f; flex-shrink: 0; }
+.toolbar { flex-direction: row; flex-wrap: wrap; align-items: center; }
+.toolbar.card { padding: 10px; }
+Button { background-color: #253b4a; color: #edf3f5; border-width: 1px; border-color: #416071; border-radius: 6px; padding: 8px 11px; margin: 3px; font-size: 13px; min-height: 33px; }
+Button:hover { background-color: #36586a; border-color: #76d9c0; }
+Button:active { background-color: #417969; }
+Button.primary { background-color: #286859; border-color: #69d9bd; }
+Button:disabled { color: #82929c; background-color: #1b2b36; }
+.section-title { font-size: 17px; -unity-font-style: bold; color: #e5f1f0; margin-bottom: 8px; }
+.body { color: #b7c6d2; white-space: normal; margin-bottom: 10px; font-size: 13px; }
+.readout { white-space: normal; font-size: 13px; color: #d4e1e8; margin-top: 6px; }
+.race-card { flex-grow: 1; min-height: 290px; }
+.race-host { flex-grow: 1; min-height: 200px; }
+.race-view { flex-grow: 1; height: 100%; background-color: #14292b; border-radius: 8px; }
+.network-view { height: 280px; flex-shrink: 0; margin-top: 4px; margin-bottom: 4px; }
+.training-card { min-height: 145px; }
+.code { white-space: normal; font-size: 12px; background-color: #0d1821; color: #91dfce; padding: 10px; margin-top: 8px; border-radius: 6px; }
+.folder { margin-top: 8px; margin-bottom: 8px; font-size: 12px; }
+.folder .unity-base-text-field__input { background-color: #0d1821; color: #d7e4ee; white-space: normal; padding: 8px; min-height: 46px; }
+.status { white-space: normal; margin-top: 4px; color: #ffdc86; font-size: 13px; min-height: 37px; }
+Toggle { color: #d7e6ef; margin: 7px; font-size: 13px; }
+Label { flex-shrink: 0; }
+.unity-scroll-view__vertical-scroller { width: 10px; }
+.unity-base-slider__dragger { background-color: #416071; min-width: 6px; border-radius: 3px; }
+.unity-scroll-view { min-height: 0; }
+.unity-scroll-view__content-and-vertical-scroll-container { flex-direction: row; flex-grow: 1; flex-shrink: 1; flex-basis: 0; min-height: 0; }
+.unity-scroll-view__content-viewport { flex-grow: 1; flex-shrink: 1; flex-basis: 0; overflow: hidden; }
+.unity-scroll-view__content-container { flex-direction: column; flex-grow: 0; flex-shrink: 0; }
+.mobile.lab { padding: 12px; }
+.mobile .header { margin-bottom: 6px; }
+.mobile .eyebrow, .mobile .subtitle { display: none; }
+.mobile .title { font-size: 25px; min-height: 35px; }
+.mobile Button { font-size: 19px; min-height: 48px; padding: 8px 14px; }
+.mobile .language { width: 108px; height: 48px; }
+.mobile .toolbar { flex-shrink: 0; }
+.mobile .workspace { flex-direction: column; flex-basis: 0; flex-shrink: 1; }
+.mobile .driving { min-width: 0; min-height: 0; margin-right: 0; flex-basis: auto; height: 100%; }
+.mobile .inspector { width: auto; min-width: 0; flex-grow: 1; }
+.mobile .race-card { flex-grow: 0; }
+.mobile .race-host { height: 360px; flex-grow: 0; }
+.mobile .race-view { height: 360px; }
+.mobile .body, .mobile .readout, .mobile .status { font-size: 18px; }
+.mobile .section-title { font-size: 21px; }
+.mobile .code, .mobile .folder { font-size: 17px; }
+.mobile .network-view { height: 350px; }
+.mobile .status { min-height: 25px; max-height: 50px; overflow: hidden; }
