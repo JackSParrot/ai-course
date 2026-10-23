@@ -1,9 +1,9 @@
-import {createNetwork,restore,snapshot,forward,mse,trainBatch,random} from './network.js';
+import {LOW_SIZE,createNetwork,restore,snapshot,forward,mse,trainBatch,random} from './network.js';
 import {dataset,resize} from './data.js';
 let network,train,validation,history=[],epoch=0,cursor=0,order=[],running=false,remaining=0,timer=null;
 function evaluate(){
  let loss=0,baseline=0;
- for(const s of validation){loss+=mse(forward(network,s.input).output,s.target);if(network.task==='superresolution')baseline+=mse(resize(s.input,12),s.target);}
+ for(const s of validation){loss+=mse(forward(network,s.input).output,s.target);if(network.task==='superresolution')baseline+=mse(resize(s.input,LOW_SIZE),s.target);}
  return{epoch,validation:loss/validation.length,baseline:network.task==='superresolution'?baseline/validation.length:null};
 }
 function report(kind='progress'){postMessage({kind,model:snapshot(network),epoch,batch:cursor,total:train.length,history,running});}

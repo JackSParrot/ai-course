@@ -1,3 +1,4 @@
+export const IMAGE_SIZE=64, LOW_SIZE=32, LATENT_SIZE=16;
 // Tiny convolutional networks, forward pass and backpropagation, without dependencies.
 // Tensors are row-major: (y * width + x) * channels + channel.
 export function random(seed=1){let s=seed>>>0;return()=>{s=(Math.imul(1664525,s)+1013904223)>>>0;return s/4294967296;};}
@@ -50,19 +51,19 @@ export function createNetwork(task='autoencoder',seed=42){
  return{task,layers,step:0};
 }
 export function forward(network,pixels,latentOverride=null){
- const size=network.task==='autoencoder'?24:12;
+ const size=network.task==='autoencoder'?IMAGE_SIZE:LOW_SIZE;
  if(pixels.length!==size*size)throw Error('Invalid image dimensions');
  const states=[tensor(size,size,1,Float32Array.from(pixels))];
  for(const [i,layer]of network.layers.entries()){
   const input=states.at(-1);let out=layer.type==='up'?enlarge(input):convolution(input,layer);
-  if(network.task==='autoencoder'&&i===1&&latentOverride){if(latentOverride.length!==144)throw Error('Invalid latent code');out=tensor(6,6,4,Float32Array.from(latentOverride));}
+  if(network.task==='autoencoder'&&i===1&&latentOverride){if(latentOverride.length!==LATENT_SIZE*LATENT_SIZE*4)throw Error('Invalid latent code');out=tensor(LATENT_SIZE,LATENT_SIZE,4,Float32Array.from(latentOverride));}
   states.push(out);
  }
  return{output:states.at(-1).data,states,latent:network.task==='autoencoder'?states[2]:null,intervention:network.task==='autoencoder'&&latentOverride?{stage:2}:null};
 }
 export function decode(network,latent){
- if(network.task!=='autoencoder'||latent.length!==144)throw Error('Expected 6 × 6 × 4 activations');
- let input=tensor(6,6,4,Float32Array.from(latent));
+ if(network.task!=='autoencoder'||latent.length!==LATENT_SIZE*LATENT_SIZE*4)throw Error('Expected 16 × 16 × 4 activations');
+ let input=tensor(LATENT_SIZE,LATENT_SIZE,4,Float32Array.from(latent));
  for(const layer of network.layers.slice(2))input=layer.type==='up'?enlarge(input):convolution(input,layer);
  return input.data;
 }
@@ -85,9 +86,9 @@ export function trainBatch(network,samples,rate=.008){
  }
  return loss/samples.length;
 }
-export function snapshot(network){return{version:1,task:network.task,weights:network.layers.filter(l=>l.type==='conv').map(l=>({w:Array.from(l.w),b:Array.from(l.b)}))};}
+export function snapshot(network){return{version:2,task:network.task,weights:network.layers.filter(l=>l.type==='conv').map(l=>({w:Array.from(l.w),b:Array.from(l.b)}))};}
 export function restore(saved,task=saved?.task){
- if(!saved||saved.version!==1||saved.task!==task)throw Error('Invalid model');
+ if(!saved||saved.version!==2||saved.task!==task)throw Error('Invalid model');
  const network=createNetwork(task),layers=network.layers.filter(l=>l.type==='conv');
  if(!Array.isArray(saved.weights)||saved.weights.length!==layers.length)throw Error('Invalid layers');
  layers.forEach((layer,i)=>{for(const key of ['w','b']){const values=saved.weights[i]?.[key];if(!Array.isArray(values)||values.length!==layer[key].length||!values.every(v=>Number.isFinite(v)&&Math.abs(v)<=100))throw Error('Invalid weights');layer[key].set(values);}});
@@ -95,7 +96,7 @@ export function restore(saved,task=saved?.task){
 }
 // The inspector uses the exact input, kernel weights and padding of the first layer.
 export function inspect(network,pixels,x,y,channel=0){
- const layer=network.layers[0],size=network.task==='autoencoder'?24:12,cells=[];let sum=layer.b[channel];
+ const layer=network.layers[0],size=network.task==='autoencoder'?IMAGE_SIZE:LOW_SIZE,cells=[];let sum=layer.b[channel];
  for(let ky=0;ky<3;ky++)for(let kx=0;kx<3;kx++){
   const ix=x*layer.stride+kx-1,iy=y*layer.stride+ky-1,padded=ix<0||iy<0||ix>=size||iy>=size,value=padded?0:pixels[iy*size+ix],weight=layer.w[(channel*3+ky)*3+kx];
   cells.push({x:ix,y:iy,padded,value,weight,product:value*weight});sum+=value*weight;

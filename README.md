@@ -18,8 +18,8 @@ Ese único archivo incluye el curso completo, ambos idiomas y los datos de entre
 | **02 · Dígitos** | Dibuja números, entrena con 3.000 imágenes de MNIST y explora la red completa con sus pesos, entradas y contribuciones. |
 | **03 · Laberinto** | Descubre los algoritmos genéticos con ADN de movimientos, evaluación, selección probabilística, cruce y mutación. |
 | **04 · Coches** | Diseña circuitos y redes; observa cómo aprenden a conducir mediante selección y mutación. |
-| **05 · Autoencoder** | Comprime imágenes de 24 × 24 en 144 activaciones, reconstruye y modifica el código interno. Inspecciona todas las capas, filtros y contribuciones. |
-| **06 · Superresolución** | Entrena una red de 12 × 12 a 24 × 24 y compara con ampliación por bloques e interpolación bilineal en dibujos nuevos. |
+| **05 · Autoencoder** | Comprime imágenes de 64 × 64 en 1024 activaciones, reconstruye y modifica el código interno. Inspecciona todas las capas, filtros y contribuciones. |
+| **06 · Superresolución** | Entrena una red de 32 × 32 a 64 × 64 y compara con ampliación por bloques e interpolación bilineal en dibujos nuevos. |
 
 Usa **ES / EN** para cambiar el idioma. Los cálculos ocurren en tu navegador. Exporta tus experimentos para llevarlos a otro equipo o entre la web y el archivo portable.
 

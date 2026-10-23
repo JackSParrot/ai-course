@@ -17,7 +17,7 @@ export function pixels(canvas,values,size,highlight=null,signed=false){
 export function stageName(network,i){if(i===0)return t('Imagen de entrada');if(network.task==='autoencoder'&&i===2)return t('Código interno');if(i===network.layers.length)return t('Imagen de salida');return network.layers[i-1].type==='up'?t('Ampliar ×2'):t('Convolución')+' '+i;}
 export function layout(states){
  let offset=30;const layers=states.map((s,stage)=>{
-  const cols=Math.min(2,s.c),rows=Math.ceil(s.c/cols),step=7,tileW=s.w*step+12,tileH=s.h*step+23,width=Math.max(170,cols*tileW),nodes=[];
+  const cols=Math.min(2,s.c),rows=Math.ceil(s.c/cols),step=Math.min(7,224/s.w),tileW=s.w*step+12,tileH=s.h*step+23,width=Math.max(170,cols*tileW),nodes=[];
   for(let y=0;y<s.h;y++)for(let x=0;x<s.w;x++)for(let c=0;c<s.c;c++)nodes.push({stage,index:(y*s.w+x)*s.c+c,x:offset+(c%cols)*tileW+x*step,y:75+Math.floor(c/cols)*tileH+y*step});
   const result={x:offset,width,height:75+rows*tileH,nodes};offset+=width+65;return result;
  });return{layers,width:offset,height:Math.max(300,...layers.map(l=>l.height))+20};
@@ -35,7 +35,7 @@ export class ImageNetworkViewer{
   $('network-full-canvas').onclick=e=>{
    const canvas=$('network-full-canvas'),r=canvas.getBoundingClientRect(),x=(e.clientX-r.left)*canvas.width/r.width,y=(e.clientY-r.top)*canvas.height/r.height;
    const layer=this.world.layers.find(l=>x>=l.x-4&&x<l.x+l.width);if(!layer)return;
-   const node=layer.nodes.find(n=>Math.abs(n.x-x)<=4&&Math.abs(n.y-y)<=4);if(node){this.stage=node.stage;this.index=node.index;this.cell=0;this.render();}
+   const node=layer.nodes.reduce((best,n)=>Math.hypot(n.x-x,n.y-y)<Math.hypot(best.x-x,best.y-y)?n:best,layer.nodes[0]);if(Math.hypot(node.x-x,node.y-y)<=5){this.stage=node.stage;this.index=node.index;this.cell=0;this.render();}
   };
   for(const id of ['inspection-inputs','inspection-weights','inspection-products'])$(id).onclick=e=>{
    const canvas=$(id),r=canvas.getBoundingClientRect(),grid=inspectionGrid(this.detail.entries.length),x=Math.floor((e.clientX-r.left)/r.width*grid.cols),y=Math.floor((e.clientY-r.top)/r.height*grid.rows),index=grid.positions.findIndex(p=>p.x===x&&p.y===y);
@@ -53,7 +53,31 @@ export class ImageNetworkViewer{
   if(this.optionSignature!==signature){picker.replaceChildren(...labels.map((text,i)=>{const o=document.createElement('option');o.value=i;o.textContent=text;return o;}));this.optionSignature=signature;}picker.value=this.stage;
   const s=this.trace.states[this.stage];$('network-neuron').max=s.data.length-1;$('network-neuron').value=this.index;
   $('network-count').textContent=this.trace.states.reduce((n,s)=>n+s.data.length,0)+' '+t('activaciones visibles, sin muestreo');
+  this.topology();
   this.details();this.draw();
+ }
+ topology(){
+  const host=$('network-topology');
+  if(!host.childElementCount){
+   this.trace.states.forEach((s,i)=>{
+    const button=document.createElement('button');button.className='topology-layer';
+    button.onclick=()=>{this.stage=i;this.index=0;this.cell=0;this.render();this.center();};
+    button.append(document.createElement('strong'),document.createElement('canvas'),document.createElement('span'),document.createElement('small'));
+    button.children[1].width=96;button.children[1].height=96;host.append(button);
+   });
+  }
+  let total=0;
+  [...host.children].forEach((button,i)=>{
+   const s=this.trace.states[i],layer=this.network.layers[i-1],parameters=layer?.type==='conv'?layer.w.length+layer.b.length:0;total+=parameters;
+   button.setAttribute('aria-pressed',String(i===this.stage));
+   button.children[0].textContent=stageName(this.network,i);
+   // One representative map keeps the overview readable; all maps remain in the inspector.
+   pixels(button.children[1],Float32Array.from({length:s.w*s.h},(_,p)=>s.data[p*s.c]),s.w,null,i>0&&i<this.network.layers.length);
+   button.children[1].setAttribute('aria-label',t('Vista del primer mapa'));
+   button.children[2].textContent=`${s.w} × ${s.h} × ${s.c}`;
+   button.children[3].textContent=layer?.type==='conv'?`3 × 3 · ${t('Paso')} ${layer.stride} · ${parameters} ${t('parámetros')}`:t(i===0?'Píxeles de entrada':'Copia ×2 · sin parámetros');
+  });
+  $('topology-summary').textContent=`${this.network.layers.length} ${t('capas')} · ${total} ${t('parámetros entrenables')} · `+t('Miniaturas: primer mapa de cada capa.');
  }
  details(){
   this.detail=inspectNeuron(this.network,this.trace,this.stage,this.index);const d=this.detail;
