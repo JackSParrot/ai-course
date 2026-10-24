@@ -1,10 +1,10 @@
-# Neural Racing · Capítulo 03
+# Neural Racing · Capítulo 06
 
 Un pequeño proyecto para entender cómo una red neuronal convierte lo que ve un coche en decisiones. HTML, CSS y JavaScript, sin librerías, frameworks, dependencias externas ni compilación.
 
 ## Abrir el proyecto
 
-Para usar el curso completo sin instalación, descarga el repositorio y abre **`Neural-Labs.html`**, en la raíz, con doble clic. Selecciona el capítulo **03 · Coches**.
+Para usar el curso completo sin instalación, descarga el repositorio y abre **`Neural-Labs.html`**, en la raíz, con doble clic. Selecciona el capítulo **06 · Coches**.
 
 Para trabajar con las fuentes, desde la raíz del repositorio:
 
