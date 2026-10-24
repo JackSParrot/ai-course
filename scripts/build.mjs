@@ -8,7 +8,7 @@ const outArg=process.argv.find(arg=>arg.startsWith('--out='));
 const releaseRoot=outArg?resolve(root,outArg.slice(6)):root;
 if(releaseRoot!==root&&!releaseRoot.startsWith(root+sep))throw Error('Build output must stay inside this project.');
 const publicRoot=join(releaseRoot,'public');
-const sources={cars:join(root,'cars'),digits:join(root,'digits'),maze:join(root,'maze'),perceptrons:join(root,'course'),autoencoder:join(root,'autoencoder'),superresolution:join(root,'superresolution')};
+const sources={cars:join(root,'cars'),digits:join(root,'digits'),maze:join(root,'maze'),perceptrons:join(root,'course'),autoencoder:join(root,'autoencoder'),superresolution:join(root,'superresolution'),tokens:join(root,'tokens'),predictor:join(root,'predictor')};
 // Deliberate allowlist: no repository roots, private checkpoints or original download caches.
 const files={
 autoencoder:['index.html','styles.css',...['app','network','data','viewer','worker'].map(n=>'src/'+n+'.js')],
@@ -16,16 +16,18 @@ superresolution:['index.html','src/app.js'],
 maze:['index.html','styles.css','src/evolution.js','src/app.js'],
 cars:['index.html','favicon.svg','styles.css','map-editor.css','topology-editor.css','training.css',...['app','car-settings','car','controls','genetics','geometry','map-editor','map-store','map-ui','maps','neural-network','renderer','sensor','simulation','topology-editor','topology-store','topology','track-drawing','track','trained-models','training-chart','training-engine','training-score','training-ui','training-worker'].map(n=>'src/'+n+'.js')],
 digits:['index.html','favicon.svg','styles.css',...['app','data','editors','experiment','inspector','network-viewer','math','model','view','worker'].map(n=>'src/'+n+'.js'),'data/manifest.json','data/train.bin','data/validation.bin','data/test.bin','data/PROVENANCE.md'],
-perceptrons:['index.html','course.css','lesson.js','math.js']
+perceptrons:['index.html','course.css','lesson.js','math.js'],
+tokens:['index.html','styles.css',...['app','bpe','corpus','ui'].map(n=>'src/'+n+'.js')],
+predictor:['index.html',...['app','embedding-map','model','worker'].map(n=>'src/'+n+'.js')]
 };
-const chapters=[{app:'perceptrons',title:'Perceptrones'},{app:'digits',title:'Aprender a leer'},{app:'autoencoder',title:'Autoencoder'},{app:'superresolution',title:'Superresolución'},{app:'maze',title:'Algoritmos genéticos'},{app:'cars',title:'Coches'}];
+const chapters=[{app:'perceptrons',title:'Perceptrones'},{app:'digits',title:'Aprender a leer'},{app:'autoencoder',title:'Autoencoder'},{app:'superresolution',title:'Superresolución'},{app:'maze',title:'Algoritmos genéticos'},{app:'cars',title:'Coches'},{app:'tokens',title:'Tokens'},{app:'predictor',title:'Siguiente token'}];
 const digest=b=>createHash('sha256').update(b).digest('hex'),captured=[];
 for(const [app,list]of Object.entries(files))for(const file of list){
  const source=join(sources[app],file),buffer=await readFile(source);
  captured.push({app,file,source,buffer,sha256:digest(buffer)});
 }
 for(const item of captured)if(digest(await readFile(item.source))!==item.sha256)throw Error('Source changed while building: '+item.app+'/'+item.file);
-const sharedFiles=['i18n.js','dom.js','en.js','images.js','language.css'];
+const sharedFiles=['i18n.js','dom.js','en.js','images.js','tokens.js','language.css'];
 const shared=await Promise.all(sharedFiles.map(async file=>({file,buffer:await readFile(join(root,'i18n',file))})));
 const languageVersion=digest(Buffer.concat(shared.map(item=>item.buffer))).slice(0,12);
 const languageAssets=prefix=>'<link rel="stylesheet" href="'+prefix+'i18n/language.css?v='+languageVersion+'">\n<script type="module" src="'+prefix+'i18n/dom.js?v='+languageVersion+'"></script>\n';
@@ -35,7 +37,10 @@ const darkAssets=prefix=>'<link rel="stylesheet" href="'+prefix+'dark.css?v='+da
 const navVersion=digest(await readFile(join(root,'shell/hub-nav.css'))).slice(0,12);
 const landingVersion=digest(await readFile(join(root,'shell/landing.css'))).slice(0,12);
 const courseVersion=digest(Buffer.concat(captured.filter(item=>item.app==='perceptrons').map(item=>item.buffer))).slice(0,12);
-const digitsVersion=digest(Buffer.concat(captured.filter(item=>item.app==='digits'&&!item.file.startsWith('data/')).sort((a,b)=>a.file<b.file?-1:a.file>b.file?1:0).map(item=>item.buffer))).slice(0,12);
+const appVersion=(...apps)=>digest(Buffer.concat(captured.filter(item=>apps.includes(item.app)&&!item.file.startsWith('data/')).sort((a,b)=>a.file<b.file?-1:a.file>b.file?1:0).map(item=>item.buffer))).slice(0,12);
+// Chapters 07 and 08 share modules and styles, so they share one version.
+const textVersion=appVersion('tokens','predictor');
+const versions={digits:appVersion('digits'),tokens:textVersion,predictor:textVersion},digitsVersion=versions.digits;
 function navigation(app){
  const index=chapters.findIndex(c=>c.app===app),number=String(index+1).padStart(2,'0');
  const previous=index>0?'<a class="course-previous" href="../'+chapters[index-1].app+'/">← Anterior: '+chapters[index-1].title+'</a>':'<a class="course-previous" href="../">← Índice del curso</a>';
@@ -48,7 +53,7 @@ await mkdir(publicRoot,{recursive:true});
 for(const item of captured){
  let output=item.buffer;
  if(item.file.endsWith('.js'))output=Buffer.from(output.toString('utf8').replace(/(['"])(\.\.\/(?:\.\.\/)?i18n\/i18n\.js)\1/g,(_,quote,path)=>quote+path+'?v='+languageVersion+quote));
- if(item.app==='digits'&&item.file.endsWith('.js'))output=Buffer.from(output.toString('utf8').replace(/(['"])(\.\/[a-z-]+\.js)\1/g,(_,quote,path)=>quote+path+'?v='+digitsVersion+quote));
+ if(versions[item.app]&&item.file.endsWith('.js'))output=Buffer.from(output.toString('utf8').replace(/(['"])(\.\/[a-z-]+\.js|\.\.\/\.\.\/tokens\/src\/[a-z-]+\.js)\1/g,(_,quote,path)=>quote+path+'?v='+versions[item.app]+quote));
  if(item.app==='perceptrons'&&item.file==='lesson.js')output=Buffer.from(output.toString('utf8').replace("'./math.js'","'./math.js?v="+courseVersion+"'"));
  if(item.file==='index.html'){
    let html=output.toString('utf8');if(!html.includes('</head>')||!/<body(?:\s[^>]*)?>/.test(html)||!html.includes('</body>'))throw Error('Unexpected HTML document.');
@@ -56,7 +61,7 @@ for(const item of captured){
    html=html.replace('</head>',languageAssets('../')+'<link rel="stylesheet" href="../hub-nav.css?v='+navVersion+'">\n'+darkAssets('../')+'</head>').replace(/<body(?:\s[^>]*)?>/,tag=>tag+'\n'+nav.top).replace('</body>',nav.bottom+'\n</body>');
    if(item.app==='cars')html=html.replace(/Laboratorio 01/i,'Capítulo 06').replace('LABORATORIO <b>01</b>','CAPÍTULO <b>06</b>');
    if(item.app==='digits')html=html.replace(/Laboratorio 02/i,'Capítulo 02').replace('LABORATORIO <b>02</b>','CAPÍTULO <b>02</b>');
-   if(item.app==='digits')html=html.replace('href="./styles.css"','href="./styles.css?v='+digitsVersion+'"').replace('src="./src/app.js"','src="./src/app.js?v='+digitsVersion+'"');
+   if(versions[item.app])html=html.replace('href="./styles.css"','href="./styles.css?v='+versions[item.app]+'"').replace('href="../tokens/styles.css"','href="../tokens/styles.css?v='+versions[item.app]+'"').replace('src="./src/app.js"','src="./src/app.js?v='+versions[item.app]+'"');
    if(item.app==='perceptrons')html=html.replace('href="./course.css"','href="./course.css?v='+courseVersion+'"').replace('src="./lesson.js"','src="./lesson.js?v='+courseVersion+'"');
    output=Buffer.from(html);
  }

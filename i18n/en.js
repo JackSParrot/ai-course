@@ -1,7 +1,9 @@
 // Spanish source messages are stable keys; keep page structure shared.
 import imageMessages from './images.js';
+import tokenMessages from './tokens.js';
 export default {
   ...imageMessages,
+  ...tokenMessages,
   "La mazmorra — Algoritmos genéticos": "The dungeon — Genetic algorithms",
   "01 / ENTENDER LA EVOLUCIÓN": "01 / UNDERSTAND EVOLUTION",
   "Pequeños cambios.": "Small changes.",

@@ -14,7 +14,7 @@ const html=await readFile(output,'utf8'),pack=JSON.parse(html.match(/<script id=
 const bytes=url=>Buffer.from(url.slice(url.indexOf(',')+1),'base64');
 
 test('one portable file contains every page, styles, locale and all hash-verified MNIST data',()=>{
- assert.deepEqual(Object.keys(pack.pages),['home','perceptrons','digits','autoencoder','superresolution','maze','cars']);
+ assert.deepEqual(Object.keys(pack.pages),['home','perceptrons','digits','autoencoder','superresolution','maze','cars','tokens','predictor']);
  for(const page of Object.values(pack.pages)){
   assert.doesNotMatch(page.html,/<script[^>]*src=|<link[^>]*rel="stylesheet"/);
   assert.ok(page.html.includes('<style>'));assert.ok(page.html.includes('data-portable-page='));
@@ -26,7 +26,7 @@ test('one portable file contains every page, styles, locale and all hash-verifie
   assert.equal(pixels.length,split.count*256,role);
   assert.equal(createHash('sha256').update(pixels).digest('hex'),split.sha256,role);
  }
- assert.deepEqual(Object.keys(pack.workers),['digits','cars','images']);
+ assert.deepEqual(Object.keys(pack.workers),['digits','cars','images','predictor']);
  for(const worker of Object.values(pack.workers)){new Script(worker);assert.doesNotMatch(worker,/import\.meta/);}
  assert.match(pack.pages.digits.html,/download="PROVENANCE.md"/);
 });
@@ -93,4 +93,15 @@ test('the embedded car trainer evaluates a population without importing external
  const initial=await next(worker,{command:'init',setup});assert.equal(initial.state.phase,'evaluate');
  const result=await next(worker,{command:'step'},value=>value.state.phase!=='evaluate');
  assert.equal(result.state.phase,'select');assert.ok(result.state.groups[0].population.every(member=>Number.isFinite(member.fitness.score)));
+});
+test('the embedded next-token trainer learns, pauses and resets without external modules',async t=>{
+ const worker=trainer('predictor');t.after(()=>worker.terminate());
+ const sequence=Array.from({length:240},(_,i)=>2+i%5);
+ const setup={kind:'reset',vocabularySize:8,settings:{context:2,hidden:8,embedding:4},train:sequence,validation:sequence.slice(0,40)};
+ const initial=await next(worker,setup,m=>m.kind==='reset');assert.equal(initial.epoch,0);
+ const trained=await next(worker,{kind:'train',epochs:3},m=>m.kind==='progress'&&m.epoch===3&&!m.running);
+ assert.ok(trained.history.at(-1).validationLoss<initial.history[0].validationLoss);assert.ok(trained.history.at(-1).accuracy>.9);
+ await next(worker,{kind:'train',epochs:200},m=>m.running);
+ const paused=await next(worker,{kind:'pause'},m=>m.kind==='progress'&&!m.running);assert.equal(paused.running,false);
+ const reset=await next(worker,setup,m=>m.kind==='reset');assert.deepEqual(reset.model,initial.model);
 });
