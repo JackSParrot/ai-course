@@ -223,3 +223,15 @@ footer{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;font-s
 .letter-answer{font:20px Consolas,monospace;color:var(--accent)}
 .token.letter{min-width:26px;justify-content:center}
 @media(max-width:600px){.letters-compare{grid-template-columns:1fr}}
+/* Chapter 10 */
+.analogy-grid{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+.candidate{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:4px 8px;border-radius:8px}.candidate .token-strip{margin:0;min-height:0}
+.candidate.chosen{background:var(--paper);box-shadow:inset 3px 0 var(--green)}
+.rater-controls{display:grid;gap:14px;margin-bottom:10px}.rater-controls label{display:grid;gap:6px;font-size:13px;color:var(--ink)}
+.rater-controls output{font:13px Consolas,monospace;color:var(--accent)}.rater-controls input{accent-color:var(--green);width:100%}
+.ask-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.ask-grid label{display:grid;gap:5px;font-size:12px;color:var(--muted)}
+.ask-grid select{padding:8px;border:1px solid var(--line);border-radius:5px;background:var(--paper);color:var(--ink);font:13px Consolas,monospace}
+.answer-compare{display:grid;grid-template-columns:1fr 1fr;gap:12px}.answer-compare>div{background:var(--field);border-radius:8px;padding:10px}
+.verdict{align-self:center;font-size:12px;font-weight:700;margin-left:6px}.verdict.good{color:var(--green)}.verdict.bad{color:var(--accent)}
+.model-stats.three{grid-template-columns:repeat(3,1fr)}
+@media(max-width:600px){.ask-grid,.answer-compare,.model-stats.three{grid-template-columns:1fr}}

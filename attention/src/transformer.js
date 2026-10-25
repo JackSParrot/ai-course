@@ -66,11 +66,13 @@ export function probabilitiesAt(model, cache, t) { return softmax(cache.logits.s
 export function backward(model, batch) {
   const { V, D, H, params: p, grads: g } = model, scale = 1 / Math.sqrt(D);
   for (const grad of Object.values(g)) grad.fill(0);
-  const total = batch.reduce((sum, item) => sum + item.targets.length, 0);
+  // A target below zero is ignored: it lets a conversation train only the assistant's reply.
+  const total = Math.max(1, batch.reduce((sum, item) => sum + item.targets.filter(y => y >= 0).length, 0));
   let loss = 0;
   for (const { tokens, targets } of batch) {
     const c = forward(model, tokens), n = c.n, dLogits = new Float32Array(n * V);
     for (let t = 0; t < n; t++) {
+      if (targets[t] < 0) continue;
       const probabilities = softmax(c.logits.subarray(t * V, (t + 1) * V));
       loss -= Math.log(Math.max(probabilities[targets[t]], 1e-12));
       probabilities[targets[t]] -= 1;
@@ -118,6 +120,24 @@ export function adam(model, rate = DEFAULTS.rate) {
   }
 }
 export function trainBatch(model, batch, rate) { const loss = backward(model, batch); adam(model, rate); return loss; }
+
+// Continues a sequence one token at a time until the stop token, the token limit or the context limit.
+export function generate(model, prefix, { maxTokens = 12, temperature = 0, stop = -1, rng = Math.random, blocked = [] } = {}) {
+  const sequence = [...prefix], produced = [];
+  while (produced.length < maxTokens && sequence.length < model.T) {
+    const probabilities = probabilitiesAt(model, forward(model, sequence), sequence.length - 1);
+    for (const index of blocked) probabilities[index] = 0;
+    let next = 0;
+    if (temperature <= 0) { for (let i = 1; i < probabilities.length; i++) if (probabilities[i] > probabilities[next]) next = i; }
+    else {
+      const weights = Array.from(probabilities, p => Math.pow(p, 1 / temperature)); let r = rng() * weights.reduce((a, b) => a + b, 0);
+      next = weights.findIndex(w => (r -= w) <= 0); if (next < 0) next = weights.length - 1;
+    }
+    sequence.push(next); produced.push(next);
+    if (next === stop) break;
+  }
+  return produced;
+}
 
 // Windows of T+1 tokens: the first T are the input and the last T are the targets.
 export function windows(indices, T, offset = 0) {

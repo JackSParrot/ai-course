@@ -24,6 +24,7 @@ export async function buildPortable(root,releaseRoot){
     replace('new URL(`../data/${spec.file}`,import.meta.url)','globalThis.__NEURAL_PORTABLE__.assets[spec.file]');
    }
    if(name==='digits/src/app.js'||name==='cars/src/training-ui.js')replace(/new Worker\(new URL\(['"]\.\/[^'"]+['"],\s*import\.meta\.url\),\s*\{\s*type:\s*['"]module['"]\s*\}\)/g,'globalThis.__NEURAL_PORTABLE__.worker('+JSON.stringify(name.startsWith('digits/')?'digits':'cars')+')');
+   if(name==='assistant/src/app.js')replace(/new Worker\(new URL\(['"]\.\/worker\.js['"],\s*import\.meta\.url\),\s*\{\s*type:\s*['"]module['"]\s*\}\)/g,"globalThis.__NEURAL_PORTABLE__.worker('assistant')");
    if(name==='attention/src/app.js')replace(/new Worker\(new URL\(['"]\.\/worker\.js['"],\s*import\.meta\.url\),\s*\{\s*type:\s*['"]module['"]\s*\}\)/g,"globalThis.__NEURAL_PORTABLE__.worker('attention')");
    if(name==='predictor/src/app.js')replace(/new Worker\(new URL\(['"]\.\/worker\.js['"],\s*import\.meta\.url\),\s*\{\s*type:\s*['"]module['"]\s*\}\)/g,"globalThis.__NEURAL_PORTABLE__.worker('predictor')");
    if(name==='autoencoder/src/app.js')replace(/new Worker\(new URL\(['"]\.\/worker\.js['"],\s*import\.meta\.url\),\s*\{\s*type:\s*['"]module['"]\s*\}\)/g,"globalThis.__NEURAL_PORTABLE__.worker('images')");
@@ -41,9 +42,9 @@ export async function buildPortable(root,releaseRoot){
   return result.outputFiles[0].text;
  }
  const workers={};
- for(const [name,entry]of Object.entries({digits:'digits/src/worker.js',cars:'cars/src/training-worker.js',images:'autoencoder/src/worker.js',predictor:'predictor/src/worker.js',attention:'attention/src/worker.js'}))workers[name]=await bundle('import '+JSON.stringify('./'+entry)+';');
+ for(const [name,entry]of Object.entries({digits:'digits/src/worker.js',cars:'cars/src/training-worker.js',images:'autoencoder/src/worker.js',predictor:'predictor/src/worker.js',attention:'attention/src/worker.js',assistant:'assistant/src/worker.js'}))workers[name]=await bundle('import '+JSON.stringify('./'+entry)+';');
  const provenance=(await asset('/digits/data/PROVENANCE.md')).toString('base64');
- const entries={home:null,perceptrons:'course/lesson.js',digits:'digits/src/app.js',autoencoder:'autoencoder/src/app.js',superresolution:'superresolution/src/app.js',maze:'maze/src/app.js',cars:'cars/src/app.js',tokens:'tokens/src/app.js',predictor:'predictor/src/app.js',attention:'attention/src/app.js'},pages={};
+ const entries={home:null,perceptrons:'course/lesson.js',digits:'digits/src/app.js',autoencoder:'autoencoder/src/app.js',superresolution:'superresolution/src/app.js',maze:'maze/src/app.js',cars:'cars/src/app.js',tokens:'tokens/src/app.js',predictor:'predictor/src/app.js',attention:'attention/src/app.js',assistant:'assistant/src/app.js'},pages={};
  for(const [name,entry]of Object.entries(entries)){
   const path=name==='home'?'/index.html':'/'+name+'/index.html';let html=(await asset(path)).toString('utf8');
   const styles=[...html.matchAll(/<link\b[^>]*rel="stylesheet"[^>]*>/g)];
@@ -53,7 +54,7 @@ export async function buildPortable(root,releaseRoot){
   html=html.replace(/<a\b([^>]*?)href="([^"]+)"([^>]*)>/g,(tag,before,href,after)=>{
    if(href.startsWith('#'))return tag;
    const url=new URL(href,origin+path);if(url.origin!==origin)return '<a'+before+'href="'+href+'"'+after+' target="_blank" rel="noopener">';
-   const route=url.pathname==='/'||url.pathname==='/index.html'?'home':url.pathname.match(/^\/(perceptrons|digits|maze|cars|autoencoder|superresolution|tokens|predictor|attention)\/(?:index\.html)?$/)?.[1];
+   const route=url.pathname==='/'||url.pathname==='/index.html'?'home':url.pathname.match(/^\/(perceptrons|digits|maze|cars|autoencoder|superresolution|tokens|predictor|attention|assistant)\/(?:index\.html)?$/)?.[1];
    if(route)return '<a'+before+'href="#/'+(route==='home'?'':route) +'" data-portable-page="'+route+'"'+after+'>';
    if(url.pathname==='/digits/data/PROVENANCE.md')return '<a'+before+'href="data:text/plain;base64,'+provenance+'" download="PROVENANCE.md"'+after+'>';
    throw Error('Unrecognized portable link: '+href);
