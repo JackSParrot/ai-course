@@ -93,3 +93,25 @@ export const CATEGORIES = {
   characters: [...ES.characters, ...EN.characters].map(text => text.split(' ').at(-1)),
   places: [...ES.places, ...EN.places],
 };
+
+// Two-sentence stories for chapter 09: the place at the end repeats one mentioned
+// about ten tokens earlier, too far back for a network that only sees 4 tokens.
+function story(language, rng) {
+  const w = language === 'es' ? ES : EN, a = pick(rng, w.characters), b = pick(rng, w.characters.filter(c => c !== a));
+  const place = pick(rng, w.places), verb = pick(rng, w.social);
+  const text = language === 'es'
+    ? `${capital(a)} ${verb} ${b.startsWith('el ') ? 'al ' + b.slice(3) : 'a ' + b} en el ${place}. Después, ${a} vuelve al ${place}.`
+    : `${capital(a)} ${verb} ${b} in the ${place}. Later, ${a} returns to the ${place}.`;
+  return { language, text, answer: ' ' + place };
+}
+export function buildStories({ languages = ['es', 'en'], train = 300, validation = 60, seed = 11 } = {}) {
+  const rng = random(seed), seen = new Set(), result = { train: [], validation: [] };
+  for (const language of languages) for (const [split, count] of [['validation', validation], ['train', train]]) {
+    let attempts = 0;
+    while (result[split].filter(s => s.language === language).length < count && attempts++ < count * 50) {
+      const item = story(language, rng);
+      if (!seen.has(item.text)) { seen.add(item.text); result[split].push(item); }
+    }
+  }
+  return result;
+}

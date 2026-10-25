@@ -2,13 +2,13 @@
 
 # Guía de desarrollo de Neural Labs
 
-Ocho capítulos en HTML, CSS y JavaScript: **Perceptrones**, **Aprender a leer**, **Autoencoder**, **Superresolución**, **Algoritmos genéticos**, **Coches**, **Tokens** y **Siguiente token**. Las redes, el entrenamiento y la inferencia se ejecutan en el navegador. No requiere servicios de IA, cuentas ni claves de API.
+Nueve capítulos en HTML, CSS y JavaScript: **Perceptrones**, **Aprender a leer**, **Autoencoder**, **Superresolución**, **Algoritmos genéticos**, **Coches**, **Tokens**, **Siguiente token** y **Atención**. Las redes, el entrenamiento y la inferencia se ejecutan en el navegador. No requiere servicios de IA, cuentas ni claves de API.
 
-Este repositorio contiene las fuentes editables de los ocho capítulos, sus datos y sus pruebas. La web existente está en [labs.jacksparrot.com](https://labs.jacksparrot.com/); hacer un commit o un push aquí no actualiza ni reinicia ese servicio.
+Este repositorio contiene las fuentes editables de los nueve capítulos, sus datos y sus pruebas. La web existente está en [labs.jacksparrot.com](https://labs.jacksparrot.com/); hacer un commit o un push aquí no actualiza ni reinicia ese servicio.
 
 ## Abrir sin servidor ni internet
 
-Abre **`Neural-Labs.html` con doble clic** en un navegador actualizado. Es un único archivo portable que incluye los ocho capítulos, los dos idiomas, los 3.000 ejemplos de MNIST y los entrenadores. No necesita Node.js, instalación ni conexión para usarlo. Puedes copiar solo ese archivo a otro ordenador.
+Abre **`Neural-Labs.html` con doble clic** en un navegador actualizado. Es un único archivo portable que incluye los nueve capítulos, los dos idiomas, los 3.000 ejemplos de MNIST y los entrenadores. No necesita Node.js, instalación ni conexión para usarlo. Puedes copiar solo ese archivo a otro ordenador.
 
 El archivo se genera automáticamente con `npm run build`, junto a la web habitual. Se incluye en Git para poder abrir el curso tras descargar el repositorio. Para regenerarlo desde un checkout nuevo, sigue los pasos de abajo; `esbuild` se utiliza únicamente durante la generación. El archivo conserva los avisos de licencia y permite descargar la procedencia de MNIST.
 
@@ -59,6 +59,7 @@ El curso adapta automáticamente su paleta al modo claro u oscuro del sistema o 
 6. **Coches — `/cars/`**. Sensores, conducción por red neuronal, editor de circuitos, biblioteca de mapas, editor de tipos/topologías e inspector. El entrenador compara poblaciones mediante selección y mutación. [Guía detallada](../cars/README.md).
 7. **Tokens — `/tokens/`**. Primer paso hacia los modelos de lenguaje. Una explicación guiada (paso a paso, con la frase que elija el usuario) muestra texto → palabras → piezas → números → texto. Después compara trocear por letras, palabras o tokens; una segunda explicación cuenta BPE con cuatro palabras; el usuario construye su propio tokenizador BPE y explora rarezas (contar letras, cifras, mayúsculas, bytes, coste por idioma, ventana de contexto). Tokenizador BPE por caracteres con respaldo de bytes y un espacio inicial pegado a cada palabra, como en GPT. Texto de entrenamiento propio generado con plantillas: 1.400 frases de entrenamiento y 240 de validación, en español e inglés, sin frases compartidas.
 8. **Siguiente token — `/predictor/`**. Dos explicaciones guiadas con los números reales de la red: cómo decide (tokens → contexto → embeddings → capa oculta → probabilidades → elegir y repetir) y cómo aprende (una ventana recorre una frase y convierte cada posición en un ejemplo). Después el usuario entrena la red en un Web Worker y compara 1, 2 o 4 tokens de contexto (embeddings de 16 → capa oculta tanh de 64 → softmax, Adam), explora un mapa 2D de embeddings (PCA) y genera texto con temperatura o eligiendo cada token. Reutiliza el corpus, el tokenizador, los estilos y los componentes de `tokens/`.
+9. **Atención — `/attention/`**. Un transformer diminuto escrito desde cero: un bloque con atención causal de una cabeza, posición aprendida, capa tanh de 64 y conexiones residuales (unos 34.000 parámetros, como la red del 08). Se entrena en un Web Worker a la vez que la red del 08, con el mismo texto más 600 historias de dos frases cuyo final repite un lugar de la primera («…en el desierto. Después, el mago vuelve al desierto»). La red del 08 acierta ese lugar en torno al 20 % (azar); el transformer llega al 100 % en pocas épocas y su atención pone casi todo el peso en el lugar de la primera frase. Incluye explicaciones paso a paso (el problema; pregunta, clave, porcentajes, mezcla, posición y bloque, con los números reales), comparación y mapa de atención interactivo.
 
 Los talleres permiten guardar trabajo en el almacenamiento local del navegador. Los guardados pertenecen a su origen completo —protocolo, host y puerto— y no se transfieren automáticamente al cambiar de dirección. Usa las opciones de exportar/importar cuando estén disponibles. El servidor del curso no recibe dibujos, pesos ni experimentos.
 
@@ -72,7 +73,7 @@ Las pruebas de imágenes verifican gradientes por diferencias finitas en cada ca
 
 ## Idiomas
 
-La portada, los ocho capítulos y los editores comparten las mismas páginas en **español e inglés**. Usa el selector **ES / EN** para cambiar sin recargar ni perder el ejercicio o entrenamiento en curso. El idioma se recuerda en este navegador; también puedes compartir enlaces con `?lang=en` o `?lang=es`, por ejemplo `/perceptrons/?lang=en#combinar`. El parámetro del enlace tiene prioridad sobre la preferencia guardada.
+La portada, los nueve capítulos y los editores comparten las mismas páginas en **español e inglés**. Usa el selector **ES / EN** para cambiar sin recargar ni perder el ejercicio o entrenamiento en curso. El idioma se recuerda en este navegador; también puedes compartir enlaces con `?lang=en` o `?lang=es`, por ejemplo `/perceptrons/?lang=en#combinar`. El parámetro del enlace tiene prioridad sobre la preferencia guardada.
 
 Las traducciones están en `i18n/en.js`: el texto español original es la clave. `i18n/dom.js` traduce el contenido y los atributos accesibles, incluidos los mensajes que generan los talleres, y conserva el original para volver a español. Los gráficos usan la misma función de traducción. No hay copias de las páginas, peticiones a servicios de traducción ni dependencias adicionales. Al cambiar un texto, actualiza su entrada del catálogo; puedes marcar contenido propio con `data-i18n-ignore` para conservarlo literalmente. Los nombres de usuario, valores de formularios, código, pesos y guardados mantienen sus datos originales.
 
@@ -87,6 +88,7 @@ maze/             Capítulo 05: laberinto y algoritmos genéticos
 cars/             Capítulo 06: fuentes y pruebas del laboratorio de coches
 tokens/           Capítulo 07: corpus, tokenizador BPE, componentes y estilos compartidos con el 08
 predictor/        Capítulo 08: modelo del siguiente token, worker y mapa de embeddings
+attention/        Capítulo 09: transformer diminuto y worker que lo entrena junto a la red del 08
 shell/            Portada, estilos comunes y navegación entre capítulos
 i18n/             Catálogo inglés, selector y traducción compartida
 tests/            Perceptrones, publicación HTTP y restricciones del servidor
@@ -102,7 +104,7 @@ publication-manifest.json  Hashes de la salida; generado, no se guarda en Git
 Neural-Labs.html   Curso portable generado y versionado para distribución
 ```
 
-Edita `course/`, `digits/`, `maze/`, `cars/`, `autoencoder/`, `superresolution/`, `tokens/`, `predictor/` o `shell/`, y ejecuta de nuevo `npm run build`. El mismo build actualiza `Neural-Labs.html`; cierra y vuelve a abrir el archivo para ver los cambios. El servidor mantiene una instantánea en memoria: detenlo y vuelve a iniciarlo para ver un nuevo build. No edites `public/` a mano.
+Edita `course/`, `digits/`, `maze/`, `cars/`, `autoencoder/`, `superresolution/`, `tokens/`, `predictor/`, `attention/` o `shell/`, y ejecuta de nuevo `npm run build`. El mismo build actualiza `Neural-Labs.html`; cierra y vuelve a abrir el archivo para ver los cambios. El servidor mantiene una instantánea en memoria: detenlo y vuelve a iniciarlo para ver un nuevo build. No edites `public/` a mano.
 
 Todos los orígenes del build son rutas relativas internas. No necesita otro checkout, un disco concreto, Unity, una instalación de Codex ni los proyectos originales.
 
@@ -113,9 +115,9 @@ npm run build
 npm test
 ```
 
-`npm test` reconstruye primero el sitio y ejecuta todas las pruebas con el runner incluido en Node. Las suites verifican matemáticas, gradientes por diferencias finitas, separación y hashes de los datos, modelos independientes, entrenamiento real, editores, guardado/recuperación, las tres imágenes del inspector, coches, el tokenizador BPE (ida y vuelta exacta, determinismo), el modelo del siguiente token y recursos HTTP. Las pruebas de la versión portable verifican los datos incrustados, la navegación y la ejecución real de los entrenadores empaquetados. Los servidores de prueba usan puertos efímeros de loopback y se cierran al terminar.
+`npm test` reconstruye primero el sitio y ejecuta todas las pruebas con el runner incluido en Node. Las suites verifican matemáticas, gradientes por diferencias finitas, separación y hashes de los datos, modelos independientes, entrenamiento real, editores, guardado/recuperación, las tres imágenes del inspector, coches, el tokenizador BPE (ida y vuelta exacta, determinismo), el modelo del siguiente token, el transformer (gradientes, máscara causal y una tarea de copia que solo resuelve la atención) y recursos HTTP. Las pruebas de la versión portable verifican los datos incrustados, la navegación y la ejecución real de los entrenadores empaquetados. Los servidores de prueba usan puertos efímeros de loopback y se cierran al terminar.
 
-El build genera **`Neural-Labs.html`** y **87 recursos web** mediante una lista explícita. Los tamaños y SHA-256 de los recursos web quedan en `publication-manifest.json`. El servidor valida esos archivos al arrancar y solo expone esa lista: no publica código del servidor, pruebas, Git, variables de entorno ni directorios completos. También comprueba rutas relativas, módulos y los Web Workers.
+El build genera **`Neural-Labs.html`** y **91 recursos web** mediante una lista explícita. Los tamaños y SHA-256 de los recursos web quedan en `publication-manifest.json`. El servidor valida esos archivos al arrancar y solo expone esa lista: no publica código del servidor, pruebas, Git, variables de entorno ni directorios completos. También comprueba rutas relativas, módulos y los Web Workers.
 
 Para generar una salida separada dentro del repositorio:
 

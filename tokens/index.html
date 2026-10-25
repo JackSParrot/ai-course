@@ -41,8 +41,16 @@
 <div class="lesson-note"><strong>El tokenizador refleja su texto de entrenamiento.</strong> Las piezas salen de frecuencias: un tokenizador entrenado con mucho inglés tendrá piezas cómodas para el inglés. El del resto del curso se entrenó igual, con 1.400 frases en español e inglés, hasta tener 600 piezas.</div></section>
 
 <section id="rarezas" class="lesson-section" aria-labelledby="oddities-title"><p class="eyebrow">05 / LO QUE EXPLICAN LOS TOKENS</p><h2 id="oddities-title">Un modelo de lenguaje no ve letras.</h2><p>Ve una lista de números de token. Muchas cosas extrañas de ChatGPT, Claude y compañía vienen de ahí, no de que sean «tontos».</p>
+<div class="panel letters-panel"><h3>La prueba clásica: ¿cuántas «r» hay en «strawberry»?</h3>
+<div id="letters-explainer" class="explainer">
+<ol class="stage-track"><li data-stage="1"><span>1</span>La pregunta</li><li data-stage="2"><span>2</span>Lo que ves tú</li><li data-stage="3"><span>3</span>Lo que ve el modelo</li><li data-stage="4"><span>4</span>Por qué falla</li><li data-stage="5"><span>5</span>Strawberry</li></ol>
+<div class="stage-panel"><h3 class="stage-title"></h3><div class="stage-visual"></div><p class="stage-caption"></p></div>
+<div class="stepper-controls"><button type="button" class="button outline" data-step="prev">← Anterior</button><span class="step-count"></span><button type="button" class="button primary" data-step="next">Siguiente →</button><button type="button" class="button outline" data-step="play">▶ Reproducir</button></div>
+</div>
+<div class="try-box letters-try"><h3>Pruébalo tú</h3><div class="settings"><label>Palabra<input id="letters-word" type="text" maxlength="40" spellcheck="false" value="castillo"></label><label>Letra<input id="letters-letter" type="text" maxlength="1" spellcheck="false" value="l"></label></div>
+<div class="letters-compare"><div><span class="vocab-label">Lo que ves tú</span><div id="letters-human" class="token-strip"></div><p><strong id="letters-count">0</strong> <span id="letters-count-label">veces</span></p></div><div><span class="vocab-label">Lo que recibe el modelo</span><div id="letters-model" class="token-strip"></div><code id="letters-ids" class="id-list"></code></div></div>
+<p class="fine">Prueba palabras del texto de entrenamiento (castillo, caballero, laboratorio, amarillo) y otras que nunca vio.</p></div></div>
 <div class="oddity-grid">
-<article><span>CONTAR LETRAS</span><h3>¿Cuántas «r» hay?</h3><div class="token-strip" data-oddity=" fresa| strawberry| error"></div><p>Para el modelo, cada token es un único número. Contar letras exige saber qué hay «dentro» de cada token, algo que nunca ve directamente.</p></article>
 <article><span>NÚMEROS</span><h3>Sumar sin ver las cifras</h3><div class="token-strip" data-oddity=" 12345| 2026| 4999 + 1"></div><p>Las cifras se agrupan según lo frecuentes que eran en el texto, no por unidades, decenas y centenas. Por eso la aritmética les cuesta.</p></article>
 <article><span>MAYÚSCULAS Y ESPACIOS</span><h3>Mismo texto, otros tokens</h3><div class="token-strip" data-oddity="el| el| El| EL"></div><p>Con o sin espacio delante, en mayúsculas o minúsculas: para la red son piezas distintas que debe aprender por separado.</p></article>
 <article><span>BYTES</span><h3>Lo que nunca vio</h3><div class="token-strip" data-oddity=" 🎮| ñ| Ω"></div><p>Un carácter desconocido se escribe con sus bytes. Un emoji puede ocupar cuatro tokens.</p></article>

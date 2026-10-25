@@ -1,6 +1,6 @@
 # Neural Labs
 
-Un curso interactivo para entender las redes neuronales: de una sola neurona a reconocer dígitos, conducir coches y predecir la siguiente palabra. **Español e inglés**, con ejercicios visuales y entrenamiento real en el navegador.
+Un curso interactivo para entender las redes neuronales: de una sola neurona a reconocer dígitos, conducir coches y entender cómo funcionan los modelos de lenguaje. **Español e inglés**, con ejercicios visuales y entrenamiento real en el navegador.
 
 ## Abrir el curso sin instalar nada
 
@@ -21,7 +21,8 @@ Ese único archivo incluye el curso completo, ambos idiomas y los datos de entre
 | **05 · Laberinto** | Descubre los algoritmos genéticos con ADN de movimientos, evaluación, selección probabilística, cruce y mutación. |
 | **06 · Coches** | Diseña circuitos y redes; observa cómo aprenden a conducir mediante selección y mutación. |
 | **07 · Tokens** | Mira paso a paso cómo un tokenizador convierte texto en números y de dónde salen sus piezas (BPE). Construye uno y descubre qué rarezas de los LLM explican los tokens. |
-| **08 · Siguiente token** | Sigue por dentro cómo una red decide y aprende el siguiente token. Entrénala, explora sus embeddings y genera texto con temperatura. |
+| **08 · Siguiente token** | Qué es un embedding, cómo una red decide y aprende el siguiente token. Entrénala, explora sus embeddings y genera texto con temperatura. |
+| **09 · Atención** | Por qué una ventana fija no basta y cómo funciona la atención, paso a paso. Entrena un transformer diminuto junto a la red del 08 y mira a quién presta atención cada token. |
 
 Usa **ES / EN** para cambiar el idioma. Los cálculos ocurren en tu navegador. Exporta tus experimentos para llevarlos a otro equipo o entre la web y el archivo portable.
 
@@ -47,7 +48,7 @@ El build actualiza `Neural-Labs.html` y genera la versión web en `public/`. Par
 
 | Carpeta | Contenido |
 | --- | --- |
-| `course/`, `digits/`, `autoencoder/`, `superresolution/`, `maze/`, `cars/`, `tokens/`, `predictor/` | Los ocho capítulos y sus datos. |
+| `course/`, `digits/`, `autoencoder/`, `superresolution/`, `maze/`, `cars/`, `tokens/`, `predictor/`, `attention/` | Los nueve capítulos y sus datos. |
 | `shell/`, `i18n/` | Portada, navegación, estilos comunes y traducciones. |
 | `scripts/` | Generación del HTML portable, build web, servidor y lanzadores. |
 | `tests/` | Pruebas del curso; el taller de coches también tiene `cars/tests/`. |
@@ -59,7 +60,7 @@ Edita las fuentes y regenera el HTML; no edites el archivo generado directamente
 
 An interactive course about neural networks, from a single neuron to handwritten digits, self-driving cars and next-word prediction. Switch between **English and Spanish** using **EN / ES**.
 
-**No installation:** download the repository ZIP, extract it and double-click **`Neural-Labs.html`**. The single file contains all eight chapters, training data and training code. It works offline, with no server or Node.js required. Chapters 3 and 4 explore convolutional autoencoders and image super-resolution, with every layer and activation available for inspection. Then come genetic algorithms in a maze and neural networks that drive cars. Chapters 7 and 8 explain, step by step, how a BPE tokenizer turns text into tokens and how a tiny network predicts the next token and generates text: the bridge to large language models.
+**No installation:** download the repository ZIP, extract it and double-click **`Neural-Labs.html`**. The single file contains all nine chapters, training data and training code. It works offline, with no server or Node.js required. Chapters 3 and 4 explore convolutional autoencoders and image super-resolution, with every layer and activation available for inspection. Then come genetic algorithms in a maze and neural networks that drive cars. Chapters 7 to 9 are the bridge to large language models: step by step, a BPE tokenizer turns text into tokens, a tiny network predicts the next token, and a tiny transformer shows what attention adds.
 
 **Talks and errata:** the course accompanies a video series ([AI 01](https://www.youtube.com/watch?v=lE2Z-ayxwzU), [AI 02](https://www.youtube.com/watch?v=jS0QtadL5fo)). Corrections and clarifications, linked to the exact minute, are in the [errata](docs/FE-DE-ERRATAS.md#errata-english).
 

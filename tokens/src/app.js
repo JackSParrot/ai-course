@@ -155,6 +155,39 @@ $('bpe-auto').addEventListener('click', () => {
 function renderTry() { renderStrip($('bpe-try-output'), demo.tokenizer().pieces($('bpe-try-input').value).map(text => ({ text }))); }
 $('bpe-try-input').addEventListener('input', renderTry);
 
+// ---------- 05 · Counting letters: the classic «strawberry» test ----------
+const letterChips = (word, letter) => chips([...word], text => ({ className: 'letter' + (text.toLowerCase() === letter ? ' clue' : '') }));
+const countLetter = (word, letter) => [...word.toLowerCase()].filter(char => char === letter).length;
+function lettersSteps() {
+  const known = ' laboratorio', knownIds = tokenizer.encode(known), strawberry = ' strawberry';
+  return [
+    { stage: 1, title: 'Una pregunta trivial', caption: 'Para una persona es facilísima. Durante mucho tiempo fue famosa porque muchos chatbots fallaban y respondían que 2. ¿Cómo puede fallar algo tan simple?', render: () => element('div', 'stack', element('div', 'big-text', '¿Cuántas «r» hay en «strawberry»?'), element('span', 'letter-answer', 'Respuesta de muchos chatbots: 2 ✗')) },
+    { stage: 2, title: 'Lo que ves tú: letras', caption: 'Tú ves las letras una a una y las cuentas: hay 3. Pero un modelo de lenguaje nunca recibe letras.', render: () => element('div', 'stack', letterChips('strawberry', 'r'), element('span', 'letter-answer', '3 «r»')) },
+    {
+      stage: 3, title: 'Lo que ve el modelo: números de token', caption: ['Míralo con una palabra que nuestro tokenizador conoce entera. Para el modelo, ', element('em', '', 'laboratorio'), ' es un único número. Dentro de ese número no hay ninguna «o» que contar.'],
+      render: () => element('div', 'stack', element('span', 'vocab-label', 'Tú ves'), letterChips('laboratorio', 'o'), element('span', 'vocab-label', 'El modelo recibe'), chips(tokenizer.pieces(known), (_, i) => ({ small: knownIds[i] })), element('code', 'id-list', '[' + knownIds.join(', ') + ']')),
+    },
+    {
+      stage: 4, title: 'Para contar, tiene que recordar cómo se deletrea', caption: 'Para responder, el modelo necesita saber de memoria qué letras forman cada token. Solo lo aprende si en su texto de entrenamiento aparecen palabras deletreadas, y eso es raro. Los modelos actuales suelen acertar porque se entrenan con ejemplos así o deletrean la palabra paso a paso antes de contar, pero siguen sin ver las letras.',
+      render: () => element('div', 'stack', element('code', 'id-list', `${knownIds[0]} → l · a · b · o · r · a · t · o · r · i · o ?`), element('span', 'fine', 'Este deletreo no está en el número: tendría que haberlo aprendido.')),
+    },
+    {
+      stage: 5, title: '¿Y «strawberry»?', caption: 'Nuestro tokenizador es pequeño y nunca vio «strawberry», así que la parte en piezas sueltas, algunas de una letra. Los tokenizadores de los modelos grandes sí la conocen y la guardan en muy pocas piezas: por eso no ven sus letras.',
+      render: () => element('div', 'stack', chips(tokenizer.pieces(strawberry), (_, i) => ({ small: tokenizer.encode(strawberry)[i] })), element('span', 'fine', 'Prueba abajo con otras palabras.')),
+    },
+  ];
+}
+new Stepper($('letters-explainer'), lettersSteps);
+function renderLetters() {
+  const word = $('letters-word').value.trim(), letter = ($('letters-letter').value || ' ').toLowerCase(), ids = tokenizer.encode(' ' + word);
+  $('letters-human').replaceChildren(...letterChips(word, letter).children);
+  $('letters-count').textContent = fmt(countLetter(word, letter));
+  renderStrip($('letters-model'), tokenizer.pieces(' ' + word).map((text, i) => ({ text, small: ids[i] })));
+  $('letters-ids').textContent = '[' + ids.join(', ') + ']';
+}
+$('letters-word').addEventListener('input', renderLetters);
+$('letters-letter').addEventListener('input', renderLetters);
+
 // ---------- 05 · Oddities ----------
 function renderOddities() {
   for (const box of document.querySelectorAll('[data-oddity]')) {
@@ -189,6 +222,6 @@ $('count-input').addEventListener('input', renderCounter);
 document.addEventListener('languagechange', renderDemo);
 matchMedia('(prefers-color-scheme: dark)').addEventListener('change', renderDemo);
 
-renderSplit(); resetDemo(); renderOddities(); renderCounter();
+renderSplit(); resetDemo(); renderLetters(); renderOddities(); renderCounter();
 // The two single-language tokenizers take a moment; build them after the first paint.
 setTimeout(renderLanguages, 50);

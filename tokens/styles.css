@@ -64,7 +64,7 @@ tr.best td{background:var(--field);font-weight:650}
 .table-scroll{overflow-x:auto}
 .merge-list{font:13px Consolas,monospace;max-height:220px;overflow:auto;padding-left:34px;margin:0}.merge-list li{padding:3px 0}.merge-list li:last-child{color:var(--accent);font-weight:700}
 .try-box{margin-top:20px}
-.oddity-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;margin:20px 0}
+.oddity-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin:20px 0}
 .oddity-grid article{border-top:2px solid var(--line);padding-top:14px;min-width:0}.oddity-grid p{font-size:12px;line-height:1.75;color:var(--muted)}
 .oddity-grid .token-strip{flex-direction:column;align-items:flex-start;gap:6px}
 .oddity-line{display:flex;flex-wrap:wrap;gap:3px;align-items:center}.oddity-line em{font:11px 'Segoe UI',Arial,sans-serif;color:var(--muted);margin-left:6px}
@@ -188,3 +188,38 @@ footer{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;font-s
 .llm-compare h3{margin-top:4px}.llm-compare .has h3{color:var(--green)}.llm-compare .missing h3{color:var(--accent)}
 .llm-compare ul{margin:0;padding-left:18px;display:grid;gap:10px;font-size:13px;line-height:1.7;color:var(--muted)}.llm-compare strong{color:var(--ink)}
 @media(max-width:700px){.llm-compare{grid-template-columns:1fr}}
+/* Chapter 09 */
+.token.clue{box-shadow:0 0 0 3px var(--green);background:#cfe8cf!important;color:#18361f;font-weight:700}
+.token.lookable{box-shadow:0 0 0 1px var(--accent)}
+.slot-row{display:flex;flex-wrap:wrap;gap:6px}
+.slot{display:grid;justify-items:center;gap:4px;padding:6px;border:1px dashed var(--line);border-radius:6px;background:var(--paper)}.slot small{font:10px Consolas,monospace;color:var(--accent)}
+.key-table{display:grid;gap:6px}
+.score{font:13px Consolas,monospace;color:var(--accent);min-width:56px}
+.block-flow{display:grid;gap:6px;justify-items:start;width:100%;max-width:560px}
+.block-step{padding:8px 12px;border:1px solid var(--line);border-radius:6px;background:var(--paper);font-size:13px;position:relative}
+.block-step:not(:first-child):before{content:'↓';position:absolute;left:-18px;color:var(--accent)}
+.block-flow>.bars{width:100%;margin-top:6px}
+.compare-table th{font-size:12px;color:var(--ink);font-weight:500}.compare-table td{font:16px Consolas,monospace}
+.compare-table thead th{font-size:11px;color:var(--muted)}
+.compare-table .key-row th,.compare-table .key-row td{background:var(--field);font-weight:700}
+.two-bars{display:grid;grid-template-columns:1fr 1fr;gap:14px}.two-bars h4{margin:6px 0;font-size:13px}
+.two-bars .bar{grid-template-columns:90px 1fr 46px}
+.map-layout{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(260px,1fr);gap:18px;margin-top:16px}
+.attention-matrix-panel{overflow-x:auto}
+.attention-matrix{display:grid;gap:2px;align-items:center;min-width:420px}
+.attention-matrix .token{font-size:11px;padding:2px 4px}
+.column-label{display:flex;justify-content:center;align-items:flex-end;height:90px}.column-label .token{writing-mode:vertical-rl;transform:rotate(180deg)}
+.row-label{border:0;background:transparent;padding:0 6px 0 0;text-align:right;color:var(--ink)}.row-label.active .token{box-shadow:0 0 0 2px var(--accent)}
+.cell{aspect-ratio:1;border-radius:2px;background:rgba(72,140,96,calc(var(--weight)*.95 + .03))}
+.cell.future{background:transparent;border:1px dashed var(--line);opacity:.35}
+.cell.active{outline:1px solid var(--accent)}
+@media(max-width:950px){.map-layout{grid-template-columns:1fr}}
+@media(max-width:600px){.two-bars{grid-template-columns:1fr}}
+.letters-panel{margin:18px 0}.letters-panel>.explainer{margin-top:10px}
+.letters-try input[type=text]{width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:5px;background:var(--paper);color:var(--ink);font:15px Consolas,monospace}
+.letters-try label{max-width:220px}
+.letters-compare{display:grid;grid-template-columns:1fr 1fr;gap:18px}.letters-compare>div{background:var(--field);border-radius:8px;padding:12px}
+.letters-compare p{margin:6px 0 0;font-size:13px;color:var(--muted)}.letters-compare p strong{font:22px Consolas,monospace;color:var(--ink)}
+.letter-answer{font:20px Consolas,monospace;color:var(--accent)}
+.token.letter{min-width:26px;justify-content:center}
+@media(max-width:600px){.letters-compare{grid-template-columns:1fr}}
