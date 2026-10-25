@@ -10,7 +10,7 @@
  }
  links(config.language);
  globalThis.__NEURAL_PORTABLE__={
-  assets:pack.assets,search:'?lang='+config.language,hash:config.slide,
+  assets:pack.assets,english:pack.english,search:'?lang='+config.language,hash:config.slide,
   setLanguage(language){links(language);send('portable-language',{language});},
   setSlide(hash){this.hash=hash;send('portable-slide',{hash});},
   worker(name){

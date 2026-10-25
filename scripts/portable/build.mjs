@@ -1,5 +1,6 @@
 import {readFile,writeFile} from 'node:fs/promises';
 import {join,relative} from 'node:path';
+import {pathToFileURL} from 'node:url';
 import {build} from 'esbuild';
 
 const origin='https://neural-labs.invalid';
@@ -18,6 +19,8 @@ export async function buildPortable(root,releaseRoot){
  const plugin={name:'portable-platform',setup(api){
   api.onLoad({filter:/\.js$/},async({path})=>{
    let code=await readFile(path,'utf8');const name=relative(root,path).replaceAll('\\','/');
+   // The catalog is shared data: ship it once in the package instead of inside every page bundle.
+   if(name==='i18n/en.js')return{contents:'export default globalThis.__NEURAL_PORTABLE__.english;',loader:'js'};
    const replace=(pattern,replacement)=>{const next=code.replace(pattern,replacement);if(next===code)throw Error('Portable adapter no longer matches '+name+': '+pattern);code=next;};
    if(name==='digits/src/data.js'){
     replace("new URL('../data/manifest.json',import.meta.url)","globalThis.__NEURAL_PORTABLE__.assets['manifest.json']");
@@ -63,7 +66,8 @@ export async function buildPortable(root,releaseRoot){
   pages[name]={html,code};
  }
  const license=await readFile(join(root,'LICENSE'),'utf8');
- const pack={version:1,license,pages,assets,workers};
+ const english=(await import(pathToFileURL(join(root,'i18n/en.js')).href)).default;
+ const pack={version:1,license,english,pages,assets,workers};
  const host=await readFile(join(root,'scripts/portable/host.js'),'utf8'),frame=await readFile(join(root,'scripts/portable/frame.js'),'utf8');
  pack.frame=frame;
  const html='<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Neural Labs — Curso portable</title><style>html,body{margin:0;width:100%;height:100%;background:#f6f5f0}iframe{display:block;border:0;width:100%;height:100%}#portable-error{font:16px/1.6 system-ui;padding:30px}</style></head><body><p id="portable-error" hidden></p><iframe id="course" title="Neural Labs"></iframe><script id="portable-package" type="application/json">'+json(pack)+'</script><script>'+host.replace(/<\/script/gi,'<\\/script')+'</script></body></html>\n';
