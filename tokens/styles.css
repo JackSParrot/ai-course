@@ -235,3 +235,39 @@ footer{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;font-s
 .verdict{align-self:center;font-size:12px;font-weight:700;margin-left:6px}.verdict.good{color:var(--green)}.verdict.bad{color:var(--accent)}
 .model-stats.three{grid-template-columns:repeat(3,1fr)}
 @media(max-width:600px){.ask-grid,.answer-compare,.model-stats.three{grid-template-columns:1fr}}
+/* Chapter 11 */
+:root{--chart-3:#4f78a8;--chart-4:#8a8f86;--cup:#e8e1cf;--ball:#c9673e}
+@media(prefers-color-scheme:dark){:root{--chart-3:#9bbbe0;--chart-4:#a7b0a6;--cup:#3b4645;--ball:#edb393}}
+.cups-trail{display:grid;gap:6px;margin:6px 0 12px}
+.cups-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.cups-label{min-width:64px;font:12px Consolas,monospace;color:var(--muted)}
+.cup{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:6px 6px 12px 12px;background:var(--cup);color:var(--ink);font:12px Consolas,monospace;border:1px solid var(--line)}
+.cup.swapped{border:2px solid var(--green)}
+.cup.ball{background:var(--ball);color:#fff;font-weight:700}
+.step-line{display:flex;align-items:center;gap:8px}
+.game-controls{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;margin-bottom:12px}
+.game-controls label,.swap-selects label{display:grid;gap:4px;font-size:12px;color:var(--muted)}
+.swap-selects{display:flex;flex-wrap:wrap;gap:8px}
+.game-controls select{padding:6px;border:1px solid var(--line);border-radius:5px;background:var(--paper);color:var(--ink);font:13px Consolas,monospace}
+.token.pickable{cursor:pointer;outline:1px dashed var(--green);outline-offset:1px}
+.token.picked{outline:2px solid var(--accent)}
+.token.weighted{background:color-mix(in srgb,#6fae84 calc(var(--weight)*100%),#eef0ea)}
+.chip[aria-pressed=true]{background:var(--green);color:var(--on-green);border-color:var(--green)}
+/* Chapter 12 (tools): who wrote each token, the bestiary database and the text-only dungeon. */
+:root{--program:#cfe0f5;--program-ink:#1d3654}
+.token.program{background:var(--program)!important;color:var(--program-ink)}
+.program-sample{background:var(--program);color:var(--program-ink);padding:1px 4px;border-radius:3px}
+.db-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:4px;margin-top:8px;max-height:340px;overflow:auto}
+.db-grid.single{grid-template-columns:minmax(180px,260px);max-height:none}
+.db-cell{display:flex;justify-content:space-between;gap:8px;padding:4px 8px;border-radius:6px;background:var(--field);font-size:13px}
+.db-cell.unseen{box-shadow:inset 0 0 0 2px var(--accent)}
+.db-cell.changed strong{color:var(--accent)}
+.agent-tools{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 12px}.agent-tools .button{font-family:Consolas,monospace}
+.agent-log{display:grid;gap:4px;max-height:360px;overflow:auto;font-size:14px;padding:8px;background:var(--field);border-radius:8px;min-height:120px;align-content:start}
+.agent-line{display:flex;gap:8px;align-items:baseline}.agent-line .agent-part{margin-right:6px}
+.agent-who{min-width:72px;font:12px Consolas,monospace;color:var(--muted)}
+.agent-line.agent .agent-call{font-family:Consolas,monospace;color:var(--green);font-weight:700}
+.agent-grid{display:grid;grid-template-columns:repeat(9,28px);gap:2px;margin-top:10px}
+.agent-cell{display:grid;place-items:center;width:28px;height:28px;border-radius:3px;background:var(--field);font-size:14px;color:var(--accent)}
+.agent-cell.wall{background:var(--line)}.agent-cell.visited{background:#d7ead3}.agent-cell.goal{color:#b8860b}.agent-cell.here{background:var(--ball);color:#fff}
+@media(prefers-color-scheme:dark){:root{--program:#cfe0f5;--program-ink:#1d3654}.agent-cell.visited{background:#3d5a46}}

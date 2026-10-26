@@ -121,11 +121,35 @@ export function adam(model, rate = DEFAULTS.rate) {
 }
 export function trainBatch(model, batch, rate) { const loss = backward(model, batch); adam(model, rate); return loss; }
 
+// Generates one position at a time, keeping every earlier key and value: a new token costs one
+// position instead of the whole sequence. The arithmetic matches forward() exactly.
+export function decoder(model) {
+  const { V, D, H, params: p } = model, scale = 1 / Math.sqrt(D), keys = [], values = [];
+  const row = (x, W, rows, cols, bias) => matmul(x, 1, rows, W, cols, bias);
+  return {
+    get length() { return keys.length; },
+    // Feeds one token and returns the probabilities of the next one, plus where this position looked.
+    push(token) {
+      const t = keys.length, x0 = new Float32Array(D);
+      for (let d = 0; d < D; d++) x0[d] = p.E[token * D + d] + p.P[t * D + d];
+      const q = row(x0, p.Wq, D, D); keys.push(row(x0, p.Wk, D, D)); values.push(row(x0, p.Wv, D, D));
+      const scores = new Float32Array(t + 1);
+      for (let s = 0; s <= t; s++) { let dot = 0; for (let d = 0; d < D; d++) dot += q[d] * keys[s][d]; scores[s] = dot * scale; }
+      const attention = softmax(scores), z = new Float32Array(D);
+      for (let s = 0; s <= t; s++) for (let d = 0; d < D; d++) z[d] += attention[s] * values[s][d];
+      const o = row(z, p.Wo, D, D), x1 = x0.map((value, i) => value + o[i]);
+      const r = row(x1, p.W1, D, H, p.b1).map(Math.tanh), m = row(r, p.W2, H, D, p.b2), x2 = x1.map((value, i) => value + m[i]);
+      return { probabilities: softmax(row(x2, p.Wout, D, V, p.bout)), attention };
+    },
+  };
+}
+
 // Continues a sequence one token at a time until the stop token, the token limit or the context limit.
 export function generate(model, prefix, { maxTokens = 12, temperature = 0, stop = -1, rng = Math.random, blocked = [] } = {}) {
-  const sequence = [...prefix], produced = [];
-  while (produced.length < maxTokens && sequence.length < model.T) {
-    const probabilities = probabilitiesAt(model, forward(model, sequence), sequence.length - 1);
+  const run = decoder(model), produced = [];
+  let probabilities;
+  for (const token of prefix) probabilities = run.push(token).probabilities;
+  while (produced.length < maxTokens && run.length < model.T) {
     for (const index of blocked) probabilities[index] = 0;
     let next = 0;
     if (temperature <= 0) { for (let i = 1; i < probabilities.length; i++) if (probabilities[i] > probabilities[next]) next = i; }
@@ -133,8 +157,9 @@ export function generate(model, prefix, { maxTokens = 12, temperature = 0, stop 
       const weights = Array.from(probabilities, p => Math.pow(p, 1 / temperature)); let r = rng() * weights.reduce((a, b) => a + b, 0);
       next = weights.findIndex(w => (r -= w) <= 0); if (next < 0) next = weights.length - 1;
     }
-    sequence.push(next); produced.push(next);
-    if (next === stop) break;
+    produced.push(next);
+    if (next === stop || produced.length >= maxTokens || run.length >= model.T) break;
+    probabilities = run.push(next).probabilities;
   }
   return produced;
 }

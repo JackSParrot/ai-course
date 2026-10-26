@@ -34,7 +34,7 @@ test('language changes work without browser storage and invalid language changes
 });
 test('one shared locale runtime and catalog are published on every existing page', async () => {
   const manifest = JSON.parse(await readFile(new URL('../publication-manifest.json', import.meta.url)));
-  for (const path of ['index.html', 'perceptrons/index.html', 'digits/index.html', 'maze/index.html', 'cars/index.html', 'autoencoder/index.html', 'superresolution/index.html', 'tokens/index.html', 'predictor/index.html', 'attention/index.html', 'assistant/index.html']) {
+  for (const path of ['index.html', 'perceptrons/index.html', 'digits/index.html', 'maze/index.html', 'cars/index.html', 'autoencoder/index.html', 'superresolution/index.html', 'tokens/index.html', 'predictor/index.html', 'attention/index.html', 'assistant/index.html', 'reasoning/index.html', 'tools/index.html']) {
     const html = await readFile(new URL('../public/' + path, import.meta.url), 'utf8');
     assert.match(html, /i18n\/dom\.js\?v=[a-f0-9]{12}/);
     assert.match(html, /i18n\/language\.css\?v=[a-f0-9]{12}/);
