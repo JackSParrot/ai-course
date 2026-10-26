@@ -127,6 +127,56 @@ Con pesos aleatorios, la red puede activar a la vez acelerar y frenar. En el sim
 
 Es una broma. Los coches del curso usan 5 o 6 sensores y redes de unas decenas de parámetros, en un circuito 2D sin tráfico. La idea de fondo sí es real: una red pequeña puede controlar personajes o vehículos de un juego y ejecutarse en el propio dispositivo.
 
+## IA 03 · Tokens, embeddings y atención
+
+[Ver el vídeo](https://www.youtube.com/watch?v=wP1iQaprQ8s)
+
+### 🟡 Los modelos no se entrenan con 100 frases
+[31:06](https://www.youtube.com/watch?v=wP1iQaprQ8s&t=1866s), [32:52](https://www.youtube.com/watch?v=wP1iQaprQ8s&t=1972s) y [33:15](https://www.youtube.com/watch?v=wP1iQaprQ8s&t=1995s)
+
+**Se dijo:** que la red se entrena con «100 frases».
+
+**Lo correcto:** son bastantes más. El tokenizador y la red del capítulo 08 se entrenan con **1.400 frases** (700 en español y 700 en inglés) y se validan con otras 240. El capítulo 09 añade **600 historias** de dos frases. El preentrenamiento del capítulo 10 usa **2.380 líneas**. Siguen siendo muy pocas al lado de un LLM real, que es lo importante.
+
+### 🟡 El error de entrenamiento no es un porcentaje
+[21:30](https://www.youtube.com/watch?v=wP1iQaprQ8s&t=1290s)
+
+**Se dijo:** que el error de entrenamiento era «del 1,5 %» y el de validación «poco más del 2 %».
+
+**Lo correcto:** la gráfica muestra el **error** (la *pérdida*) como un número, no como un porcentaje. Mide lo sorprendida que está la red con el token correcto: cuanto más bajo, mejor. Empieza cerca de **6** porque, sin entrenar, la red reparte la probabilidad casi por igual entre los 389 tokens de su vocabulario (ln 389 ≈ 6). El porcentaje que aparece al lado es el **acierto en validación**.
+
+### 🟡 La activación de estas redes es tanh, no ReLU
+[31:46](https://www.youtube.com/watch?v=wP1iQaprQ8s&t=1906s)
+
+**Se dijo:** «imagino que la que se está utilizando es una ReLU».
+
+**Lo correcto:** la capa oculta del capítulo 08 y el bloque de atención del 09 y el 10 usan **tanh**, una curva suave entre −1 y 1. La respuesta de fondo sí es acertada: hay varias funciones de activación y unas funcionan mejor que otras según la red. Los LLM grandes suelen usar variantes suaves de ReLU, como GELU o SwiGLU.
+
+### 🔵 De dónde salen los 45 caracteres
+[5:07](https://www.youtube.com/watch?v=wP1iQaprQ8s&t=307s)
+
+El vocabulario por caracteres no son «24 minúsculas y 24 mayúsculas». Son los caracteres que aparecen en el texto de entrenamiento: las 26 minúsculas, 3 mayúsculas (E, L, T), 3 vocales con tilde (á, ó, ú), los 10 dígitos, el espacio y el punto. En total, 45.
+
+### 🔵 Un tokenizador de otro idioma gasta más del doble
+[17:03](https://www.youtube.com/watch?v=wP1iQaprQ8s&t=1023s)
+
+La idea es correcta. En el curso, el texto en inglés con un tokenizador entrenado solo en español ocupa **casi el triple** de tokens (2,7 ×) que con el tokenizador bilingüe. La cifra exacta depende del texto y de los idiomas.
+
+### 🔵 El tamaño de los modelos grandes
+[27:02](https://www.youtube.com/watch?v=wP1iQaprQ8s&t=1622s)
+
+Los modelos abiertos publican su tamaño, que va desde unos pocos miles de millones de parámetros hasta más de un billón. Los modelos comerciales, como los de ChatGPT, no lo publican, así que sus cifras son estimaciones. La red del capítulo 08 tiene **35.669** parámetros.
+
+### 🔵 Cómo funcionan las preferencias en la práctica
+[33:00](https://www.youtube.com/watch?v=wP1iQaprQ8s&t=1980s) y [36:44](https://www.youtube.com/watch?v=wP1iQaprQ8s&t=2204s)
+
+El capítulo 10 lo simplifica: el evaluador elige una respuesta y se reentrena con las elegidas. En los asistentes reales, las comparaciones suelen hacerlas evaluadores contratados con instrucciones, y se usan para entrenar un **modelo de recompensa** que después puntúa millones de respuestas (*RLHF*). Las valoraciones de los usuarios, como el pulgar arriba, también se usan; OpenAI señaló ese peso como una de las causas del caso de GPT-4o. Tampoco se preentrena con «todo internet»: los datos se filtran y se mezclan con libros, código y otras fuentes.
+
+### 🔵 La atención reparte, no elige
+[39:06](https://www.youtube.com/watch?v=wP1iQaprQ8s&t=2346s)
+
+Cada token no se queda solo con el token anterior «más relevante». Reparte su atención en porcentajes entre todos los anteriores y mezcla su información según esos pesos. Es lo que se ve en el capítulo 09 cuando «al» mira sobre todo a «desierto», pero no solo a él.
+
 ---
 
 # Errata (English)
@@ -153,3 +203,14 @@ Corrections and clarifications for the talks. Each item links to the exact minut
 - 🔵 Car types change several things at once (inputs, layers, activation, outputs), so one race cannot attribute an improvement to a single change.
 - 🔵 A random network can press accelerate and brake together; braking wins, so the car stays still.
 - 🔵 "Tesla self-driving in your game" is a joke: these are tiny networks with a handful of sensors on a 2D track.
+
+**IA 03 · Tokens, embeddings and attention** ([video](https://www.youtube.com/watch?v=wP1iQaprQ8s))
+
+- 🟡 **The models are not trained on 100 sentences** ([31:06](https://www.youtube.com/watch?v=wP1iQaprQ8s&t=1866s)). Chapter 08 trains on 1,400 sentences (700 Spanish, 700 English) and validates on 240; chapter 09 adds 600 two-sentence stories; chapter 10 pre-trains on 2,380 lines.
+- 🟡 **The training error is not a percentage** ([21:30](https://www.youtube.com/watch?v=wP1iQaprQ8s&t=1290s)). The chart shows the loss as a number. It starts near 6 because an untrained network spreads its probability over 389 tokens (ln 389 ≈ 6). The percentage next to it is validation accuracy.
+- 🟡 **These networks use tanh, not ReLU** ([31:46](https://www.youtube.com/watch?v=wP1iQaprQ8s&t=1906s)). Large LLMs usually use smooth ReLU variants such as GELU or SwiGLU.
+- 🔵 The 45 characters are those in the training text: 26 lowercase, 3 uppercase, á ó ú, 10 digits, space and full stop.
+- 🔵 English text with a Spanish-only tokenizer takes about 2.7 × the tokens of the bilingual one ("about double" in the talk).
+- 🔵 Open models publish their size (a few billion to over a trillion parameters); commercial models such as ChatGPT's do not. The chapter 08 network has 35,669.
+- 🔵 Real preference tuning usually trains a reward model on comparisons by hired raters (RLHF), plus user feedback; pre-training data is filtered and mixed, not "the whole internet".
+- 🔵 Attention spreads percentages over all previous tokens and mixes them; it does not pick a single "most relevant" one.
