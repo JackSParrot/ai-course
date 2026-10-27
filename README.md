@@ -26,6 +26,7 @@ Ese único archivo incluye el curso completo, ambos idiomas y los datos de entre
 | **10 · Del modelo al asistente** | Preentrena, ajusta con instrucciones y con preferencias. Descubre cómo un modelo aprende a dar la razón aunque mienta si los evaluadores premian que se la den. |
 | **11 · Pensar antes de responder** | Con el trile, comprueba por qué escribir los pasos ayuda: de golpe el modelo apenas supera el azar y pensando acierta. Mira a qué cambio atiende cada paso, equivócate tú y descubre cómo aprende a pensar cuando se premian las respuestas que se pueden comprobar. |
 | **12 · Herramientas y agentes** | Un modelo que memoriza se inventa las vidas de los enemigos que no vio; uno que usa una herramienta las copia. Haz de programa y miéntele, comprueba cómo un modelo que obedece correcciones cae en una inyección y juega como un agente en una mazmorra que solo ves en texto. |
+| **13 · Caché y coste** | Mira qué guarda el KV cache y compruébalo con la red del capítulo 09: las mismas probabilidades con 528 posiciones calculadas o con 32. Cambia un bloque del prompt para ver qué se recalcula y cuánto cuesta, y compara la factura de un agente con y sin caché. |
 
 Usa **ES / EN** para cambiar el idioma. Los cálculos ocurren en tu navegador. Exporta tus experimentos para llevarlos a otro equipo o entre la web y el archivo portable.
 
@@ -51,7 +52,7 @@ El build actualiza `Neural-Labs.html` y genera la versión web en `public/`. Par
 
 | Carpeta | Contenido |
 | --- | --- |
-| `course/`, `digits/`, `autoencoder/`, `superresolution/`, `maze/`, `cars/`, `tokens/`, `predictor/`, `attention/`, `assistant/`, `reasoning/`, `tools/` | Los doce capítulos y sus datos. |
+| `course/`, `digits/`, `autoencoder/`, `superresolution/`, `maze/`, `cars/`, `tokens/`, `predictor/`, `attention/`, `assistant/`, `reasoning/`, `tools/`, `cache/` | Los trece capítulos y sus datos. |
 | `shell/`, `i18n/` | Portada, navegación, estilos comunes y traducciones. |
 | `scripts/` | Generación del HTML portable, build web, servidor y lanzadores. |
 | `tests/` | Pruebas del curso; el taller de coches también tiene `cars/tests/`. |
@@ -63,7 +64,7 @@ Edita las fuentes y regenera el HTML; no edites el archivo generado directamente
 
 An interactive course about neural networks, from a single neuron to handwritten digits, self-driving cars and next-word prediction. Switch between **English and Spanish** using **EN / ES**.
 
-**No installation:** download the repository ZIP, extract it and double-click **`Neural-Labs.html`**. The single file contains all twelve chapters, training data and training code. It works offline, with no server or Node.js required. Chapters 3 and 4 explore convolutional autoencoders and image super-resolution, with every layer and activation available for inspection. Then come genetic algorithms in a maze and neural networks that drive cars. Chapters 7 to 9 are the bridge to large language models: step by step, a BPE tokenizer turns text into tokens, a tiny network predicts the next token, a tiny transformer shows what attention adds, chapter 10 turns it into an assistant, showing how rater preferences can make it sycophantic, chapter 11 shows with a shell game why writing the steps helps and how a model learns to think from verifiable rewards, and chapter 12 shows what a tool is, why an agent believes what a tool returns and how an injection takes control of it.
+**No installation:** download the repository ZIP, extract it and double-click **`Neural-Labs.html`**. The single file contains all thirteen chapters, training data and training code. It works offline, with no server or Node.js required. Chapters 3 and 4 explore convolutional autoencoders and image super-resolution, with every layer and activation available for inspection. Then come genetic algorithms in a maze and neural networks that drive cars. Chapters 7 to 9 are the bridge to large language models: step by step, a BPE tokenizer turns text into tokens, a tiny network predicts the next token, a tiny transformer shows what attention adds, chapter 10 turns it into an assistant, showing how rater preferences can make it sycophantic, chapter 11 shows with a shell game why writing the steps helps and how a model learns to think from verifiable rewards, chapter 12 shows what a tool is, why an agent believes what a tool returns and how an injection takes control of it, and chapter 13 shows what the KV cache keeps and how prompt caching makes using a model cheaper.
 
 **Talks and errata:** the course accompanies a video series ([AI 01](https://www.youtube.com/watch?v=lE2Z-ayxwzU), [AI 02](https://www.youtube.com/watch?v=jS0QtadL5fo)). Corrections and clarifications, linked to the exact minute, are in the [errata](docs/FE-DE-ERRATAS.md#errata-english).
 

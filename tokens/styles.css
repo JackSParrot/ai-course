@@ -271,3 +271,37 @@ footer{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;font-s
 .agent-cell{display:grid;place-items:center;width:28px;height:28px;border-radius:3px;background:var(--field);font-size:14px;color:var(--accent)}
 .agent-cell.wall{background:var(--line)}.agent-cell.visited{background:#d7ead3}.agent-cell.goal{color:#b8860b}.agent-cell.here{background:var(--ball);color:#fff}
 @media(prefers-color-scheme:dark){:root{--program:#cfe0f5;--program-ink:#1d3654}.agent-cell.visited{background:#3d5a46}}
+/* Chapter 13 (cache): K and V per layer and token, prefill and decode, and the blocks of a prompt. */
+.model-stats.two{grid-template-columns:repeat(2,1fr)}
+.kv-lab{margin-top:18px}
+.kv-scroll{overflow-x:auto;width:100%}
+.kv-grid{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(64px,1fr);gap:6px;min-width:max-content}
+.kv-col{display:grid;gap:5px}.kv-labels{min-width:52px}
+.kv-word{font:13px Consolas,monospace;text-align:center;padding:3px 0;border-bottom:2px solid var(--line);white-space:nowrap}
+.kv-word.fresh{border-color:var(--ink);font-weight:700}.kv-word.ghost{opacity:.4}
+.kv-labels .kv-word{border-color:transparent}
+.kv-layer{font:11px Consolas,monospace;color:var(--muted);display:grid;align-content:center;min-height:26px}
+.kv-cell{display:grid;grid-template-columns:1fr 1fr;gap:3px}
+.kv-key{font:11px Consolas,monospace;text-align:center;border-radius:4px;padding:4px 0;border:1.5px solid transparent;transition:background-color .25s,border-color .25s}
+.kv-key.empty{border:1.5px dashed var(--line);color:transparent}
+.kv-key.now{background:var(--generated);color:#18361f;border-color:var(--green)}
+.kv-key.cached{background:var(--program);color:var(--program-ink)}
+.kv-key.redo{background:var(--seen);color:var(--seen-ink);border-color:var(--accent)}
+.kv-legend{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px}.kv-legend .kv-key{display:inline-block;width:22px;margin-left:8px}
+.phase-rows{display:grid;gap:10px;margin-top:6px}
+.phase-row{display:grid;grid-template-columns:70px 1fr;align-items:center;gap:10px}
+.phase-track{display:flex;flex-wrap:wrap;gap:3px}
+.phase-token{width:16px;height:16px;border-radius:3px;background:var(--field);border:1px solid var(--line);transition:background-color .2s}
+.phase-token.read{background:var(--green);border-color:var(--green)}.phase-token.written{background:var(--accent);border-color:var(--accent)}
+.prompt-blocks{display:flex;min-height:72px;border:1px solid var(--line);border-radius:10px;overflow:hidden;margin:10px 0}
+.prompt-block{flex:1 1 0;min-width:0;display:grid;align-content:center;gap:2px;text-align:left;padding:8px;border:0;border-right:2px solid var(--paper);transition:background-color .25s}
+.prompt-block:last-child{border-right:0}
+.prompt-block.hit{background:var(--program);color:var(--program-ink)}
+.prompt-block.miss{background:var(--seen);color:var(--seen-ink)}
+.prompt-block.changed{box-shadow:inset 0 0 0 3px var(--accent)}
+.prompt-name{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.prompt-tokens{font:12px Consolas,monospace}
+.bill-controls{display:grid;gap:12px}.bill-controls label{display:grid;gap:5px;font-size:13px;color:var(--muted)}.bill-controls input{accent-color:var(--green);width:100%}
+.legend-without{color:var(--accent)}.legend-with{color:var(--green)}
+@media(max-width:600px){.model-stats.two{grid-template-columns:1fr}.prompt-blocks{flex-direction:column}.prompt-block{flex:none!important;grid-template-columns:1fr auto;border-right:0;border-bottom:2px solid var(--paper)}}
+@media(prefers-reduced-motion:reduce){.kv-key,.phase-token,.prompt-block{transition:none}}
