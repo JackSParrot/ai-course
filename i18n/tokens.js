@@ -1278,6 +1278,11 @@ export default {
  "Te mueves al oeste.":"You move west.",
  "¡Has encontrado el tesoro!":"You found the treasure!",
   // Chapter 13 (cache)
+ "No repetir el trabajo":"Not repeating the work",
+ "Una caché.":"A cache.",
+ "Pedir lo que no sabe":"Asking for what it does not know",
+ "Una herramienta.":"A tool.",
+ "Recorrido: perceptrones, dígitos, autoencoder, superresolución, laberinto, coches, tokens, siguiente token, atención, asistente, razonamiento, herramientas y caché":"Route: perceptrons, digits, autoencoder, super-resolution, maze, cars, tokens, next token, attention, assistant, reasoning, tools and cache",
  "Frase de ejemplo con 4 capas para que quepa en pantalla. Una posición es pasar un token por todas las capas. Para generar 1.000 tokens desde cero serían 1 + 2 + … + 1.000 = 500.500 posiciones sin caché y 1.000 con caché.":"An example sentence with 4 layers so it fits on screen. A position is one token passed through every layer. To generate 1,000 tokens from scratch it would take 1 + 2 + … + 1,000 = 500,500 positions without a cache and 1,000 with one.",
  ". Genera una frase token a token, con y sin él.":". Generate a sentence token by token, with and without it.",
  "En el capítulo 09 viste la atención: para escribir el siguiente token, el último compara su consulta (Q) con la clave (K) de cada token anterior y se lleva una mezcla de sus valores (V), en cada capa. La atención solo mira hacia atrás, así que la K y la V de un token no cambian cuando llegan tokens nuevos. Se pueden guardar: ese almacén es el":"In chapter 09 you saw attention: to write the next token, the last one compares its query (Q) with the key (K) of every earlier token and takes a mix of their values (V), in every layer. Attention only looks back, so the K and the V of a token do not change when new tokens arrive. They can be kept: that store is the",
