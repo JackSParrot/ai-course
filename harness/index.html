@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#17372e"><title>Arnés — De responder a hacer</title><link rel="icon" href="../digits/favicon.svg"><link rel="stylesheet" href="../tokens/styles.css"></head><body>
+<header class="tokens-header"><a href="../">neural / <b>labs</b></a><span>CAPÍTULO 14 · EL ARNÉS</span></header>
+<main>
+<section class="intro" aria-labelledby="harness-title"><div><p class="eyebrow">ARNÉS</p><h1 id="harness-title">El mismo modelo.<br>Otro programa alrededor.</h1><p>Claude en el chat y Claude Code usan el mismo modelo. Al primero le preguntas y te contesta. Al segundo le das un encargo: abre tus archivos, hace el trabajo y te lo deja hecho. La diferencia no está en el modelo, sino en el programa que lo rodea.</p><p>Ese programa es <strong>el arnés</strong><span class="es-only" data-i18n-ignore> (en inglés, <em>harness</em>)</span>. En este capítulo verás qué lleva dentro y por qué convierte un generador de texto en algo que trabaja contigo.</p><a href="#solo-texto" class="button primary">Empezar ↓</a></div>
+<div class="analogy-grid" aria-label="Tres ideas del capítulo"><div><span class="eyebrow">EL MODELO</span><strong>Escribe texto</strong><small>es lo único que sabe hacer</small></div><div class="accent"><span class="eyebrow">EL ARNÉS</span><strong>Lo pone a trabajar</strong><small>le da instrucciones, herramientas y un bucle</small></div><div><span class="eyebrow">EL RESULTADO</span><strong>De responder a hacer</strong><small>del chat al agente</small></div></div></section>
+
+<section id="solo-texto" class="lesson-section" aria-labelledby="text-title"><p class="eyebrow">01 / SOLO TEXTO</p><h2 id="text-title">Un modelo solo escribe texto.</h2><p>Desde el capítulo 08 lo sabes: un modelo de lenguaje recibe texto y escribe la continuación, palabra a palabra. No tiene manos. No puede abrir una carpeta ni pulsar un botón.</p>
+<div id="text-explainer" class="explainer">
+<ol class="stage-track"><li data-stage="1"><span>1</span>Solo escribe</li><li data-stage="2"><span>2</span>No puede hacer</li><li data-stage="3"><span>3</span>Puede pedir</li><li data-stage="4"><span>4</span>Alguien lo hace</li></ol>
+<div class="stage-panel"><h3 class="stage-title"></h3><div class="stage-visual"></div><p class="stage-caption"></p></div>
+<div class="stepper-controls"><button type="button" class="button outline" data-step="prev">← Anterior</button><span class="step-count"></span><button type="button" class="button primary" data-step="next">Siguiente →</button><button type="button" class="button outline" data-step="play">▶ Reproducir</button></div>
+</div></section>
+
+<section id="dos-programas" class="lesson-section" aria-labelledby="two-title"><p class="eyebrow">02 / DOS PROGRAMAS</p><h2 id="two-title">El mismo encargo, dos programas.</h2><p>El equipo vuelve de la Gamescom, en Colonia, con una carpeta de 40 tickets: restaurantes, taxis, el hotel, un museo… en español, en alemán y en inglés. Hay que saber cuánto se gastó en cada cosa. Le hacemos el mismo encargo al mismo modelo, Claude Sonnet 5.5, en dos programas distintos.</p>
+<div class="receipt-intro"><div class="request-bubble"><span class="eyebrow">EL ENCARGO</span><p id="request-text"></p></div><figure class="receipt-sample"><figcaption class="eyebrow">UNO DE LOS 40 TICKETS</figcaption><pre id="receipt-sample"></pre></figure></div>
+<div class="two-programs"><div class="panel program-panel"><span class="eyebrow">COMO UN CHAT</span><h3>Solo el modelo</h3><div id="chat-answer" class="chat-answer"></div></div>
+<div class="panel program-panel"><span class="eyebrow">COMO CLAUDE CODE</span><h3>El modelo con un arnés</h3><div id="agent-timeline" class="timeline"></div><div class="settings"><button id="agent-next" type="button" class="button primary">Siguiente paso →</button><button id="agent-play" type="button" class="button outline">▶ Reproducir</button><button id="agent-reset" type="button" class="button outline">Empezar de nuevo</button></div></div></div>
+<p class="fine">Tickets inventados para este capítulo. Respuestas reales, grabadas el 27 de octubre de 2026 con Claude Code 2.1.287; la de la izquierda, sin ninguna herramienta, como en un chat. Los mensajes se dejan en español, tal como se grabaron.</p>
+<div class="lesson-note"><strong>El chat no es tonto: está a ciegas.</strong> No ve tu carpeta, así que te pide que le pegues los tickets. Hace lo correcto con lo que tiene. Lo que le falta no es inteligencia, sino manos y ojos, y eso se lo da el arnés.</div></section>
+
+<section id="dentro" class="lesson-section" aria-labelledby="inside-title"><p class="eyebrow">03 / DENTRO DEL ARNÉS</p><h2 id="inside-title">Qué lleva dentro el programa.</h2><p>El arnés es un programa normal, escrito por personas. Pulsa cada pieza para ver qué hace.</p>
+<div class="harness-map"><div class="harness-ring"><div class="harness-core">El modelo de lenguaje<small>solo escribe texto</small></div><div id="harness-parts" class="harness-parts" role="group" aria-label="Piezas del arnés"></div></div>
+<div id="part-detail" class="panel part-detail" aria-live="polite"></div></div></section>
+
+<section id="monta" class="lesson-section" aria-labelledby="build-title"><p class="eyebrow">04 / MONTA TU ASISTENTE</p><h2 id="build-title">Añade piezas al mismo modelo.</h2><p>Es el mismo encargo de la sección 02. Ve añadiendo piezas al arnés y mira qué consigue el mismo modelo en cada caso. Las tres respuestas son reales.</p>
+<div id="build-levels" class="build-levels" role="group" aria-label="Piezas del asistente"></div>
+<div class="model-layout"><div class="panel"><h3 id="build-level-title"></h3><div id="build-timeline" class="timeline"></div><div id="build-final" class="chat-answer"></div></div>
+<div class="panel build-result"><span class="eyebrow">COMPROBADO DESDE FUERA</span><div id="build-checks" class="build-checks"></div><p id="build-verdict" class="lesson-note"></p></div></div></section>
+
+<section id="repetir" class="lesson-section" aria-labelledby="repeat-title"><p class="eyebrow">05 / 23 INTENTOS</p><h2 id="repeat-title">Lo repetimos 23 veces.</h2><p>Una sola respuesta puede ser suerte. Repetimos el mismo encargo 3 veces como chat, 10 con herramientas para leer y escribir, y 10 con el ordenador. Cada casilla es un intento: en verde, si la tabla estaba bien.</p>
+<div id="repeat-rows" class="panel repeat-rows"></div>
+<p class="fine">Comprobamos cada tabla desde fuera: que estén los 40 tickets, una vez cada uno, con su importe exacto y una categoría razonable, y que las sumas cuadren. En tres tickets dudosos aceptamos dos categorías: un bar, una gasolinera donde también se compró un bocadillo y el minibar del hotel.</p>
+<div class="lesson-note"><strong>El salto está en el programa, no en el modelo.</strong> Como chat no pudo hacerlo ninguna vez; con acceso a la carpeta, todas. Sumar 40 importes no le cuesta: sin ordenador acertó igual. Con él, la mitad de las veces se aseguró repasando las sumas con un pequeño programa.</div></section>
+
+<section id="vida-real" class="lesson-section" aria-labelledby="real-title"><p class="eyebrow">06 / EN LA VIDA REAL</p><h2 id="real-title">Del chat al agente.</h2><p>Casi todos los asistentes tienen ya las dos versiones. El modelo puede ser el mismo; lo que cambia es lo que el programa le deja hacer.</p>
+<div class="oddity-grid">
+<article><span>CHAT</span><h3>Claude, ChatGPT, Gemini</h3><p>Conversas y te responde. Ve lo que le escribes o le adjuntas. Si tiene alguna herramienta, como buscar en internet, es una pieza más del arnés.</p></article>
+<article><span>AGENTE</span><h3>Claude Code, el modo agente de ChatGPT</h3><p>Le das un encargo y trabaja: abre archivos, ejecuta programas, navega por webs. Repite el bucle hasta terminar y te cuenta qué ha hecho.</p></article>
+<article><span>EN EL EDITOR</span><h3>Cursor, GitHub Copilot</h3><p>El mismo tipo de arnés dentro del editor de los programadores. Muchos te dejan elegir el modelo: el arnés es el mismo.</p></article>
+<article><span>CONSEJO 1</span><h3>Dale instrucciones</h3><p>Cuéntale cómo quieres el trabajo y qué no debe tocar. Algunos arneses lo leen de un archivo, como CLAUDE.md, al empezar cada vez, como un compañero nuevo que lee la documentación.</p></article>
+<article><span>CONSEJO 2</span><h3>Decide qué puede hacer solo</h3><p>Leer suele ser seguro. Cambiar, ejecutar o borrar, mejor que te pregunte hasta que confíes. En el capítulo 12 viste por qué: un texto de fuera puede colarse como una orden.</p></article>
+<article><span>CONSEJO 3</span><h3>Dale forma de comprobar</h3><p>Un ordenador para hacer cuentas, una lista de lo que tiene que estar, unas pruebas que pasar. Con eso, el agente puede repasar su trabajo. Sin eso, te toca revisarlo todo a ti.</p></article>
+</div></section>
+
+<section id="por-dentro" class="lesson-section" aria-labelledby="loop-title"><p class="eyebrow">07 / PARA CURIOSOS</p><h2 id="loop-title">Un arnés mínimo, por dentro.</h2><p>Opcional, para quien programa. Este es el bucle de un agente, escrito para este capítulo con el kit oficial de Anthropic. Los arneses de verdad hacen lo mismo con muchas más piezas.</p>
+<div id="loop-explainer" class="explainer">
+<ol class="stage-track"><li data-stage="1"><span>1</span>Preparar la petición</li><li data-stage="2"><span>2</span>Preguntar al modelo</li><li data-stage="3"><span>3</span>¿Ha terminado?</li><li data-stage="4"><span>4</span>Hacer lo que pide</li><li data-stage="5"><span>5</span>Saber parar</li></ol>
+<div class="stage-panel"><h3 class="stage-title"></h3><div class="stage-visual"></div><p class="stage-caption"></p></div>
+<div class="stepper-controls"><button type="button" class="button outline" data-step="prev">← Anterior</button><span class="step-count"></span><button type="button" class="button primary" data-step="next">Siguiente →</button><button type="button" class="button outline" data-step="play">▶ Reproducir</button></div>
+</div></section>
+
+<section class="lesson-section chapter-bridge" aria-labelledby="bridge-title"><p class="eyebrow">FIN DEL RECORRIDO</p><h2 id="bridge-title">Ya sabes qué hay detrás de un agente.</h2><p>Un modelo que escribe texto, y un programa que le da instrucciones, herramientas y un bucle para pedir, hacer, mirar y repetir. Con lo que has visto desde el capítulo 07 puedes explicar qué pasa cuando Claude Code o ChatGPT trabajan contigo. En las próximas charlas lo usaremos en la práctica.</p></section>
+</main>
+<footer><span>neural / labs · arnés</span><span>Tickets inventados. Respuestas y experimento reales, grabados con Claude Code y Claude Sonnet 5.5 el 27 de octubre de 2026.</span></footer>
+<script type="module" src="./src/app.js"></script>
+</body></html>

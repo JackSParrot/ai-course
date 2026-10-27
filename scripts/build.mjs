@@ -8,7 +8,7 @@ const outArg=process.argv.find(arg=>arg.startsWith('--out='));
 const releaseRoot=outArg?resolve(root,outArg.slice(6)):root;
 if(releaseRoot!==root&&!releaseRoot.startsWith(root+sep))throw Error('Build output must stay inside this project.');
 const publicRoot=join(releaseRoot,'public');
-const sources={cars:join(root,'cars'),digits:join(root,'digits'),maze:join(root,'maze'),perceptrons:join(root,'course'),autoencoder:join(root,'autoencoder'),superresolution:join(root,'superresolution'),tokens:join(root,'tokens'),predictor:join(root,'predictor'),attention:join(root,'attention'),assistant:join(root,'assistant'),reasoning:join(root,'reasoning'),tools:join(root,'tools'),cache:join(root,'cache')};
+const sources={cars:join(root,'cars'),digits:join(root,'digits'),maze:join(root,'maze'),perceptrons:join(root,'course'),autoencoder:join(root,'autoencoder'),superresolution:join(root,'superresolution'),tokens:join(root,'tokens'),predictor:join(root,'predictor'),attention:join(root,'attention'),assistant:join(root,'assistant'),reasoning:join(root,'reasoning'),tools:join(root,'tools'),cache:join(root,'cache'),harness:join(root,'harness')};
 // Deliberate allowlist: no repository roots, private checkpoints or original download caches.
 const files={
 autoencoder:['index.html','styles.css',...['app','network','data','viewer','worker'].map(n=>'src/'+n+'.js')],
@@ -23,9 +23,10 @@ attention:['index.html',...['app','transformer','worker'].map(n=>'src/'+n+'.js')
 assistant:['index.html',...['app','training','world','worker'].map(n=>'src/'+n+'.js')],
 reasoning:['index.html',...['app','data','shell-game','training','worker'].map(n=>'src/'+n+'.js')],
 tools:['index.html',...['app','bestiary','training','worker'].map(n=>'src/'+n+'.js')],
-cache:['index.html',...['app','cost'].map(n=>'src/'+n+'.js')]
+cache:['index.html',...['app','cost'].map(n=>'src/'+n+'.js')],
+harness:['index.html',...['app','session'].map(n=>'src/'+n+'.js')]
 };
-const chapters=[{app:'perceptrons',title:'Perceptrones'},{app:'digits',title:'Aprender a leer'},{app:'autoencoder',title:'Autoencoder'},{app:'superresolution',title:'Superresolución'},{app:'maze',title:'Algoritmos genéticos'},{app:'cars',title:'Coches'},{app:'tokens',title:'Tokens'},{app:'predictor',title:'Siguiente token'},{app:'attention',title:'Atención'},{app:'assistant',title:'Del modelo al asistente'},{app:'reasoning',title:'Pensar antes de responder'},{app:'tools',title:'Herramientas y agentes'},{app:'cache',title:'Caché y coste'}];
+const chapters=[{app:'perceptrons',title:'Perceptrones'},{app:'digits',title:'Aprender a leer'},{app:'autoencoder',title:'Autoencoder'},{app:'superresolution',title:'Superresolución'},{app:'maze',title:'Algoritmos genéticos'},{app:'cars',title:'Coches'},{app:'tokens',title:'Tokens'},{app:'predictor',title:'Siguiente token'},{app:'attention',title:'Atención'},{app:'assistant',title:'Del modelo al asistente'},{app:'reasoning',title:'Pensar antes de responder'},{app:'tools',title:'Herramientas y agentes'},{app:'cache',title:'Caché y coste'},{app:'harness',title:'El arnés'}];
 const digest=b=>createHash('sha256').update(b).digest('hex'),captured=[];
 for(const [app,list]of Object.entries(files))for(const file of list){
  const source=join(sources[app],file),buffer=await readFile(source);
@@ -43,9 +44,9 @@ const navVersion=digest(await readFile(join(root,'shell/hub-nav.css'))).slice(0,
 const landingVersion=digest(await readFile(join(root,'shell/landing.css'))).slice(0,12);
 const courseVersion=digest(Buffer.concat(captured.filter(item=>item.app==='perceptrons').map(item=>item.buffer))).slice(0,12);
 const appVersion=(...apps)=>digest(Buffer.concat(captured.filter(item=>apps.includes(item.app)&&!item.file.startsWith('data/')).sort((a,b)=>a.file<b.file?-1:a.file>b.file?1:0).map(item=>item.buffer))).slice(0,12);
-// Chapters 07–13 share modules and styles, so they share one version.
-const textVersion=appVersion('tokens','predictor','attention','assistant','reasoning','tools','cache');
-const versions={digits:appVersion('digits'),tokens:textVersion,predictor:textVersion,attention:textVersion,assistant:textVersion,reasoning:textVersion,tools:textVersion,cache:textVersion},digitsVersion=versions.digits;
+// Chapters 07–14 share modules and styles, so they share one version.
+const textVersion=appVersion('tokens','predictor','attention','assistant','reasoning','tools','cache','harness');
+const versions={digits:appVersion('digits'),tokens:textVersion,predictor:textVersion,attention:textVersion,assistant:textVersion,reasoning:textVersion,tools:textVersion,cache:textVersion,harness:textVersion},digitsVersion=versions.digits;
 function navigation(app){
  const index=chapters.findIndex(c=>c.app===app),number=String(index+1).padStart(2,'0');
  const previous=index>0?'<a class="course-previous" href="../'+chapters[index-1].app+'/">← Anterior: '+chapters[index-1].title+'</a>':'<a class="course-previous" href="../">← Índice del curso</a>';
