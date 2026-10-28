@@ -21,7 +21,7 @@ tokens:['index.html','styles.css',...['app','bpe','corpus','ui'].map(n=>'src/'+n
 predictor:['index.html',...['app','embedding-map','model','worker'].map(n=>'src/'+n+'.js')],
 attention:['index.html',...['app','transformer','worker'].map(n=>'src/'+n+'.js')],
 assistant:['index.html',...['app','training','world','worker'].map(n=>'src/'+n+'.js')],
-reasoning:['index.html',...['app','data','shell-game','training','worker'].map(n=>'src/'+n+'.js')],
+reasoning:['index.html','src/app.js'],
 tools:['index.html',...['app','bestiary','training','worker'].map(n=>'src/'+n+'.js')],
 cache:['index.html',...['app','cost'].map(n=>'src/'+n+'.js')],
 harness:['index.html',...['app','session'].map(n=>'src/'+n+'.js')],

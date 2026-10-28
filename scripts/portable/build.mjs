@@ -29,7 +29,6 @@ export async function buildPortable(root,releaseRoot){
    if(name==='digits/src/app.js'||name==='cars/src/training-ui.js')replace(/new Worker\(new URL\(['"]\.\/[^'"]+['"],\s*import\.meta\.url\),\s*\{\s*type:\s*['"]module['"]\s*\}\)/g,'globalThis.__NEURAL_PORTABLE__.worker('+JSON.stringify(name.startsWith('digits/')?'digits':'cars')+')');
    if(name==='assistant/src/app.js')replace(/new Worker\(new URL\(['"]\.\/worker\.js['"],\s*import\.meta\.url\),\s*\{\s*type:\s*['"]module['"]\s*\}\)/g,"globalThis.__NEURAL_PORTABLE__.worker('assistant')");
    if(name==='tools/src/app.js')replace(/new Worker\(new URL\(['"]\.\/worker\.js['"],\s*import\.meta\.url\),\s*\{\s*type:\s*['"]module['"]\s*\}\)/g,"globalThis.__NEURAL_PORTABLE__.worker('tools')");
-   if(name==='reasoning/src/app.js')replace(/new Worker\(new URL\(['"]\.\/worker\.js['"],\s*import\.meta\.url\),\s*\{\s*type:\s*['"]module['"]\s*\}\)/g,"globalThis.__NEURAL_PORTABLE__.worker('reasoning')");
    if(name==='attention/src/app.js')replace(/new Worker\(new URL\(['"]\.\/worker\.js['"],\s*import\.meta\.url\),\s*\{\s*type:\s*['"]module['"]\s*\}\)/g,"globalThis.__NEURAL_PORTABLE__.worker('attention')");
    if(name==='predictor/src/app.js')replace(/new Worker\(new URL\(['"]\.\/worker\.js['"],\s*import\.meta\.url\),\s*\{\s*type:\s*['"]module['"]\s*\}\)/g,"globalThis.__NEURAL_PORTABLE__.worker('predictor')");
    if(name==='autoencoder/src/app.js')replace(/new Worker\(new URL\(['"]\.\/worker\.js['"],\s*import\.meta\.url\),\s*\{\s*type:\s*['"]module['"]\s*\}\)/g,"globalThis.__NEURAL_PORTABLE__.worker('images')");
@@ -47,7 +46,7 @@ export async function buildPortable(root,releaseRoot){
   return result.outputFiles[0].text;
  }
  const workers={};
- for(const [name,entry]of Object.entries({digits:'digits/src/worker.js',cars:'cars/src/training-worker.js',images:'autoencoder/src/worker.js',predictor:'predictor/src/worker.js',attention:'attention/src/worker.js',assistant:'assistant/src/worker.js',reasoning:'reasoning/src/worker.js',tools:'tools/src/worker.js'}))workers[name]=await bundle('import '+JSON.stringify('./'+entry)+';');
+ for(const [name,entry]of Object.entries({digits:'digits/src/worker.js',cars:'cars/src/training-worker.js',images:'autoencoder/src/worker.js',predictor:'predictor/src/worker.js',attention:'attention/src/worker.js',assistant:'assistant/src/worker.js',tools:'tools/src/worker.js'}))workers[name]=await bundle('import '+JSON.stringify('./'+entry)+';');
  const provenance=(await asset('/digits/data/PROVENANCE.md')).toString('base64');
  const entries={home:null,perceptrons:'course/lesson.js',digits:'digits/src/app.js',autoencoder:'autoencoder/src/app.js',superresolution:'superresolution/src/app.js',maze:'maze/src/app.js',cars:'cars/src/app.js',tokens:'tokens/src/app.js',predictor:'predictor/src/app.js',attention:'attention/src/app.js',assistant:'assistant/src/app.js',reasoning:'reasoning/src/app.js',tools:'tools/src/app.js',cache:'cache/src/app.js',harness:'harness/src/app.js',skills:'skills/src/app.js',memory:'memory/src/app.js'},pages={};
  for(const [name,entry]of Object.entries(entries)){
