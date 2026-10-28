@@ -14,7 +14,7 @@ const html=await readFile(output,'utf8'),pack=JSON.parse(html.match(/<script id=
 const bytes=url=>Buffer.from(url.slice(url.indexOf(',')+1),'base64');
 
 test('one portable file contains every page, styles, locale and all hash-verified MNIST data',()=>{
- assert.deepEqual(Object.keys(pack.pages),['home','perceptrons','digits','autoencoder','superresolution','maze','cars','tokens','predictor','attention','assistant','reasoning','tools','cache','harness']);
+ assert.deepEqual(Object.keys(pack.pages),['home','perceptrons','digits','autoencoder','superresolution','maze','cars','tokens','predictor','attention','assistant','reasoning','tools','cache','harness','skills']);
  for(const page of Object.values(pack.pages)){
   assert.doesNotMatch(page.html,/<script[^>]*src=|<link[^>]*rel="stylesheet"/);
   assert.ok(page.html.includes('<style>'));assert.ok(page.html.includes('data-portable-page='));

@@ -34,7 +34,7 @@ function updateLinks() {
     const href = anchor.getAttribute('href');
     if (!href || href.startsWith('#') || anchor.hasAttribute('download')) continue;
     const url = new URL(href, location.href);
-    if (url.origin !== location.origin || !/^\/(?:index\.html|(?:perceptrons|digits|maze|cars|autoencoder|superresolution|tokens|predictor|attention|assistant|reasoning|tools|cache|harness)\/(?:index\.html)?)?$/.test(url.pathname)) continue;
+    if (url.origin !== location.origin || !/^\/(?:index\.html|(?:perceptrons|digits|maze|cars|autoencoder|superresolution|tokens|predictor|attention|assistant|reasoning|tools|cache|harness|skills)\/(?:index\.html)?)?$/.test(url.pathname)) continue;
     url.searchParams.set('lang', getLanguage());
     const next = url.pathname + url.search + url.hash;
     if (href !== next) anchor.setAttribute('href', next);

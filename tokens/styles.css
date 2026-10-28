@@ -359,3 +359,34 @@ html[lang=en] .es-only{display:none}
 @media(max-width:600px){.repeat-row{grid-template-columns:1fr}.score-cell{width:30px;height:30px}}
 @media(max-width:600px){.harness-parts{grid-template-columns:1fr}.tool-row{grid-template-columns:1fr}.request-bubble{margin-left:0}}
 @media(prefers-reduced-motion:reduce){.code-line{transition:none}}
+/* Chapter 15 (skills and MCP): the inventory, the skill menu, the house rules and the MCP server. */
+.inventory{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px;width:100%;max-width:560px}
+.inventory .slot{display:grid;place-items:center;min-height:46px;border:1px dashed var(--line);border-radius:6px;font-size:11.5px;color:var(--muted);background:var(--paper)}
+.inventory .slot.full{border-style:solid;border-color:var(--accent);background:var(--seen);color:var(--seen-ink)}
+.menu-list{display:grid;gap:6px;width:100%;max-width:620px;text-align:left}
+.menu-item{display:grid;grid-template-columns:minmax(150px,auto) 1fr;gap:10px;align-items:baseline;padding:8px 12px;border:1px solid var(--line);border-radius:8px;background:var(--paper);font-size:13px}
+.menu-item code{font-size:12px}.menu-item.picked{border-color:var(--green);box-shadow:inset 3px 0 var(--green)}
+.open-skill{display:grid;gap:8px;width:100%;max-width:620px;text-align:left}
+.open-arrow{font-size:12px;color:var(--green);font-weight:600}
+.skill-body{white-space:pre-wrap}.skill-body,.policy-file pre{font:12px/1.6 Consolas,monospace}
+.policy-file{margin:12px 0}.policy-file summary{cursor:pointer;font-size:14px}.policy-file pre{margin:10px 0 0;white-space:pre-wrap;padding:12px 14px;background:var(--field);border-radius:8px}
+.rule-table{display:grid;gap:6px;margin-top:8px}
+.rule-row{display:grid;grid-template-columns:minmax(200px,1.1fr) 1fr 1fr;gap:10px;align-items:start;padding:8px 0;border-top:1px solid var(--line)}
+.rule-head{font:10px Consolas,monospace;letter-spacing:1px;color:var(--muted);text-transform:uppercase;border-top:0}
+.rule-name{display:grid;gap:2px}.rule-name strong{font-size:14px}.rule-name small{font-size:12px;color:var(--muted)}
+.rule-cell{display:grid;grid-template-columns:24px 1fr;gap:8px;align-items:start}.rule-cell code{font-size:11.5px;white-space:pre-wrap;background:none;padding:0;overflow-wrap:anywhere}
+.build-mark.yes{background:var(--generated);color:#18361f}.build-mark.no{background:var(--seen);color:var(--seen-ink)}
+.rule-cell.no code{color:var(--muted)}
+.menu-entry{display:grid;gap:8px;margin:10px 0}
+.mcp-lines{display:grid;gap:8px}.mcp-line{display:grid;gap:4px}.mcp-line small{font-size:12px;color:var(--muted)}
+#reference-rows{margin-top:16px}
+.server-tools .tool-row{grid-template-columns:1fr;gap:2px;margin-bottom:6px}
+@media(max-width:700px){.rule-row{grid-template-columns:1fr}.rule-head{display:none}.menu-item{grid-template-columns:1fr;gap:2px}.inventory{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.skill-parts{display:grid;gap:12px;margin-top:10px}.skill-parts pre{margin-top:6px}
+.skill-parts>div:first-child pre{border-left:3px solid var(--green)}
+.skill-folder{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:18px;align-items:start;margin:16px 0}
+.skill-folder p{font-size:14px;line-height:1.7}
+.skill-tree{white-space:normal}.tree-line{display:grid;grid-template-columns:minmax(0,auto) 1fr;gap:12px;align-items:baseline;white-space:pre}
+.tree-line small{font:11.5px 'Segoe UI',Arial,sans-serif;color:var(--muted);white-space:normal}
+@media(max-width:950px){.skill-folder{grid-template-columns:1fr}}
+@media(max-width:600px){.tree-line{grid-template-columns:1fr;gap:0}}
