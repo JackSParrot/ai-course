@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#17372e"><title>La memoria — Lo que no está en la mesa no existe</title><link rel="icon" href="../digits/favicon.svg"><link rel="stylesheet" href="../tokens/styles.css"></head><body>
+<header class="tokens-header"><a href="../">neural / <b>labs</b></a><span>CAPÍTULO 16 · LA MEMORIA</span></header>
+<main>
+<section class="intro" aria-labelledby="memory-title"><div><p class="eyebrow">LA MEMORIA</p><h1 id="memory-title">La mesa tiene un tamaño.<br>La memoria, un mapa.</h1><p>El modelo solo sabe lo que tiene delante en este momento: su mesa. No recuerda la conversación de ayer, no conoce tu casa ni tu empresa, y no lee lo que nadie le ha dado.</p><p>Pero tampoco se lo puedes poner todo delante: no cabe, sale caro y estorba. La solución es la misma del capítulo 15, el archivador con etiquetas, hecha a lo grande: <strong>notas guardadas fuera y un mapa para encontrar solo lo que hace falta</strong>.</p><a href="#mesa" class="button primary">Empezar ↓</a></div>
+<div class="analogy-grid" aria-label="Tres ideas del capítulo"><div><span class="eyebrow">LA MESA</span><strong>El contexto</strong><small>lo único que ve, y tiene un tamaño</small></div><div><span class="eyebrow">EL ARCHIVO</span><strong>Las notas</strong><small>todo lo que se sabe, guardado fuera del modelo</small></div><div class="accent"><span class="eyebrow">EL MAPA</span><strong>Los índices</strong><small>dicen dónde está cada cosa, para abrir solo lo necesario</small></div></div></section>
+
+<section id="mesa" class="lesson-section" aria-labelledby="desk-title"><p class="eyebrow">01 / EL PROBLEMA</p><h2 id="desk-title">Lo que no está en la mesa no existe.</h2><p>Desde el capítulo 14 sabes que el arnés le pone al modelo, en cada vuelta, todo lo que debe tener en cuenta. Eso es su mesa de trabajo. Y lo que no está en la mesa, para el modelo no existe.</p>
+<div id="desk-explainer" class="explainer">
+<ol class="stage-track"><li data-stage="1"><span>1</span>La mesa</li><li data-stage="2"><span>2</span>El lunes</li><li data-stage="3"><span>3</span>El martes</li><li data-stage="4"><span>4</span>Lo que no sabe</li></ol>
+<div class="stage-panel"><h3 class="stage-title"></h3><div class="stage-visual"></div><p class="stage-caption"></p></div>
+<div class="stepper-controls"><button type="button" class="button outline" data-step="prev">← Anterior</button><span class="step-count"></span><button type="button" class="button primary" data-step="next">Siguiente →</button><button type="button" class="button outline" data-step="play">▶ Reproducir</button></div>
+</div>
+<p class="fine">Ilustración: la conversación y las respuestas son inventadas, aunque es lo que pasa de verdad con cualquier asistente sin memoria.</p>
+<div class="lesson-note"><strong>No es que se le olvide: es que nunca lo tuvo.</strong> El modelo no cambia al hablar contigo; sus pesos son los mismos antes y después (capítulos 02 y 08). Cada conversación empieza con la mesa limpia.</div></section>
+
+<section id="llena" class="lesson-section" aria-labelledby="full-title"><p class="eyebrow">02 / LA MESA LLENA</p><h2 id="full-title">¿Y si se lo ponemos todo delante?</h2><p>La mesa de un modelo actual es grande: la de Claude Sonnet 5.5 en Claude Code admite 1.000.000 de tokens, unas 2.000 páginas. Parece mucho. Pon cosas encima y mira qué pasa.</p>
+<div class="model-layout"><div class="panel"><span class="eyebrow">LA MESA</span><div id="desk-gauge" class="desk-gauge"></div><div id="desk-stats" class="desk-stats"></div><div id="desk-verdict" class="lesson-note"></div></div>
+<div class="panel"><span class="eyebrow">PON COSAS EN LA MESA</span><div id="load-picker" class="load-list" role="group" aria-label="Qué poner en la mesa"></div><p class="fine">Los tamaños son estimaciones a ojo, con la cuenta a la vista: una página ronda los 500 tokens.</p></div></div>
+<div class="oddity-grid">
+<article><span>NO CABE</span><h3>Ni siquiera la pregunta</h3><p>Si te pasas del tamaño de la mesa, el arnés no puede ni enviar la petición: no hay sitio para las instrucciones ni para lo que preguntas. Claude Code responde con un error: «Prompt is too long».</p></article>
+<article><span>SALE CARO</span><h3>Se paga en cada vuelta</h3><p>Todo lo que hay en la mesa se vuelve a enviar en cada vuelta de la conversación, y se paga cada vez (capítulo 13). Una mesa llena convierte cada pregunta sencilla en una factura grande.</p></article>
+<article><span>ESTORBA</span><h3>La atención se reparte</h3><p>Cuanto más hay delante, más cosas compiten por la atención del modelo (capítulo 09). Varios estudios ven que los modelos encuentran peor lo importante cuando está perdido en medio de mucho texto.</p></article>
+</div>
+<div class="lesson-note"><strong>Una buena costumbre: no pasar de la mitad.</strong> No es una ley ni un número exacto: cada modelo y cada tarea aguantan distinto, y los modelos nuevos aguantan cada vez mejor. Pero una mesa despejada es más barata, más rápida y más fiable. Si se llena, mejor empezar una conversación nueva con un buen resumen.</div>
+<p class="fine">Estudios: «Lost in the Middle» (Liu y otros, 2023) y «Context Rot» (Chroma, 2025). Lo de «tu pregunta es 1 página de…» es una forma de imaginarlo, no una medida de la atención.</p></section>
+
+<section id="contexto" class="lesson-section" aria-labelledby="context-title"><p class="eyebrow">03 / DEL PROMPT AL CONTEXTO</p><h2 id="context-title">De buscar la frase perfecta a ordenar lo que encuentra.</h2><p>Hace unos años, sacarle partido a un modelo era cosa de trucos de redacción. Hoy lo importante es qué hay en la mesa y qué puede encontrar.</p>
+<div id="eras" class="eras"></div>
+<div class="lesson-note"><strong>El prompt ha pasado de ser una frase a ser una biblioteca.</strong> A esto se le llama <em>context engineering</em>: decidir qué va en la mesa, qué se guarda fuera y cómo se encuentra cuando hace falta.</div></section>
+
+<section id="recordar" class="lesson-section" aria-labelledby="remember-title"><p class="eyebrow">04 / RECORDAR ENTRE CONVERSACIONES</p><h2 id="remember-title">Si se acuerda, es porque alguien lo apuntó.</h2><p>Cuando un asistente «se acuerda» de algo que le dijiste otro día, no es el modelo el que recuerda. El arnés guarda una nota y, en la conversación siguiente, se la vuelve a poner en la mesa.</p>
+<div id="memory-explainer" class="explainer">
+<ol class="stage-track"><li data-stage="1"><span>1</span>Se lo cuentas</li><li data-stage="2"><span>2</span>Lo apunta</li><li data-stage="3"><span>3</span>Otro día</li><li data-stage="4"><span>4</span>Abre la nota</li><li data-stage="5"><span>5</span>Sin memoria</li></ol>
+<div class="stage-panel"><h3 class="stage-title"></h3><div class="stage-visual"></div><p class="stage-caption"></p></div>
+<div class="stepper-controls"><button type="button" class="button outline" data-step="prev">← Anterior</button><span class="step-count"></span><button type="button" class="button primary" data-step="next">Siguiente →</button><button type="button" class="button outline" data-step="play">▶ Reproducir</button></div>
+</div>
+<p class="fine">Ilustración: la familia, la nota y las respuestas son inventadas.</p>
+<div class="lesson-note"><strong>La memoria es un archivo que puedes abrir.</strong> Como son notas de texto, puedes leer qué recuerda de ti, corregirlo o borrarlo. Y si una nota se queda vieja, el asistente se la creerá igual: conviene revisarlas de vez en cuando.</div></section>
+
+<section id="indice" class="lesson-section" aria-labelledby="index-title"><p class="eyebrow">05 / ¿DÓNDE ESTÁ LA MEMORIA?</p><h2 id="index-title">Un índice corto en la mesa. Las notas, fuera.</h2><p>Con el tiempo, el asistente va guardando muchas notas sobre ti: tu familia, tu trabajo, tus cuentas, tus gustos. Cargarlas todas en cada conversación sería llenar la mesa para nada. Por eso en la mesa solo va <strong>un índice</strong>: una línea por nota, que dice de qué trata. Elige una pregunta y mira qué abre.</p>
+<div id="question-picker" class="build-levels" role="group" aria-label="Elige una pregunta"></div>
+<div class="model-layout"><div class="panel"><span class="eyebrow">EN LA MESA: EL ÍNDICE</span><div id="memory-index" class="memory-index"></div></div>
+<div class="panel"><span class="eyebrow">LAS NOTAS QUE ABRE</span><div id="memory-notes" class="memory-notes"></div><div id="memory-compare" class="compare-bars"></div></div></div>
+<p class="fine">Ilustración: la persona, sus notas y los tamaños son inventados.</p>
+<div class="lesson-note"><strong>Solo lo que importa hoy.</strong> Si hoy hablas de la hipoteca, no necesita saber qué le gusta comer a tu hija. El índice cuesta poco en cada vuelta, y la nota se abre solo cuando hace falta. Es el mismo truco que con las skills del capítulo 15.</div></section>
+
+<section id="mapa" class="lesson-section" aria-labelledby="map-title"><p class="eyebrow">06 / EL MAPA DEL CONOCIMIENTO</p><h2 id="map-title">Cuando son miles de notas, un índice por niveles.</h2><p>Una empresa acumula miles de documentos: lo que pidió cada cliente, lo que se decidió en cada reunión, los problemas ya resueltos. Hasta el índice se hace enorme. La solución es la de una biblioteca: primero las secciones, luego las estanterías, luego el libro. Un mapa.</p>
+<div class="request-bubble"><span class="eyebrow">LA PREGUNTA</span><p id="map-question"></p></div>
+<div id="strategy-picker" class="build-levels" role="group" aria-label="Cómo se organiza el archivo"></div>
+<div class="map-layout"><div class="panel"><span class="eyebrow">CÓMO LO ENCUENTRA</span><div id="map-view" class="map-view"></div></div>
+<div class="panel"><span class="eyebrow">LO QUE CUESTA CADA PREGUNTA</span><div id="map-stats" class="desk-stats"></div><p id="map-verdict" class="lesson-note"></p></div></div>
+<p class="fine">Ilustración: Brújula y su cliente, Horno Alto, son inventados, y las cifras son hipotéticas, aunque del orden de lo que cuesta de verdad con un modelo actual.</p>
+<div class="lesson-note"><strong>Todos aciertan; lo que cambia es lo que cargas.</strong> Con todo en la mesa también encuentra la respuesta, pero lee mil notas para usar tres. El mapa le lleva a esas tres casi sin gastar: la mesa queda despejada para trabajar.</div></section>
+
+<section id="vida-real" class="lesson-section" aria-labelledby="real-title"><p class="eyebrow">07 / EN LA VIDA REAL</p><h2 id="real-title">Dónde lo vas a ver.</h2>
+<div class="oddity-grid">
+<article><span>CHATGPT Y CLAUDE</span><h3>La memoria de los asistentes</h3><p>ChatGPT empezó a probar su memoria en febrero de 2024: guarda lo que considera importante de tus conversaciones y te deja verlo y borrarlo. Claude tiene su propia memoria. Por dentro, es la idea de esta página: notas que se ponen en la mesa cuando hacen falta.</p></article>
+<article><span>CLAUDE CODE</span><h3>CLAUDE.md y MEMORY.md</h3><p>Un <code>CLAUDE.md</code> en la carpeta del proyecto va siempre en la mesa: las reglas de la casa. La memoria guarda un <code>MEMORY.md</code> con una línea por recuerdo, que apunta a su nota. Son archivos normales: puedes abrirlos y editarlos.</p></article>
+<article><span>OBSIDIAN</span><h3>Notas enlazadas, un mapa de verdad</h3><p>Es un programa de notas en archivos de texto que se enlazan entre sí con <code>[[nombre]]</code>. Su vista de grafo dibuja literalmente el mapa. Un agente puede recorrerlo igual que tú: abre una nota índice y sigue los enlaces.</p></article>
+<article><span>BUSCAR</span><h3>La otra forma de encontrar</h3><p>Sin índice, el agente también puede buscar: por palabras, como el buscador de tu ordenador, o por significado, comparando embeddings como los del capítulo 08 (a eso se le llama RAG). Funciona bien si sabe qué buscar.</p></article>
+<article><span>CONSEJO 1</span><h3>Índices cortos y claros</h3><p>Una línea por nota, diciendo de qué trata con las palabras con las que alguien la buscaría. Si el índice crece, pártelo en niveles: un índice de índices.</p></article>
+<article><span>CONSEJO 2</span><h3>Revisa lo que recuerda</h3><p>Una nota equivocada o vieja es peor que ninguna: el asistente se la cree. De vez en cuando, abre su memoria y límpiala.</p></article>
+</div></section>
+
+<section class="lesson-section" aria-labelledby="summary-title"><p class="eyebrow">PARA LLEVAR</p><h2 id="summary-title">Tres ideas.</h2>
+<div class="takeaways"><div><span>1</span><strong>Lo que no está en la mesa no existe.</strong><small>El modelo no recuerda nada entre conversaciones ni lee lo que no se le da.</small></div><div><span>2</span><strong>Una mesa demasiado llena cuesta y estorba.</strong><small>Se paga en cada vuelta, la atención se reparte y, si te pasas, no cabe ni la pregunta.</small></div><div><span>3</span><strong>Con un mapa, se carga solo lo necesario.</strong><small>Recuerdos y conocimiento repartidos en muchas notas, con índices por niveles para encontrarlos.</small></div></div></section>
+
+<section class="lesson-section chapter-bridge" aria-labelledby="bridge-title"><p class="eyebrow">FIN DEL RECORRIDO</p><h2 id="bridge-title">Ya sabes cómo trabaja un agente por dentro.</h2><p>Un modelo que escribe texto, un arnés con herramientas y un bucle, skills y herramientas que abre cuando le hacen falta, y una memoria hecha de notas y mapas. En las próximas charlas lo usaremos en la práctica: cómo escribir buenas skills, cómo ordenar tu memoria y cómo trabajar con agentes cada día.</p></section>
+</main>
+<footer><span>neural / labs · la memoria</span><span>Personas, empresa, notas y cifras de los ejercicios inventadas como ilustración.</span></footer>
+<script type="module" src="./src/app.js"></script>
+</body></html>

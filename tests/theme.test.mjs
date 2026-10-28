@@ -35,7 +35,7 @@ test('every published course page loads the shared dark palette after its existi
   const hash = createHash('sha256').update(css).digest('hex').slice(0, 12);
   const manifest = JSON.parse(await readFile(new URL('../publication-manifest.json', import.meta.url)));
   assert.ok(manifest.files['/dark.css']);
-  for (const path of ['index.html', 'perceptrons/index.html', 'digits/index.html', 'maze/index.html', 'cars/index.html', 'autoencoder/index.html', 'superresolution/index.html', 'tokens/index.html', 'predictor/index.html', 'attention/index.html', 'assistant/index.html', 'reasoning/index.html', 'tools/index.html', 'cache/index.html', 'harness/index.html', 'skills/index.html']) {
+  for (const path of ['index.html', 'perceptrons/index.html', 'digits/index.html', 'maze/index.html', 'cars/index.html', 'autoencoder/index.html', 'superresolution/index.html', 'tokens/index.html', 'predictor/index.html', 'attention/index.html', 'assistant/index.html', 'reasoning/index.html', 'tools/index.html', 'cache/index.html', 'harness/index.html', 'skills/index.html', 'memory/index.html']) {
     const html = await readFile(new URL('../public/' + path, import.meta.url), 'utf8');
     const links = [...html.matchAll(/<link[^>]*rel="stylesheet"[^>]*href="([^"]+)"/g)];
     assert.ok(links.at(-1)[1].endsWith('dark.css?v=' + hash), path);
