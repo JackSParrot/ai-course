@@ -26,7 +26,7 @@ test('one portable file contains every page, styles, locale and all hash-verifie
   assert.equal(pixels.length,split.count*256,role);
   assert.equal(createHash('sha256').update(pixels).digest('hex'),split.sha256,role);
  }
- assert.deepEqual(Object.keys(pack.workers),['digits','cars','images','predictor','attention','assistant','tools']);
+ assert.deepEqual(Object.keys(pack.workers),['digits','cars','images','predictor','attention','assistant']);
  for(const worker of Object.values(pack.workers)){new Script(worker);assert.doesNotMatch(worker,/import\.meta/);}
  assert.match(pack.pages.digits.html,/download="PROVENANCE.md"/);
 });
@@ -124,10 +124,4 @@ test('the embedded assistant trainer runs all three stages without external modu
  const base=await next(worker,{kind:'pretrain'},m=>m.kind==='stage');assert.equal(base.stage,'base');
  const assistant=await next(worker,{kind:'instruct'},m=>m.kind==='stage');assert.equal(assistant.stage,'assistant');assert.ok('truthful' in assistant.metrics);
  const tuned=await next(worker,{kind:'prefer',settings:{likesAgreement:1,checksFacts:0,rounds:1}},m=>m.kind==='stage');assert.equal(tuned.stage,'tuned');assert.equal(tuned.history.length,2);
-});
-test('the embedded tools trainer builds its own bestiary and trains memory and tool together',async t=>{
- const worker=trainer('tools');t.after(()=>worker.terminate());
- worker.postMessage({kind:'setup',tokenizer:null});
- const epoch=await next(worker,{kind:'compare'},m=>m.kind==='epoch');
- assert.equal(epoch.history.length,1);assert.ok(epoch.history[0].tool.unseen>=0&&epoch.history[0].memory.patched>=0);
 });

@@ -1,57 +1,49 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { UNK } from '../predictor/src/model.js';
-import { prepareData, ENEMIES, KNOWN, UNSEEN, CREATURES, MATERIALS, LAUNCH, PATCH, STRANGE_RESULTS, question, call, result, answer, correction, calledName, answeredNumber } from '../tools/src/bestiary.js';
-import { SETTINGS, create, example, trainingList, compareSteps, singleSteps, ask, lookupIn } from '../tools/src/training.js';
-import { random } from '../tokens/src/corpus.js';
+import { readFile, access } from 'node:fs/promises';
+import english from '../i18n/en.js';
 
-const data = prepareData();
+const read = path => readFile(new URL('../' + path, import.meta.url), 'utf8');
 
-test('the bestiary hides 16 enemies whose creature and material still appear in training, and the patch changes every value', () => {
-  assert.equal(ENEMIES.length, 64); assert.equal(KNOWN.length, 48); assert.equal(UNSEEN.length, 16);
-  for (const creature of CREATURES) assert.equal(KNOWN.filter(e => e.creature === creature).length, 6, creature);
-  for (const material of MATERIALS) assert.equal(KNOWN.filter(e => e.material === material).length, 6, material);
-  for (const e of ENEMIES) { assert.notEqual(LAUNCH.get(e.name), PATCH.get(e.name)); assert.ok(LAUNCH.get(e.name) >= 10 && LAUNCH.get(e.name) <= 99); }
-  assert.equal(calledName(' Busco: Golem de Ceniza. ⏸'), 'Golem de Ceniza');
-  assert.equal(answeredNumber(' Tiene 48 vidas. ⏹'), 48);
+test('the chapter 12 page says that its shop, prices, answers and documents are illustrations', async () => {
+  const html = await read('tools/index.html');
+  assert.match(html, /Ilustración: la papelería, sus productos, los precios y las respuestas son inventados/);
+  assert.match(html, /Ilustración: las respuestas están escritas a mano/);
+  assert.match(html, /Ilustración: la página, las reseñas y las respuestas son inventadas/);
+  assert.match(html, /Ilustración: la carpeta y los documentos son inventados/);
+  // The three ideas to take away.
+  for (const idea of ['La herramienta da acceso, no inteligencia.', 'Una llamada es texto, y se cree lo que vuelve.', 'Un agente es un bucle.']) assert.ok(html.includes(idea), idea);
 });
 
-test('the pause and stop are single tokens, every name has 3, and nothing the page pastes is unknown', () => {
-  assert.equal(data.encode(' ⏸').length, 1); assert.equal(data.encode(' ⏹').length, 1);
-  for (const e of ENEMIES) assert.equal(data.encode(' ' + e.name).length, 3, e.name);
-  for (const text of [...STRANGE_RESULTS.map(r => r.text), correction(99), ' Jugador: 99 vidas.', question(UNSEEN[0]) + call(UNSEEN[0]) + result(42) + answer(42)]) assert.ok(!data.encode(text).includes(UNK), text);
+test('chapter 12 shows instead of training: no worker, no training run, no game examples', async () => {
+  const html = await read('tools/index.html'), app = await read('tools/src/app.js');
+  assert.doesNotMatch(app, /new Worker|import .*training|import .*transformer/);
+  assert.doesNotMatch(html + app, /Entrenar|Tarda unos|enemig|mazmorra|bestiario|parche|game loop|vidas/i);
+  for (const gone of ['tools/src/worker.js', 'tools/src/training.js', 'tools/src/bestiary.js']) await assert.rejects(access(new URL('../' + gone, import.meta.url)), gone);
+  // Three step-by-step explainers plus the memory-versus-tool one.
+  assert.equal((html.match(/class="explainer"/g) || []).length, 4);
 });
 
-test('a training example teaches only the model\'s own words: never the question or the pasted result', () => {
-  const e = KNOWN[0], item = example(data, [[question(e), false], [call(e), true], [result(42), false], [answer(42), true]]);
-  const learned = data.decode(item.targets.filter(t => t >= 0));
-  assert.equal(learned, call(e) + answer(42));
-  const tool = trainingList(data, 'tool', random(1)), fixed = trainingList(data, 'fixed', random(1));
-  assert.equal(tool.length, SETTINGS.examples);
-  assert.notDeepEqual(tool[0].tokens, fixed[0].tokens, 'the tool model sees databases that change');
+test('chapter 11 still leads to chapter 12, and chapter 12 to chapter 13', async () => {
+  assert.match(await read('reasoning/index.html'), /href="\.\.\/tools\/"/);
+  assert.match(await read('tools/index.html'), /href="\.\.\/cache\/"/);
 });
 
-test('memory invents and goes out of date; the tool reads the database, also for enemies never seen (reduced run: 2 epochs)', () => {
-  const models = { memory: create(data.vocabularySize), tool: create(data.vocabularySize) }, steps = compareSteps(models, data, () => {});
-  for (const step of steps.slice(0, steps.length / SETTINGS.epochs * 2)) step();
-  const share = (model, enemies, db) => enemies.filter(e => ask(model, data, e, lookupIn(db)).number === db.get(e.name)).length / enemies.length;
-  assert.ok(share(models.tool, UNSEEN, LAUNCH) >= 0.9, 'tool, new enemies');
-  assert.ok(share(models.tool, KNOWN, PATCH) >= 0.9, 'tool, after the patch');
-  assert.equal(share(models.memory, KNOWN, PATCH), 0, 'memory, after the patch');
-  assert.ok(share(models.memory, UNSEEN, LAUNCH) < 0.15, 'memory, new enemies');
-  // You are the program: a plausible lie is copied.
-  const lies = UNSEEN.filter(e => ask(models.tool, data, e, () => result(11)).number === 11).length;
-  assert.ok(lies >= 14, `lies believed: ${lies}`);
-  const r = ask(models.tool, data, UNSEEN[0], lookupIn(LAUNCH));
-  assert.deepEqual([...new Set(r.authors)], ['question', 'model', 'program']);
-  assert.equal(r.called, UNSEEN[0].name);
-});
-
-test('a model trained to obey corrections obeys one written by anybody', () => {
-  const model = create(data.vocabularySize);
-  for (const step of singleSteps(model, data, 'obey')) step();
-  const obeyed = UNSEEN.filter(e => ask(model, data, e, () => result(LAUNCH.get(e.name)) + correction(99)).number === 99).length;
-  const plain = UNSEEN.filter(e => ask(model, data, e, lookupIn(LAUNCH)).number === LAUNCH.get(e.name)).length;
-  assert.ok(obeyed >= 14, `injection obeyed: ${obeyed}`);
-  assert.ok(plain >= 14, `plain results: ${plain}`);
+test('every text of the chapter 12 page and its script has an English translation', async () => {
+  const html = (await read('tools/index.html')).replace(/<script[\s\S]*?<\/script>/g, '').replace(/<code>[^<]*<\/code>/g, '<x>');
+  const texts = [...html.matchAll(/>([^<]+)</g), ...html.matchAll(/(?:aria-label|title)="([^"]+)"/g)].map(m => m[1].trim()).filter(t => /[a-záéíóúñ]/i.test(t));
+  const same = new Set(['neural /', 'labs']);
+  for (const text of texts) if (!same.has(text)) assert.ok(Object.hasOwn(english, text), text);
+  // say('…', '…') and ['…', '…'] pairs carry their own English: leave both halves out.
+  // Calls, paths and file names stay as written, like the text the model reads.
+  const app = (await read('tools/src/app.js'))
+    .replace(/say\(('[^']*'|`[^`]*`), ('[^']*'|`[^`]*`)\)/g, '')
+    .replace(/\[('[^']*'|`[^`]*`), ('[^']*'|`[^`]*`)\]/g, '');
+  const kept = new Set(['«strawberry»', 'contar(texto, "r")']);
+  const strings = [...app.matchAll(/'([^'\n]*)'/g)].map(m => m[1].trim())
+    .filter(t => /[a-záéíóúñ]{2}/i.test(t) && /\s|^[A-ZÁÉÍÓÚ¿«+=…↺]/.test(t) && !/\$\{|==|=>|^\.|\/$|\.txt$/.test(t) && !/^[a-z-]+( [a-z-]+)*$/.test(t) && !kept.has(t));
+  assert.ok(strings.length > 60, String(strings.length));
+  for (const text of strings) assert.ok(Object.hasOwn(english, text), text);
+  // Short labels the filter above leaves out.
+  for (const text of ['nuevo', 'Cliente', 'Asistente', 'Tú', 'Programa']) assert.ok(Object.hasOwn(english, text), text);
 });
