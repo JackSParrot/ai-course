@@ -359,7 +359,7 @@ html[lang=en] .es-only{display:none}
 @media(max-width:600px){.repeat-row{grid-template-columns:1fr}.score-cell{width:30px;height:30px}}
 @media(max-width:600px){.harness-parts{grid-template-columns:1fr}.tool-row{grid-template-columns:1fr}.request-bubble{margin-left:0}}
 @media(prefers-reduced-motion:reduce){.code-line{transition:none}}
-/* Chapter 15 (skills and MCP): the inventory, the skill menu, the house rules and the MCP server. */
+/* Chapter 15 (skills and MCP): the inventory, the skill menu, the house rules, the menu odds and the MCP server. */
 .inventory{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px;width:100%;max-width:560px}
 .inventory .slot{display:grid;place-items:center;min-height:46px;border:1px dashed var(--line);border-radius:6px;font-size:11.5px;color:var(--muted);background:var(--paper)}
 .inventory .slot.full{border-style:solid;border-color:var(--accent);background:var(--seen);color:var(--seen-ink)}
@@ -375,11 +375,16 @@ html[lang=en] .es-only{display:none}
 .rule-head{font:10px Consolas,monospace;letter-spacing:1px;color:var(--muted);text-transform:uppercase;border-top:0}
 .rule-name{display:grid;gap:2px}.rule-name strong{font-size:14px}.rule-name small{font-size:12px;color:var(--muted)}
 .rule-cell{display:grid;grid-template-columns:24px 1fr;gap:8px;align-items:start}.rule-cell code{font-size:11.5px;white-space:pre-wrap;background:none;padding:0;overflow-wrap:anywhere}
-.build-mark.yes{background:var(--generated);color:#18361f}.build-mark.no{background:var(--seen);color:var(--seen-ink)}
-.rule-cell.no code{color:var(--muted)}
-.menu-entry{display:grid;gap:8px;margin:10px 0}
-.mcp-lines{display:grid;gap:8px}.mcp-line{display:grid;gap:4px}.mcp-line small{font-size:12px;color:var(--muted)}
-#reference-rows{margin-top:16px}
+.rule-mark{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;font-weight:700}
+.rule-mark.yes{background:var(--generated);color:#18361f}.rule-mark.no{background:var(--seen);color:var(--seen-ink)}
+.rule-cell{font-size:13px}.rule-cell.no span:last-child{color:var(--muted)}
+#entry-menu{margin-top:10px}
+.entry-odds{display:grid;gap:8px;margin:10px 0 14px}
+.odds-verdict{font-size:20px}.odds-verdict.level-4,.odds-verdict.level-3{color:var(--green)}.odds-verdict.level-2,.odds-verdict.level-1{color:var(--accent)}
+.odds-scale{display:flex;align-items:center;gap:8px}.odds-scale small{font-size:11.5px;color:var(--muted)}
+.odds-track{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;flex:1;max-width:220px}.odds-track span{height:10px;border-radius:5px;background:var(--line)}.odds-track span.on{background:var(--green)}
+.entry-thought{padding:10px 14px;margin-bottom:10px;border-radius:12px 12px 12px 2px;background:var(--field)}.entry-thought p{margin:4px 0 0;font-size:14px;line-height:1.6;font-style:italic}
+.ask-toggle{display:flex;gap:8px;align-items:center;font-size:13.5px;margin-top:4px;cursor:pointer}
 .server-tools .tool-row{grid-template-columns:1fr;gap:2px;margin-bottom:6px}
 @media(max-width:700px){.rule-row{grid-template-columns:1fr}.rule-head{display:none}.menu-item{grid-template-columns:1fr;gap:2px}.inventory{grid-template-columns:repeat(3,minmax(0,1fr))}}
 .skill-parts{display:grid;gap:12px;margin-top:10px}.skill-parts pre{margin-top:6px}
