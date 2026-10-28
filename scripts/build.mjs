@@ -24,7 +24,7 @@ assistant:['index.html',...['app','training','world','worker'].map(n=>'src/'+n+'
 reasoning:['index.html','src/app.js'],
 tools:['index.html',...['app','bestiary','training','worker'].map(n=>'src/'+n+'.js')],
 cache:['index.html',...['app','cost'].map(n=>'src/'+n+'.js')],
-harness:['index.html',...['app','session'].map(n=>'src/'+n+'.js')],
+harness:['index.html','src/app.js'],
 skills:['index.html','src/app.js'],
 memory:['index.html','src/app.js']
 };

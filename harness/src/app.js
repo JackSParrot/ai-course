@@ -1,98 +1,108 @@
-import { $, element, reducedMotion, Stepper } from '../../tokens/src/ui.js';
-import { getLanguage, translateText } from '../../i18n/i18n.js';
-import { SESSION } from './session.js';
+import { $, element, Stepper } from '../../tokens/src/ui.js';
+import { getLanguage, getLocale, translateText } from '../../i18n/i18n.js';
 
-const { levels, experiment } = SESSION;
-const strong = value => element('strong', '', String(value));
-const flow = items => element('div', 'block-flow', ...items.map(text => element('span', 'block-step', text)));
-// Phrases built around numbers or file names, in the language of the page.
+// Every example on this page is an illustration: invented receipts, hand-written answers and hypothetical figures.
 const say = (es, en) => getLanguage() === 'en' ? en : es;
-// Recorded text and code stay as they were written; the translator leaves them alone.
+// Always group thousands (Spanish leaves «1000» ungrouped by default).
+const fmt = (value, digits = 0) => value.toLocaleString(getLocale(), { minimumFractionDigits: digits, maximumFractionDigits: digits, useGrouping: 'always' });
+const euros = value => say(`${fmt(value, 2)} €`, `€${fmt(value, 2)}`);
+// Receipts, file names and code stay as written; the translator leaves them alone.
 const raw = (tag, className, ...children) => { const node = element(tag, className, ...children); node.dataset.i18nIgnore = ''; return node; };
-// The model writes Markdown: show its **bold**, `code`, lists and tables as plain elements.
-const inline = text => text.split(/(\*\*[^*]+\*\*|`[^`]+`)/).filter(Boolean)
-  .map(part => part.startsWith('**') ? element('strong', '', part.slice(2, -2)) : part.startsWith('`') ? element('code', '', part.slice(1, -1)) : part);
-const cells = line => line.trim().replace(/^\||\|$/g, '').split('|').map(cell => cell.trim());
-const table = lines => element('table', 'agent-table', ...lines.map((line, i) => element('tr', '', ...cells(line).map(cell => element(i ? 'td' : 'th', '', ...inline(cell))))));
-// The chat ends with a template table in a code block; the prose before it is the answer.
-const prose = text => text.split('```')[0].trim().split('\n').filter((line, i, all) => !(i === all.length - 1 && line.trim().endsWith(':'))).join('\n');
-const markdown = (className, text) => raw('div', className, ...text.split('\n').filter(line => line.trim()).map(line => element('p', '', ...inline(line.replace(/^\s*[-*] /, '• ')))));
+const flow = items => element('div', 'block-flow', ...items.map(text => element('span', 'block-step', text)));
+const bubble = (who, text, className = '') => element('div', 'chat-line ' + who + (className ? ' ' + className : ''), element('span', 'chat-who', who === 'you' ? 'Tú' : 'Asistente'), element('p', '', text));
+const desk = (label, ...children) => element('div', 'mini-desk', element('span', 'eyebrow', label), ...children);
+
+// ---------- The example: an invented trip, an invented folder of receipts ----------
+const request = () => say('En la carpeta recibos están los tickets del viaje del equipo a la feria de Colonia. Clasifícalos en comida, transporte, alojamiento y ocio, y hazme una tabla con cada ticket, su categoría y su importe, y al final lo que gastamos en cada cosa y el total. Guárdala en gastos.md.',
+  'The receipts from the team trip to the Cologne trade fair are in the recibos folder. Sort them into food, transport, accommodation and leisure, and make me a table with each receipt, its category and its amount, and at the end what we spent on each thing and the total. Save it in gastos.md.');
+// One of the 40 receipts, in German as it came. It is an image of a paper receipt: it stays as written.
+const SAMPLE = `Taxi Bonn
+Recibo nº 1407
+23.08.2026
+
+Fahrpreis                              42,60
+Trinkgeld                              4,40
+
+SUMME EUR 47,00
+  davon MwSt 19%   7,50
+  Netto            39,50
+Vielen Dank für Ihren Einkauf!`;
+const TOTALS = [['Comida', 18, 745.70], ['Transporte', 13, 1156.98], ['Alojamiento', 1, 1243.20], ['Ocio', 8, 470.48]];
+const TOTAL = TOTALS.reduce((sum, [, , value]) => sum + value, 0);
+const RECEIPTS = TOTALS.reduce((sum, [, count]) => sum + count, 0);
+const summary = () => element('div', 'table-scroll', element('table', 'agent-table',
+  element('tr', '', element('th', '', 'Categoría'), element('th', '', 'Tickets'), element('th', '', 'Total')),
+  ...TOTALS.map(([name, count, value]) => element('tr', '', element('td', '', name), raw('td', '', String(count)), raw('td', '', euros(value)))),
+  element('tr', '', element('th', '', 'Total'), raw('th', '', String(RECEIPTS)), raw('th', '', euros(TOTAL)))));
+
+// What a chat can answer: it cannot see the folder.
+const chatAnswer = () => say('No puedo abrir tu carpeta: solo veo lo que me escribes aquí. Si me pegas el texto de los 40 tickets, te preparo la tabla para que la guardes tú.',
+  'I cannot open your folder: I only see what you write here. If you paste the text of the 40 receipts, I will prepare the table for you to save.');
+// What an agent does, one round of the loop at a time.
+const AGENT = () => [
+  { icon: '📁', what: 'Mira qué hay en la carpeta', result: say(`${RECEIPTS} tickets, de recibo-01.txt a recibo-40.txt`, `${RECEIPTS} receipts, from recibo-01.txt to recibo-40.txt`) },
+  { icon: '📄', what: say(`Abre los ${RECEIPTS} tickets, uno a uno`, `Opens the ${RECEIPTS} receipts, one by one`), result: 'Restaurantes, taxis, el hotel, un museo… y los clasifica.' },
+  { icon: '🧮', what: 'Suma cada categoría con un pequeño programa', result: TOTALS.map(([name, , value]) => `${translateText(name)} ${euros(value)}`).join(' · '), state: 'good' },
+  { icon: '✋', what: say('Pide permiso para escribir gastos.md', 'Asks permission to write gastos.md'), result: 'El arnés te pregunta antes de crear el archivo. Dices que sí.' },
+  { icon: '✏️', what: say('Escribe el archivo gastos.md', 'Writes the file gastos.md') },
+];
+const agentFinal = () => say(`He clasificado los ${RECEIPTS} tickets y he guardado la tabla en gastos.md. El total es ${euros(TOTAL)}. Dos tickets eran dudosos, la gasolinera donde también se compró un bocadillo y el minibar del hotel; lo he anotado al final del archivo.`,
+  `I sorted the ${RECEIPTS} receipts and saved the table in gastos.md. The total is ${euros(TOTAL)}. Two receipts were doubtful, the petrol station where a sandwich was also bought and the hotel minibar; I noted it at the end of the file.`);
+function timelineItem(item) {
+  return element('div', 'timeline-item' + (item.state ? ' ' + item.state : ''), element('span', 'timeline-icon', item.icon),
+    element('div', 'timeline-body', element('div', 'timeline-what', item.what), ...(item.result ? [element('div', 'timeline-result', item.result)] : [])));
+}
 
 // ---------- 01 · Only text ----------
 function textSteps() {
   return [
     { stage: 1, title: 'Escribe la continuación', caption: 'Le das un texto y escribe lo que viene después, palabra a palabra. Si el texto es una pregunta, lo que viene después suele ser una respuesta. Es todo lo que hace.', render: () => flow(['Texto que entra', 'El modelo', 'Texto que sale']) },
     { stage: 2, title: 'No puede hacer nada más', caption: 'Si le pides «clasifica los tickets de esta carpeta», no puede abrirla. No sabe ni qué tickets hay. Solo puede escribir algo que suene a respuesta o decirte que no los ve.', render: () => element('div', 'can-list', element('span', 'cannot', '✗ Abrir una carpeta'), element('span', 'cannot', '✗ Escribir un documento'), element('span', 'can', '✓ Escribir texto')) },
-    { stage: 3, title: 'Pero puede pedirlo', caption: 'En una de nuestras pruebas, como un chat y sin ninguna herramienta, el modelo escribió esto y se paró. Es una petición para usar una herramienta, con el formato que conoce. Pero es solo texto.', render: () => raw('pre', 'code-view void-call', SESSION.voidCall.trim()) },
-    { stage: 4, title: 'Alguien tiene que hacerlo', caption: 'Nadie la ejecutó: al otro lado no había nadie. Hace falta un programa que lea esa petición, abra la carpeta de verdad, le pegue al modelo lo que hay y le deje seguir. Ese programa es el arnés.', render: () => flow(['Modelo: «quiero ver la carpeta recibos»', 'Arnés: abre la carpeta', 'Arnés: le pega lo que hay dentro', 'Modelo: sigue escribiendo']) },
+    { stage: 3, title: 'Pero puede pedirlo', caption: 'Si le cuentas qué herramientas existen, el modelo puede escribir una petición como esta y pararse. Pide que alguien mire la carpeta. Pero sigue siendo solo texto.',
+      render: () => raw('pre', 'code-view void-call', say('Voy a ver qué hay en la carpeta recibos.\n\n<herramienta nombre="listar_archivos">\n  <carpeta>recibos</carpeta>\n</herramienta>', 'Let me see what is in the receipts folder.\n\n<tool name="list_files">\n  <folder>recibos</folder>\n</tool>')) },
+    { stage: 4, title: 'Alguien tiene que hacerlo', caption: 'Hace falta un programa que lea esa petición, abra la carpeta de verdad, le pegue al modelo lo que hay y le deje seguir. Ese programa es el arnés.', render: () => flow(['Modelo: «quiero ver la carpeta recibos»', 'Arnés: abre la carpeta', 'Arnés: le pega lo que hay dentro', 'Modelo: sigue escribiendo']) },
   ];
 }
-new Stepper($('text-explainer'), textSteps);
-
-// ---------- A recorded session, as things a person would see ----------
-function describe(action) {
-  switch (action.kind) {
-    case 'list': return { icon: '📁', what: 'Mira qué hay en la carpeta', result: say(`${action.files} tickets`, `${action.files} receipts`) };
-    case 'read': return action.count > 1
-      ? { icon: '📄', what: say(`Abre los ${action.count} tickets, uno a uno`, `Opens the ${action.count} receipts, one by one`) }
-      : { icon: '📄', what: ['Abre el ticket ', raw('code', '', action.file)] };
-    case 'readAll': return { icon: '📄', what: 'Lee todos los tickets de una vez' };
-    case 'find': return { icon: '📄', what: 'Lee los tickets por partes', result: say(`${action.files} tickets`, `${action.files} receipts`) };
-    case 'blocked': return { icon: '⛔', what: 'Intenta leerlos todos de golpe con una orden', result: 'El arnés no la deja pasar: no puede comprobar qué hará. El modelo busca otra forma.', state: 'bad' };
-    case 'compute': return { icon: '🧮', what: 'Repasa las sumas con un pequeño programa', result: raw('code', 'compute-output', action.output.split('\n').join(' · ')), state: 'good' };
-    case 'write': return { icon: '✏️', what: ['Escribe el archivo ', raw('code', '', action.file)] };
-    default: return { icon: '▶', what: 'Usa el ordenador' };
-  }
-}
-function items(level) {
-  const list = level.steps.flatMap(step => [...(step.say ? [{ icon: '💬', what: raw('q', '', ...inline(step.say)) }] : []), ...step.actions.map(describe)]);
-  list.push({ icon: '💬', what: 'Te responde', final: level.final });
-  return list;
-}
-function timelineItem(item) {
-  return element('div', 'timeline-item' + (item.state ? ' ' + item.state : ''), element('span', 'timeline-icon', item.icon),
-    element('div', 'timeline-body', element('div', 'timeline-what', ...[].concat(item.what)), ...(item.result ? [element('div', 'timeline-result', item.result)] : []), ...(item.final ? [markdown('chat-answer small', item.final)] : [])));
-}
-const checked = level => [element('p', 'lesson-note', 'Comprobado desde fuera: ', strong(say(`están los ${level.check.listed} tickets, cada uno una vez`, `all ${level.check.listed} receipts are there, once each`)), ', con su importe exacto y una categoría razonable. El total, ', strong(say('3.616,36 €', '€3,616.36')), ', es exacto.'),
-  element('p', 'fine', say(`El resumen de su tabla, tal como lo escribió:`, `The summary of its table, as it wrote it:`)), raw('div', 'table-scroll', table(level.summary))];
+const textStepper = new Stepper($('text-explainer'), textSteps);
 
 // ---------- 02 · Two programs ----------
-const agentItems = () => items(levels.agent);
-let shown = 1, timer = 0;
-function renderTwo() {
-  $('request-text').replaceChildren(raw('span', '', '«' + SESSION.prompt + '»'));
-  $('receipt-sample').replaceChildren(raw('span', '', SESSION.sample.text.trim()));
-  $('chat-answer').replaceChildren(markdown('', prose(levels.chat.final)));
-  const list = agentItems();
-  $('agent-timeline').replaceChildren(...list.slice(0, shown).map(timelineItem), ...(shown === list.length ? checked(levels.agent) : []));
-  $('agent-next').disabled = shown >= list.length;
+function twoSteps() {
+  const you = () => bubble('you', 'Clasifica los tickets de la carpeta recibos y hazme la tabla de gastos.');
+  const chat = stage => desk('COMO UN CHAT', you(), ...(stage >= 2 ? [bubble('ai', chatAnswer())] : []),
+    ...(stage >= 3 && stage < 6 ? [element('p', 'fine', '⏳ Espera a que le pegues los tickets.')] : []),
+    ...(stage === 6 ? [bubble('ai', 'Sin tabla. Abrir, copiar y pegar los 40 tickets te toca a ti.', 'wrong')] : []));
+  const shown = [0, 0, 1, 2, 3, 5, 5];
+  const agent = stage => desk('COMO CLAUDE CODE', you(), element('div', 'timeline', ...AGENT().slice(0, shown[stage]).map(timelineItem)),
+    ...(stage === 6 ? [bubble('ai', agentFinal(), 'right'), summary()] : []));
+  const step = (stage, title, caption) => ({ stage, title, caption, render: () => element('div', 'two-cases', chat(stage), agent(stage)) });
+  return [
+    step(1, 'El mismo encargo, a los dos', 'Los dos reciben el mismo texto y usan el mismo modelo. Lo único distinto es el programa que lo rodea.'),
+    step(2, 'Mirar la carpeta', 'El chat no tiene forma de ver tus archivos, así que te lo dice. El agente pide la herramienta de listar archivos: el arnés mira la carpeta y le pega la lista.'),
+    step(3, 'Leer los tickets', 'El chat sigue esperando. El agente pide abrir cada ticket y el arnés se los va pegando. Ahora sí sabe qué hay: comercios, fechas e importes, en tres idiomas.'),
+    step(4, 'Sumar', 'Con los tickets clasificados, el agente no suma de cabeza: pide ejecutar un pequeño programa que hace las cuentas. El resultado vuelve como texto.'),
+    step(5, 'Guardar, con permiso', 'Escribir un archivo cambia tu ordenador, así que el arnés te pregunta antes. Dices que sí, y el agente escribe gastos.md.'),
+    step(6, 'Responder', 'El agente ya no pide más herramientas, así que el bucle termina y te cuenta qué ha hecho. El chat te ha dado un buen consejo; el agente, el trabajo hecho.'),
+  ];
 }
-function stopPlay() { clearInterval(timer); timer = 0; $('agent-play').textContent = translateText('▶ Reproducir'); }
-$('agent-next').addEventListener('click', () => { stopPlay(); shown = Math.min(agentItems().length, shown + 1); renderTwo(); });
-$('agent-reset').addEventListener('click', () => { stopPlay(); shown = 1; renderTwo(); });
-$('agent-play').addEventListener('click', () => {
-  if (timer) return stopPlay();
-  if (shown >= agentItems().length) shown = 0;
-  if (reducedMotion) { shown = agentItems().length; renderTwo(); return; }
-  $('agent-play').textContent = translateText('❚❚ Pausa');
-  const tick = () => { shown++; renderTwo(); if (shown >= agentItems().length) stopPlay(); };
-  tick(); timer = setInterval(tick, 1100);
-});
+const twoStepper = new Stepper($('two-explainer'), twoSteps);
+function renderRequest() {
+  $('request-text').replaceChildren(raw('span', '', '«' + request() + '»'));
+  $('receipt-sample').replaceChildren(raw('span', '', SAMPLE));
+}
 
 // ---------- 03 · Inside the harness ----------
-const rounds = levels.agent.steps.length + 1;
 const PARTS = [
   { key: 'instructions', name: 'Las instrucciones', short: 'lo que lee antes que tu mensaje',
-    text: 'Antes de tu encargo, el arnés pone un texto que el modelo lee cada vez: quién es, cómo trabajar, qué no tocar. Claude Code trae las suyas, y les suma las tuyas, por ejemplo las de un archivo CLAUDE.md. En nuestra grabación le añadimos estas:',
-    example: () => raw('blockquote', 'part-quote', 'Trabajas con los archivos de la carpeta actual. Cuando termines, explica en dos o tres frases qué has hecho.') },
+    text: 'Antes de tu encargo, el arnés pone un texto que el modelo lee cada vez: quién es, cómo trabajar, qué no tocar. Claude Code trae las suyas, y les suma las tuyas, por ejemplo las de un archivo CLAUDE.md. Unas instrucciones podrían ser estas:',
+    example: () => raw('blockquote', 'part-quote', say('Trabajas con los archivos de la carpeta actual. Cuando termines, explica en dos o tres frases qué has hecho.', 'You work with the files in the current folder. When you finish, explain in two or three sentences what you did.')) },
   { key: 'tools', name: 'Las herramientas', short: 'los botones que puede pedir',
-    text: 'Una lista de acciones, cada una con su nombre y para qué sirve. El modelo no las ejecuta: escribe cuál quiere y con qué datos, y el arnés la hace. En la grabación tenía estas:',
+    text: 'Una lista de acciones, cada una con su nombre y para qué sirve. El modelo no las ejecuta: escribe cuál quiere y con qué datos, y el arnés la hace. Claude Code trae herramientas como estas:',
     example: () => element('div', 'tool-list', ...[['Read', 'abre un documento'], ['Write', 'escribe un documento'], ['Glob', 'busca archivos por su nombre'], ['Grep', 'busca un texto dentro de los documentos'], ['Bash', 'usa el ordenador: ejecuta programas, por ejemplo para sumar']].map(([name, what]) => element('div', 'tool-row', raw('code', '', name), element('span', '', what)))) },
   { key: 'loop', name: 'El bucle', short: 'pedir, hacer, mirar, repetir',
-    text: ['El arnés le pregunta al modelo qué hacer, hace lo que pide, le enseña el resultado y vuelve a preguntar. Repite hasta que el modelo contesta sin pedir nada más. En la sección 02 fueron ', strong(say(`${rounds} vueltas`, `${rounds} rounds`)), '.'],
+    text: 'El arnés le pregunta al modelo qué hacer, hace lo que pide, le enseña el resultado y vuelve a preguntar. Repite hasta que el modelo contesta sin pedir nada más. En la sección 02, el agente dio una vuelta para mirar la carpeta, otra para leer, otra para sumar, otra para guardar y una última para responder.',
     example: () => flow(['El modelo pide una herramienta', 'El arnés la ejecuta', 'El arnés le enseña el resultado', '↺ Otra vez, hasta que termina']) },
   { key: 'permissions', name: 'Los permisos', short: 'qué hace sin preguntarte',
-    text: 'El arnés decide qué deja hacer al modelo sin pedirte permiso. En la sección 02 lo viste: no dejó pasar una orden que no podía comprobar, y el modelo tuvo que buscar otra forma. Es también la defensa del capítulo 12, cuando un texto de fuera intenta colar una orden. Un ejemplo de reglas:',
+    text: 'El arnés decide qué deja hacer al modelo sin pedirte permiso. En la sección 02 lo viste: antes de escribir gastos.md, te preguntó. Es también la defensa del capítulo 12, cuando un texto de fuera intenta colar una orden. Un ejemplo de reglas:',
     example: () => element('div', 'tool-list', ...[['Leer archivos', 'sin preguntar'], ['Escribir archivos', 'te pregunta'], ['Ejecutar programas', 'te pregunta'], ['Borrar archivos', 'no lo permite']].map(([what, rule]) => element('div', 'tool-row', element('strong', '', what), element('span', '', rule)))) },
   { key: 'memory', name: 'La conversación', short: 'lo que recuerda',
     text: 'El modelo no recuerda nada de una petición a otra. El arnés le vuelve a mandar toda la conversación cada vez: tu encargo, lo que ha leído y lo que ha hecho. Si se hace demasiado larga, la resume. Por eso la caché del capítulo 13 importa tanto.',
@@ -107,15 +117,21 @@ function renderParts() {
     return button;
   }));
   const p = PARTS.find(x => x.key === part);
-  $('part-detail').replaceChildren(element('h3', '', p.name), element('p', '', ...[].concat(p.text)), p.example());
+  $('part-detail').replaceChildren(element('h3', '', p.name), element('p', '', p.text), p.example());
 }
 
 // ---------- 04 · Build your assistant ----------
 const LEVELS = [
-  { key: 'chat', button: 'Solo el modelo', title: 'Solo el modelo, como en un chat', verdict: 'Te dice qué necesita: que le des acceso a la carpeta o que le pegues los 40 tickets. El trabajo lo haces tú.' },
-  { key: 'tools', button: '+ Leer y escribir archivos', title: 'Con herramientas para leer y escribir archivos', verdict: 'Abre los 40 tickets uno a uno, los clasifica y escribe la tabla. Suma de cabeza, y acierta.' },
-  { key: 'agent', button: '+ Usar el ordenador', title: 'Con todo eso y el ordenador, como Claude Code', verdict: 'Hace lo mismo y, además, puede usar el ordenador: esta vez repasó las sumas con un pequeño programa antes de escribir la tabla.' },
+  { key: 'chat', button: 'Solo el modelo', title: 'Solo el modelo, como en un chat', steps: () => [], final: chatAnswer, table: false,
+    checks: [false, false, false, false], verdict: 'Te dice qué necesita: que le des acceso a la carpeta o que le pegues los 40 tickets. El trabajo lo haces tú.' },
+  { key: 'tools', button: '+ Leer y escribir archivos', title: 'Con herramientas para leer y escribir archivos', table: true,
+    steps: () => [AGENT()[0], AGENT()[1], AGENT()[3], AGENT()[4]],
+    final: () => say(`He clasificado los ${RECEIPTS} tickets y he guardado la tabla en gastos.md. He sumado de cabeza: el total es ${euros(TOTAL)}.`, `I sorted the ${RECEIPTS} receipts and saved the table in gastos.md. I added up in my head: the total is ${euros(TOTAL)}.`),
+    checks: [true, true, true, false], verdict: 'Abre los 40 tickets, los clasifica y escribe la tabla. Las sumas las hace de cabeza: suele acertar, pero nadie las ha comprobado.' },
+  { key: 'agent', button: '+ Usar el ordenador', title: 'Con todo eso y el ordenador, como Claude Code', table: true, steps: AGENT, final: agentFinal,
+    checks: [true, true, true, true], verdict: 'Hace lo mismo y, además, usa el ordenador para repasar las sumas con un pequeño programa antes de escribir la tabla.' },
 ];
+const CHECKS = ['Ve los tickets', 'Escribe la tabla en gastos.md', 'Están los 40, una vez cada uno', 'Repasa las sumas con un programa'];
 let level = 'chat';
 function renderBuild() {
   const index = LEVELS.findIndex(x => x.key === level);
@@ -125,36 +141,17 @@ function renderBuild() {
     button.addEventListener('click', () => { level = l.key; renderBuild(); });
     return button;
   }));
-  const l = LEVELS[index], data = levels[level], c = data.check;
+  const l = LEVELS[index], steps = l.steps();
   $('build-level-title').textContent = l.title;
-  const list = items(data).slice(0, -1);
-  $('build-timeline').replaceChildren(...(list.length ? list.map(timelineItem) : [element('p', 'fine', 'No hace nada: no tiene con qué. Solo contesta.')]));
-  $('build-final').replaceChildren(element('p', 'fine', 'Su respuesta:'), markdown('', prose(data.final)), ...(data.summary.length ? [raw('div', 'table-scroll', table(data.summary))] : []));
-  const kinds = data.steps.flatMap(s => s.actions.map(a => a.kind));
+  $('build-timeline').replaceChildren(...(steps.length ? steps.map(timelineItem) : [element('p', 'fine', 'No hace nada: no tiene con qué. Solo contesta.')]));
+  $('build-final').replaceChildren(element('p', 'fine', 'Su respuesta:'), bubble('ai', l.final(), l.table ? 'right' : ''), ...(l.table ? [summary()] : []));
   const check = (ok, text) => element('div', 'build-check ' + (ok ? 'yes' : 'no'), element('span', 'build-mark', ok ? '✓' : '✗'), element('span', '', text));
-  $('build-checks').replaceChildren(
-    check(c.listed > 0, 'Ha visto los tickets'),
-    check(c.table, 'Ha escrito la tabla'),
-    check(c.listed === c.receipts && !c.duplicates, say(`Están los ${c.receipts}, una vez cada uno`, `All ${c.receipts} are there, once each`)),
-    check(c.grandOk && c.totalsOk === c.usedCategories, 'Las cuentas son exactas'),
-    check(kinds.includes('compute'), 'Ha repasado las sumas con un programa'));
+  $('build-checks').replaceChildren(...CHECKS.map((text, i) => check(l.checks[i], text)));
   $('build-verdict').textContent = l.verdict;
 }
 
-// ---------- 05 · 23 tries ----------
-function renderRepeat() {
-  const rows = [
-    ['Solo el modelo, como en un chat', experiment.chat, null],
-    ['Con herramientas para leer y escribir archivos', experiment.withoutComputer, null],
-    ['Con todo eso y el ordenador', experiment.withComputer, say(`${experiment.withComputer.computed} de ${experiment.withComputer.runs} repasaron las sumas con un programa`, `${experiment.withComputer.computed} of ${experiment.withComputer.runs} checked the sums with a program`)],
-  ];
-  $('repeat-rows').replaceChildren(...rows.map(([label, v, note]) => element('div', 'repeat-row',
-    element('div', 'repeat-label', element('strong', '', label), element('small', '', say(`${v.done} de ${v.runs} bien`, `${v.done} of ${v.runs} right`)), ...(note ? [element('small', '', note)] : [])),
-    element('div', 'score-row', ...Array.from({ length: v.runs }, (_, i) => element('span', 'score-cell ' + (i < v.done ? 'good' : 'bad'), i < v.done ? '✓' : '✗'))))));
-}
-
-// ---------- 07 · For the curious ----------
-// The harness written for this chapter (harness.mjs), shortened and with its comments in Spanish.
+// ---------- 06 · For the curious ----------
+// A minimal harness written for this chapter, with its comments in Spanish.
 const CODE = `const client = new Anthropic();
 
 async function runAgent({ tools, prompt, run, maxTurns = 25 }) {
@@ -197,8 +194,9 @@ function loopSteps() {
   ];
   return PHASES.map(([from, to], i) => ({ stage: i + 1, title: steps[i][0], caption: steps[i][1], render: () => codeView(from, to) }));
 }
-new Stepper($('loop-explainer'), loopSteps);
+const loopStepper = new Stepper($('loop-explainer'), loopSteps);
 
-function renderAll() { renderTwo(); renderParts(); renderBuild(); renderRepeat(); }
-document.addEventListener('languagechange', renderAll);
+function renderAll() { renderRequest(); renderParts(); renderBuild(); }
+// Steppers built from say() redraw in the new language; their plain Spanish texts are translated by the page.
+document.addEventListener('languagechange', () => { renderAll(); textStepper.refresh(); twoStepper.refresh(); loopStepper.refresh(); });
 renderAll();

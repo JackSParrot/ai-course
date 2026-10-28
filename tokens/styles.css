@@ -334,13 +334,13 @@ footer{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;font-s
 .legend-without{color:var(--accent)}.legend-with{color:var(--green)}
 @media(max-width:600px){.model-stats.two{grid-template-columns:1fr}.prompt-blocks{flex-direction:column}.prompt-block{flex:none!important;grid-template-columns:1fr auto;border-right:0;border-bottom:2px solid var(--paper)}}
 @media(prefers-reduced-motion:reduce){.kv-key,.phase-token,.prompt-block{transition:none}}
-/* Chapter 14 (harness): the same request in a chat and in an agent, the parts of a harness and the loop's code. */
+/* Chapter 14 (harness): the same request in a chat and in an agent, the parts of a harness and the loop's code. Chapter 15 reuses several of these classes. */
 html[lang=en] .es-only{display:none}
+#two-explainer .mini-desk{align-content:start}#two-explainer .timeline{margin:0}
 .code-view{margin:0;padding:14px 16px;background:var(--field);border-radius:8px;font:12.5px/1.6 Consolas,monospace;overflow-x:auto;white-space:pre;width:100%;text-align:left}
 .code-line{display:block;opacity:.45;transition:opacity .2s}.code-line.lit{opacity:1;background:color-mix(in srgb,var(--green) 14%,transparent)}.code-line.comment{color:var(--green);font-style:italic}
 .can-list{display:grid;gap:8px;justify-items:start}.can-list span{padding:8px 14px;border-radius:6px;font-size:14px}
 .can-list .cannot{background:var(--seen);color:var(--seen-ink)}.can-list .can{background:var(--generated);color:#18361f}
-.speech{padding:12px 16px;border-radius:12px 12px 12px 2px;background:var(--generated);color:#18361f;font-size:15px}.speech code{background:none;color:inherit}
 .request-bubble{max-width:620px;margin:16px 0;padding:14px 18px;border-radius:14px 14px 2px 14px;background:var(--program);color:var(--program-ink);margin-left:auto}
 .request-bubble p{margin:6px 0 0;font-size:16px}.request-bubble .eyebrow{color:var(--program-ink)}
 .two-programs{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
@@ -353,7 +353,6 @@ html[lang=en] .es-only{display:none}
 .timeline-what{font-size:14px}.timeline-what q{font-style:italic}
 .timeline-result{font-size:12px;color:var(--muted);margin-top:3px}
 .timeline-item.good .timeline-result{color:var(--green);font-weight:600}.timeline-item.bad .timeline-result{color:var(--accent);font-weight:600}
-.edit-diff{font:12px Consolas,monospace}.edit-diff del{color:var(--accent)}.edit-diff ins{color:var(--green);text-decoration:none;font-weight:700}
 .harness-map{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:18px;align-items:start;margin-top:16px}
 .harness-ring{border:2px dashed var(--line);border-radius:16px;padding:18px;display:grid;gap:14px;background:var(--field)}
 .harness-core{justify-self:center;display:grid;justify-items:center;padding:14px 26px;border-radius:12px;background:var(--generated);color:#18361f;font-weight:700;font-size:17px;border:2px solid var(--green)}
@@ -380,7 +379,6 @@ html[lang=en] .es-only{display:none}
 .receipt-sample pre{margin:6px 0 0;font:11.5px/1.5 Consolas,monospace;white-space:pre-wrap;color:var(--ink)}
 .void-call{white-space:pre-wrap;opacity:1}
 .agent-table{margin-top:6px;font-size:12.5px}.agent-table th{font-size:11px}
-.compute-output{font-size:11.5px;background:none;padding:0}
 .repeat-rows{display:grid;gap:16px}
 .repeat-row{display:grid;grid-template-columns:minmax(200px,280px) 1fr;gap:16px;align-items:center}
 .repeat-label{display:grid;gap:2px}.repeat-label small{font-size:12px;color:var(--muted)}
