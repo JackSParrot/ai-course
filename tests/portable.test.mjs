@@ -26,7 +26,7 @@ test('one portable file contains every page, styles, locale and all hash-verifie
   assert.equal(pixels.length,split.count*256,role);
   assert.equal(createHash('sha256').update(pixels).digest('hex'),split.sha256,role);
  }
- assert.deepEqual(Object.keys(pack.workers),['digits','cars','images','predictor','attention','assistant','reasoning','tools']);
+ assert.deepEqual(Object.keys(pack.workers),['digits','cars','images','predictor','attention','assistant','reasoning']);
  for(const worker of Object.values(pack.workers)){new Script(worker);assert.doesNotMatch(worker,/import\.meta/);}
  assert.match(pack.pages.digits.html,/download="PROVENANCE.md"/);
 });
@@ -131,10 +131,4 @@ test('the embedded reasoning trainer builds its own games and trains both models
  const epoch=await next(worker,{kind:'compare'},m=>m.kind==='epoch');
  assert.equal(epoch.history.length,1);assert.ok(epoch.history[0].think>=0&&epoch.history[0].direct>=0);
  worker.postMessage({kind:'stop'});
-});
-test('the embedded tools trainer builds its own bestiary and trains memory and tool together',async t=>{
- const worker=trainer('tools');t.after(()=>worker.terminate());
- worker.postMessage({kind:'setup',tokenizer:null});
- const epoch=await next(worker,{kind:'compare'},m=>m.kind==='epoch');
- assert.equal(epoch.history.length,1);assert.ok(epoch.history[0].tool.unseen>=0&&epoch.history[0].memory.patched>=0);
 });

@@ -22,7 +22,7 @@ predictor:['index.html',...['app','embedding-map','model','worker'].map(n=>'src/
 attention:['index.html',...['app','transformer','worker'].map(n=>'src/'+n+'.js')],
 assistant:['index.html',...['app','training','world','worker'].map(n=>'src/'+n+'.js')],
 reasoning:['index.html',...['app','data','shell-game','training','worker'].map(n=>'src/'+n+'.js')],
-tools:['index.html',...['app','bestiary','training','worker'].map(n=>'src/'+n+'.js')],
+tools:['index.html','src/app.js'],
 cache:['index.html',...['app','cost'].map(n=>'src/'+n+'.js')],
 harness:['index.html',...['app','session'].map(n=>'src/'+n+'.js')],
 skills:['index.html',...['app','session'].map(n=>'src/'+n+'.js')],

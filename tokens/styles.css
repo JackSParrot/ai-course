@@ -253,24 +253,29 @@ footer{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;font-s
 .token.picked{outline:2px solid var(--accent)}
 .token.weighted{background:color-mix(in srgb,#6fae84 calc(var(--weight)*100%),#eef0ea)}
 .chip[aria-pressed=true]{background:var(--green);color:var(--on-green);border-color:var(--green)}
-/* Chapter 12 (tools): who wrote each token, the bestiary database and the text-only dungeon. */
+/* Chapter 12 (tools): who wrote each piece of text, the shop catalogue, the pasted page and the text-only folder. */
 :root{--program:#cfe0f5;--program-ink:#1d3654}
 .token.program{background:var(--program)!important;color:var(--program-ink)}
-.program-sample{background:var(--program);color:var(--program-ink);padding:1px 4px;border-radius:3px}
-.db-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:4px;margin-top:8px;max-height:340px;overflow:auto}
-.db-grid.single{grid-template-columns:minmax(180px,260px);max-height:none}
-.db-cell{display:flex;justify-content:space-between;gap:8px;padding:4px 8px;border-radius:6px;background:var(--field);font-size:13px}
+.db-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:4px;margin-top:8px}
+.db-grid.single{grid-template-columns:minmax(220px,320px)}
+.db-cell{display:flex;justify-content:space-between;gap:8px;padding:5px 9px;border-radius:6px;background:var(--field);font-size:13px}
 .db-cell.unseen{box-shadow:inset 0 0 0 2px var(--accent)}
 .db-cell.changed strong{color:var(--accent)}
-.agent-tools{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 12px}.agent-tools .button{font-family:Consolas,monospace}
-.agent-log{display:grid;gap:4px;max-height:360px;overflow:auto;font-size:14px;padding:8px;background:var(--field);border-radius:8px;min-height:120px;align-content:start}
-.agent-line{display:flex;gap:8px;align-items:baseline}.agent-line .agent-part{margin-right:6px}
+.db-cell.picked{background:var(--program);color:var(--program-ink);font-weight:600}
+.new-tag{margin-left:6px;padding:0 5px;border-radius:8px;background:var(--accent);color:var(--on-green);font-size:10px;vertical-align:middle}
+.tool-verdict{margin:0;font-size:13px}.tool-verdict.good{color:var(--green)}.tool-verdict.bad{color:var(--accent)}
+.big-text.plain-text{font-size:16px;line-height:1.6}
+.pasted-page{margin:0;padding:10px 12px;border-radius:8px;background:var(--program);color:var(--program-ink);font:12.5px/1.6 Consolas,monospace;white-space:pre-wrap;overflow-wrap:anywhere}
+.defense-toggle{display:flex;gap:8px;align-items:center;margin-top:12px;font-size:13.5px;cursor:pointer}
+.agent-tools{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 12px}.agent-tools .button{font:12.5px Consolas,monospace;padding:6px 10px}.agent-tools .button.used{opacity:.7}
+.agent-log{display:grid;gap:4px;max-height:380px;overflow:auto;font-size:14px;padding:8px;background:var(--field);border-radius:8px;min-height:120px;align-content:start}
+.agent-line{display:flex;gap:8px;align-items:baseline}.agent-result{white-space:pre-wrap}
 .agent-who{min-width:72px;font:12px Consolas,monospace;color:var(--muted)}
 .agent-line.agent .agent-call{font-family:Consolas,monospace;color:var(--green);font-weight:700}
-.agent-grid{display:grid;grid-template-columns:repeat(9,28px);gap:2px;margin-top:10px}
-.agent-cell{display:grid;place-items:center;width:28px;height:28px;border-radius:3px;background:var(--field);font-size:14px;color:var(--accent)}
-.agent-cell.wall{background:var(--line)}.agent-cell.visited{background:#d7ead3}.agent-cell.goal{color:#b8860b}.agent-cell.here{background:var(--ball);color:#fff}
-@media(prefers-color-scheme:dark){:root{--program:#cfe0f5;--program-ink:#1d3654}.agent-cell.visited{background:#3d5a46}}
+.agent-line.goal .agent-result{color:var(--green);font-weight:600}
+.folder-tree{display:grid;gap:2px;margin-top:10px;padding:8px;border-radius:8px;background:var(--field);font:12.5px Consolas,monospace}
+.tree-row{white-space:pre;padding:2px 6px;border-radius:4px}.tree-row.visited{background:var(--generated);color:#18361f}.tree-row.goal{color:var(--accent);font-weight:700}
+@media(prefers-color-scheme:dark){:root{--program:#cfe0f5;--program-ink:#1d3654}}
 /* Chapter 13 (cache): K and V per layer and token, prefill and decode, and the blocks of a prompt. */
 .model-stats.two{grid-template-columns:repeat(2,1fr)}
 .kv-lab{margin-top:18px}
