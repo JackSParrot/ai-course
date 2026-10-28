@@ -25,7 +25,7 @@ reasoning:['index.html','src/app.js'],
 tools:['index.html',...['app','bestiary','training','worker'].map(n=>'src/'+n+'.js')],
 cache:['index.html',...['app','cost'].map(n=>'src/'+n+'.js')],
 harness:['index.html',...['app','session'].map(n=>'src/'+n+'.js')],
-skills:['index.html',...['app','session'].map(n=>'src/'+n+'.js')],
+skills:['index.html','src/app.js'],
 memory:['index.html','src/app.js']
 };
 const chapters=[{app:'perceptrons',title:'Perceptrones'},{app:'digits',title:'Aprender a leer'},{app:'autoencoder',title:'Autoencoder'},{app:'superresolution',title:'Superresolución'},{app:'maze',title:'Algoritmos genéticos'},{app:'cars',title:'Coches'},{app:'tokens',title:'Tokens'},{app:'predictor',title:'Siguiente token'},{app:'attention',title:'Atención'},{app:'assistant',title:'Del modelo al asistente'},{app:'reasoning',title:'Pensar antes de responder'},{app:'tools',title:'Herramientas y agentes'},{app:'cache',title:'Caché y coste'},{app:'harness',title:'El arnés'},{app:'skills',title:'Skills y MCP'},{app:'memory',title:'La memoria'}];
