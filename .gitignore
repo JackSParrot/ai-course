@@ -4,13 +4,6 @@
 /releases/
 /verification/
 
-# Local Codex attachments (not course assets)
-/.codex-remote-attachments/
-
-# Private talk planning and local assistant context (not distributed)
-/.local-context/
-/AGENTS.md
-
 # Dependencies, downloaded dataset cache and local output
 node_modules/
 .cache/
