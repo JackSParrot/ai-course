@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#17372e"><title>Trabajar con un agente — Tú pones el encargo y la red</title><link rel="icon" href="../digits/favicon.svg"><link rel="stylesheet" href="../tokens/styles.css"></head><body>
+<header class="tokens-header"><a href="../">neural / <b>labs</b></a><span>CAPÍTULO 19 · TRABAJAR CON UN AGENTE</span></header>
+<main>
+<section class="intro" aria-labelledby="practice-title"><div><p class="eyebrow">TRABAJAR CON UN AGENTE</p><h1 id="practice-title">Ya sabes cómo funciona.<br>Ahora, cómo trabajar con él.</h1><p>Un agente no ve lo que tienes en la cabeza ni sabe cuándo te vas a dar por satisfecho. Eso lo pones tú: un <strong>buen encargo</strong> al principio y una <strong>red de seguridad</strong> al final, para comprobar lo que ha hecho y deshacerlo si sale mal.</p><p>Es como encargar una reforma: dices qué quieres y qué no se toca, miras el presupuesto antes de que empiecen, revisas la obra al acabar y te alegras de haber guardado el plano de cómo estaba.</p><a href="#encargo" class="button primary">Empezar ↓</a></div>
+<div class="analogy-grid" aria-label="Tres ideas del capítulo"><div><span class="eyebrow">EL ENCARGO</span><strong>Dónde, cuándo está hecho y qué no tocar</strong><small>lo que no le dices, lo adivina</small></div><div><span class="eyebrow">EL PLAN</span><strong>Antes de tocar nada</strong><small>corregir un plan cuesta una frase</small></div><div class="accent"><span class="eyebrow">LA RED DE SEGURIDAD</span><strong>Comprobar y poder deshacer</strong><small>lo que se puede deshacer, se puede delegar</small></div></div></section>
+
+<section id="encargo" class="lesson-section" aria-labelledby="brief-title"><p class="eyebrow">01 / EL ENCARGO</p><h2 id="brief-title">Lo que no le dices, lo adivina.</h2><p>Brújula, la agencia de los capítulos 15 a 18, lleva la tienda online de Horno Alto. En enero suben los precios un 5 %, menos las seis ofertas, que se quedan igual, y el pan de centeno pasa a 3,20 €. El agente es el mismo en todos los casos: lo único que cambia es lo que le cuentas. Añade piezas al encargo y mira qué pasa.</p>
+<div id="brief-pieces" class="build-levels" role="group" aria-label="Piezas del encargo"></div>
+<div class="model-layout"><div class="panel"><span class="eyebrow">EL ENCARGO</span><div id="brief-text"></div></div>
+<div class="panel"><span class="eyebrow">LO QUE SUELE PASAR</span><div id="brief-result"></div></div></div>
+<p class="fine">Ilustración: la tienda, los archivos y lo que hace el agente están escritos a mano para mostrar la idea.</p>
+<div class="lesson-note"><strong>Específico no es largo.</strong> Cuatro frases bastan: dónde está lo que necesita, qué es «terminado», qué no debe tocar y cómo se comprueba. Si todavía no sabes qué quieres, pídele que te haga preguntas hasta que lo sepáis los dos.</div></section>
+
+<section id="plan" class="lesson-section" aria-labelledby="plan-title"><p class="eyebrow">02 / PRIMERO EL PLAN</p><h2 id="plan-title">Corregir un plan cuesta una frase.</h2><p>Antes de dejarle cambiar nada, pídele que lea lo que haga falta y te cuente qué va a hacer. Es el presupuesto de la reforma: se lee en un minuto y ahí se ven los malentendidos.</p>
+<div id="plan-explainer" class="explainer">
+<ol class="stage-track"><li data-stage="1"><span>1</span>Pide un plan</li><li data-stage="2"><span>2</span>Lee el plan</li><li data-stage="3"><span>3</span>Corrige el plan</li><li data-stage="4"><span>4</span>Cuándo cuesta</li></ol>
+<div class="stage-panel"><h3 class="stage-title"></h3><div class="stage-visual"></div><p class="stage-caption"></p></div>
+<div class="stepper-controls"><button type="button" class="button outline" data-step="prev">← Anterior</button><span class="step-count"></span><button type="button" class="button primary" data-step="next">Siguiente →</button><button type="button" class="button outline" data-step="play">▶ Reproducir</button></div>
+</div>
+<p class="fine">Ilustración: el plan y lo que cuesta corregir en cada momento son inventados; la forma de la curva es lo que importa.</p>
+<div class="lesson-note"><strong>No hace falta para todo.</strong> Si el cambio es pequeño y se ve de un vistazo, pídelo sin más. El plan compensa cuando el trabajo toca muchos sitios o cuando no estás seguro de que te haya entendido.</div></section>
+
+<section id="comprobar" class="lesson-section" aria-labelledby="review-title"><p class="eyebrow">03 / COMPROBAR, NO CREER</p><h2 id="review-title">«Hecho» no es una prueba.</h2><p>El agente termina y te dice: «Hecho: los precios han subido un 5 % y las ofertas no se han tocado». Ese resumen lo escribe el mismo modelo que hizo el trabajo. Mira tú los cambios: ¿cuáles están mal? Pulsa los que creas.</p>
+<div id="review-list" class="review-list"></div>
+<div class="run-controls"><button type="button" id="review-check" class="button primary">Ver la solución</button><button type="button" id="review-reset" class="button outline">Empezar de nuevo</button></div>
+<div id="review-score" class="lesson-note"></div>
+<p class="fine">Ilustración: los productos, los precios y los cambios son inventados.</p>
+<div class="lesson-note"><strong>Mejor que lo compruebe una prueba.</strong> Revisar a ojo cuarenta filas cansa y se escapan cosas. Dale al agente algo que diga sí o no: «ningún precio de oferta cambia», «ninguno baja ni sube más de un 10 %». Con eso encuentra solo el bizcocho a 0,63 € antes de decirte «hecho» (capítulo 14).</div></section>
+
+<section id="deshacer" class="lesson-section" aria-labelledby="undo-title"><p class="eyebrow">04 / PODER DESHACER</p><h2 id="undo-title">Lo que se puede deshacer, se puede delegar.</h2><p>Un error que se deshace en un segundo no da miedo. Por eso los arneses guardan un punto de vuelta antes de cada encargo, y por eso conviene que todo lo importante esté guardado en una copia con historia, como git.</p>
+<div id="undo-explainer" class="explainer">
+<ol class="stage-track"><li data-stage="1"><span>1</span>Un punto de vuelta</li><li data-stage="2"><span>2</span>El agente trabaja</li><li data-stage="3"><span>3</span>Algo sale mal</li><li data-stage="4"><span>4</span>Vuelves al punto</li><li data-stage="5"><span>5</span>Lo que no vuelve</li></ol>
+<div class="stage-panel"><h3 class="stage-title"></h3><div class="stage-visual"></div><p class="stage-caption"></p></div>
+<div class="stepper-controls"><button type="button" class="button outline" data-step="prev">← Anterior</button><span class="step-count"></span><button type="button" class="button primary" data-step="next">Siguiente →</button><button type="button" class="button outline" data-step="play">▶ Reproducir</button></div>
+</div>
+<p class="fine">Ilustración: los archivos y los cambios son inventados.</p>
+<h3 class="sub-title">¿Se puede deshacer?</h3><p>Clasifica cada acción. Lo que se deshace puede hacerlo solo; lo que no tiene vuelta atrás, que te pregunte antes (capítulos 15 y 18).</p>
+<div id="undo-list" class="assign-list"></div>
+<div id="undo-score" class="lesson-note"></div></section>
+
+<section id="mesa" class="lesson-section" aria-labelledby="desk-title"><p class="eyebrow">05 / LA MESA, LIMPIA</p><h2 id="desk-title">¿Sigo o empiezo de nuevo?</h2><p>Todo lo que ha pasado en la conversación sigue en la mesa y se vuelve a leer en cada vuelta (capítulos 13 y 16). A veces lo mejor es seguir; otras, empezar con la mesa limpia y un encargo nuevo. ¿Qué harías?</p>
+<div id="desk-list" class="assign-list"></div>
+<div id="desk-score" class="lesson-note"></div>
+<p class="fine">Ilustración: las situaciones son inventadas.</p></section>
+
+<section id="habitos" class="lesson-section" aria-labelledby="habits-title"><p class="eyebrow">06 / EL CURSO, EN HÁBITOS</p><h2 id="habits-title">Lo que sabes, convertido en lo que haces.</h2><p>Cada capítulo desde el 07 explica algo de cómo funciona un agente. Cada uno deja también una costumbre.</p>
+<div class="habit-table">
+<div class="habit-row habit-head"><span>EL CAPÍTULO</span><span>LO QUE SABES</span><span>LO QUE HACES</span></div>
+<div class="habit-row"><span>07–09 · Tokens y atención</span><span>Lee tokens y todos compiten por su atención.</span><span>Lo importante, dicho claro y sin enterrarlo entre papeles.</span></div>
+<div class="habit-row"><span>10 · Del modelo al asistente</span><span>Aprendió a agradar a quien lo evaluaba.</span><span>Si quieres la verdad, pregunta sin decir lo que crees.</span></div>
+<div class="habit-row"><span>11 · Pensar antes de responder</span><span>Pensar más ayuda en lo difícil y cuesta tiempo.</span><span>Más esfuerzo para lo difícil; para lo sencillo, menos.</span></div>
+<div class="habit-row"><span>12 · Herramientas y agentes</span><span>Se cree lo que lee, también una orden escondida.</span><span>Cuidado con lo que lee de fuera: webs, correos, documentos ajenos.</span></div>
+<div class="habit-row"><span>13 · Caché y coste</span><span>Un principio idéntico sale barato.</span><span>Las instrucciones fijas, quietas; lo que cambia, al final.</span></div>
+<div class="habit-row"><span>14 · El arnés</span><span>Lo que puede hacer lo decide el programa.</span><span>Dale instrucciones, permisos justos y una forma de comprobar.</span></div>
+<div class="habit-row"><span>15 · Skills y MCP</span><span>Ve un menú y abre lo que entiende.</span><span>Lo que repites, en una skill con un nombre claro.</span></div>
+<div class="habit-row"><span>16 · La memoria</span><span>Lo que no está en la mesa no existe.</span><span>Apunta lo que debe recordar y revisa lo que recuerda.</span></div>
+<div class="habit-row"><span>17 · Los sub-agentes</span><span>Un ayudante solo sabe lo que le dices.</span><span>Delega misiones que se entiendan solas y digan qué devolver.</span></div>
+<div class="habit-row"><span>18 · Confiar y controlar</span><span>Lo que escribes, el modelo lo puede saltar; el arnés, no.</span><span>Lo que no puede fallar, en el arnés: permisos y hooks.</span></div>
+<div class="habit-row habit-last"><span>19 · Trabajar con un agente</span><span>No adivina qué quieres ni cuándo has acabado.</span><span>Encargo claro, plan antes, prueba después y una forma de deshacer.</span></div>
+</div></section>
+
+<section id="vida-real" class="lesson-section" aria-labelledby="real-title"><p class="eyebrow">07 / EN LA VIDA REAL</p><h2 id="real-title">Los mandos de Claude Code.</h2>
+<div class="oddity-grid">
+<article><span>EL PLAN</span><h3>Modo plan</h3><p>Pulsa <code>Shift+Tab</code> hasta que ponga <code>plan mode on</code>. El agente lee y propone un plan, pero no cambia nada hasta que lo apruebas.</p></article>
+<article><span>EL PRIMER MINUTO</span><h3>Esc para parar</h3><p>Mira lo que hace al principio. Si se va por otro lado, <code>Esc</code> lo para sin perder lo hecho, y le corriges el rumbo.</p></article>
+<article><span>PODER DESHACER</span><h3>Volver atrás</h3><p><code>/rewind</code>, o <code>Esc</code> dos veces, vuelve al punto antes de cualquier mensaje tuyo. Deshace lo que el agente editó con sus herramientas; lo que cambió un comando o un sub-agente, no siempre. Para eso está git.</p></article>
+<article><span>LA MESA</span><h3>/clear entre tareas</h3><p>Empieza de cero con la mesa limpia. Si le has corregido lo mismo dos veces, mejor un encargo nuevo que incluya lo que has aprendido que una tercera corrección.</p></article>
+<article><span>CAPÍTULO 18</span><h3>Lo que no puede fallar, en el arnés</h3><p>Lo que pides lo puede saltar; una regla de permisos o un <em>hook</em>, no. Y todo lo que lee viaja al proveedor. Lo viste en «Confiar y controlar».</p></article>
+<article><span>CONSEJO 1</span><h3>Antes de dejarlo solo</h3><p>¿Sabe cuándo ha terminado? ¿Puede comprobarlo? ¿Qué puede tocar? ¿Qué lo detiene? ¿Quién da el visto bueno al final? Si falta una respuesta, quédate mirando.</p></article>
+<article><span>CONSEJO 2</span><h3>Cuándo no usar un agente</h3><p>Cuando tardas menos en hacerlo que en explicarlo, cuando no vas a poder comprobar el resultado, o cuando la decisión es de gusto o de dinero y solo puedes tomarla tú.</p></article>
+</div>
+<p class="fine">Fuentes: documentación de Claude Code, «Best practices», «Checkpointing» y «Common workflows» (consultadas en octubre de 2026).</p></section>
+
+<section class="lesson-section" aria-labelledby="summary-title"><p class="eyebrow">PARA LLEVAR</p><h2 id="summary-title">Tres ideas.</h2>
+<div class="takeaways"><div><span>1</span><strong>Un buen encargo dice dónde, cuándo está hecho y qué no tocar.</strong><small>Lo que no le dices, lo adivina. Específico no es largo.</small></div><div><span>2</span><strong>Plan antes, prueba después.</strong><small>Corregir un plan cuesta una frase. «Hecho» no demuestra nada: que lo diga una prueba.</small></div><div><span>3</span><strong>Lo que se puede deshacer, se puede delegar.</strong><small>Un punto de vuelta y git para lo reversible; tu permiso para lo que no tiene vuelta atrás.</small></div></div></section>
+
+<section class="lesson-section chapter-bridge" aria-labelledby="bridge-title"><p class="eyebrow">FIN DEL CURSO</p><h2 id="bridge-title">De una neurona a un agente.</h2><p>Empezaste con una neurona que separaba puntos con una recta. Ahora puedes explicar qué pasa cuando un agente trabaja contigo: un modelo que escribe la continuación de lo que tiene en la mesa, un arnés que convierte sus peticiones en acciones, skills, memoria y ayudantes para llegar más lejos, y tú, que pones el encargo y das el visto bueno.</p><p>Aquí termina el curso. Lo que venga después serán talleres prácticos, novedades y trucos.</p><a href="../" class="button primary">Volver al índice del curso</a></section>
+</main>
+<footer><span>neural / labs · trabajar con un agente</span><span>Tienda, encargos, cambios y cifras de los ejercicios inventados como ilustración.</span></footer>
+<script type="module" src="./src/app.js"></script>
+</body></html>
