@@ -14,8 +14,9 @@ test('the chapter 16 page says that its examples and figures are illustrations',
   for (const idea of ['Lo que no está en la mesa no existe.', 'Una mesa demasiado llena cuesta y estorba.', 'Con un mapa, se carga solo lo necesario.']) assert.ok(html.includes(idea), idea);
 });
 
-test('chapter 15 now leads to chapter 16', async () => {
+test('chapter 15 now leads to chapter 16, and chapter 16 to chapter 17', async () => {
   assert.match(await read('skills/index.html'), /href="\.\.\/memory\/"/);
+  assert.match(await read('memory/index.html'), /href="\.\.\/subagents\/"/);
 });
 
 test('every text of the chapter 16 page and its script has an English translation', async () => {

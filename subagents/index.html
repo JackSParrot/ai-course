@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#17372e"><title>Los sub-agentes — Una misión, una mesa limpia</title><link rel="icon" href="../digits/favicon.svg"><link rel="stylesheet" href="../tokens/styles.css"></head><body>
+<header class="tokens-header"><a href="../">neural / <b>labs</b></a><span>CAPÍTULO 17 · LOS SUB-AGENTES</span></header>
+<main>
+<section class="intro" aria-labelledby="subagents-title"><div><p class="eyebrow">LOS SUB-AGENTES</p><h1 id="subagents-title">Una tarea larga no cabe en una mesa.<br>Reparte las misiones.</h1><p>En el capítulo 16 la mesa tenía un tamaño. En una tarea larga se llena sola: todo lo que el agente busca, hace, revisa y prueba se queda encima, y se vuelve a enviar en cada vuelta.</p><p>La salida es delegar: el agente principal encarga <strong>misiones concretas</strong> a otros agentes, cada uno con su mesa limpia y el modelo que mejor le va, y estos le devuelven <strong>solo el resultado</strong>.</p><a href="#bucle" class="button primary">Empezar ↓</a></div>
+<div class="analogy-grid" aria-label="Tres ideas del capítulo"><div><span class="eyebrow">EL JEFE</span><strong>El agente principal</strong><small>lleva el hilo y decide</small></div><div><span class="eyebrow">LA MISIÓN</span><strong>Un encargo que se entiende solo</strong><small>qué hacer y qué devolver</small></div><div class="accent"><span class="eyebrow">EL AYUDANTE</span><strong>El sub-agente</strong><small>su propia mesa, su propio modelo, y devuelve una hoja</small></div></div></section>
+
+<section id="bucle" class="lesson-section" aria-labelledby="loop-title"><p class="eyebrow">01 / EL PROBLEMA</p><h2 id="loop-title">Una tarea larga llena la mesa.</h2><p>Brújula, la agencia de los capítulos 15 y 16, le encarga a un agente la tienda online de Horno Alto. No es una pregunta: son decenas de pasos. Y en cada paso hace lo mismo: buscar, hacer, revisar y probar.</p>
+<div id="loop-explainer" class="explainer">
+<ol class="stage-track"><li data-stage="1"><span>1</span>El encargo</li><li data-stage="2"><span>2</span>Un paso</li><li data-stage="3"><span>3</span>Ocho pasos</li><li data-stage="4"><span>4</span>Pide ayuda</li></ol>
+<div class="stage-panel"><h3 class="stage-title"></h3><div class="stage-visual"></div><p class="stage-caption"></p></div>
+<div class="stepper-controls"><button type="button" class="button outline" data-step="prev">← Anterior</button><span class="step-count"></span><button type="button" class="button primary" data-step="next">Siguiente →</button><button type="button" class="button outline" data-step="play">▶ Reproducir</button></div>
+</div>
+<p class="fine">Ilustración: el encargo y los tamaños son inventados.</p>
+<div class="lesson-note"><strong>Una persona tiene que entrar por tres motivos.</strong> El agente se pierde porque la mesa está llena, dice «hecho» sin que lo esté, o hay que probarlo antes de seguir. Cada vez que pasa, deja de trabajar solo.</div></section>
+
+<section id="subagente" class="lesson-section" aria-labelledby="idea-title"><p class="eyebrow">02 / LA IDEA</p><h2 id="idea-title">Un sub-agente: una misión y una mesa limpia.</h2><p>Un sub-agente es otro agente que el principal pone en marcha para una sola misión. No ve la conversación: solo la misión. Puede usar otro modelo, pensar más o menos y tener otras herramientas. Cuando termina, devuelve el resultado y su mesa se tira.</p>
+<div id="idea-explainer" class="explainer">
+<ol class="stage-track"><li data-stage="1"><span>1</span>La misión</li><li data-stage="2"><span>2</span>Una mesa nueva</li><li data-stage="3"><span>3</span>Lee y trabaja</li><li data-stage="4"><span>4</span>Devuelve una hoja</li></ol>
+<div class="stage-panel"><h3 class="stage-title"></h3><div class="stage-visual"></div><p class="stage-caption"></p></div>
+<div class="stepper-controls"><button type="button" class="button outline" data-step="prev">← Anterior</button><span class="step-count"></span><button type="button" class="button primary" data-step="next">Siguiente →</button><button type="button" class="button outline" data-step="play">▶ Reproducir</button></div>
+</div>
+<p class="fine">Ilustración: la misión, el manual y los tamaños son inventados.</p>
+<div class="lesson-note"><strong>Lo que vuelve es lo único que cuenta.</strong> Por eso la misión tiene que decir qué devolver: algo corto, con referencias para ir a la fuente si hace falta.</div></section>
+
+<section id="ayudantes" class="lesson-section" aria-labelledby="helpers-title"><p class="eyebrow">03 / TRES AYUDANTES</p><h2 id="helpers-title">Tres encargos que se delegan bien.</h2><p>No todo merece un ayudante. Estos tres casos sí, y cada uno por un motivo distinto. Elige uno.</p>
+<div id="helper-picker" class="build-levels" role="group" aria-label="Elige un ayudante"></div>
+<div id="helper-card" class="helper-card"></div>
+<p class="fine">Ilustración: las misiones y los perfiles son inventados.</p></section>
+
+<section id="quien" class="lesson-section" aria-labelledby="who-title"><p class="eyebrow">04 / QUIÉN HACE QUÉ</p><h2 id="who-title">Cada tarea, con quien mejor la haga.</h2><p>Un agente que delega bien no lo hace todo con el modelo más listo. Para cada tarea elige entre perfiles distintos. Prueba tú: ¿a quién le darías cada una?</p>
+<div class="profile-grid"><article><span class="eyebrow">EL LISTO</span><strong>Piensa mejor</strong><small>El más caro y el más lento. Para decidir.</small></article><article><span class="eyebrow">EL BARATO</span><strong>Una décima parte del precio</strong><small>Bueno con lo sencillo. Para el volumen.</small></article><article><span class="eyebrow">EL RÁPIDO</span><strong>Responde casi al instante</strong><small>Menos fino. Para reaccionar.</small></article></div>
+<div id="assign-list" class="assign-list"></div>
+<div id="assign-score" class="lesson-note"></div>
+<p class="fine">Perfiles y precios inventados para la ilustración. Los modelos reales se parecen: los grandes piensan mejor y cuestan más, y los pequeños son más baratos y rápidos.</p></section>
+
+<section id="largo" class="lesson-section" aria-labelledby="long-title"><p class="eyebrow">05 / DEL BUCLE CORTO AL LARGO</p><h2 id="long-title">Una mesa despejada aguanta muchos más pasos.</h2><p>Vuelve el encargo de Horno Alto: un agente que lo hace todo en su mesa, frente al mismo agente con sus tres ayudantes. Avanza los pasos y mira las dos mesas.</p>
+<div class="run-controls"><label for="run-steps">Pasos hechos</label><input id="run-steps" type="range" min="1" max="50" value="1"><strong id="run-count"></strong><button type="button" id="run-play" class="button outline">▶ Reproducir</button></div>
+<div class="run-grid"><div class="panel"><span class="eyebrow">UN AGENTE SOLO</span><div id="run-alone"></div></div><div class="panel"><span class="eyebrow">CON AYUDANTES</span><div id="run-helped"></div></div></div>
+<div id="run-breakdown" class="run-breakdown"></div>
+<p class="fine">Ilustración: tamaños inventados. Lo que leen los ayudantes no desaparece: se lee una vez en su mesa, con un modelo más barato, y no se vuelve a enviar.</p>
+<div class="lesson-note"><strong>No es más listo: aguanta más.</strong> Con la mesa despejada, el agente puede dar muchos más pasos antes de que alguien tenga que intervenir. El revisor y el probador quitan las otras dos razones para llamarte.</div></section>
+
+<section id="limites" class="lesson-section" aria-labelledby="limits-title"><p class="eyebrow">06 / LO QUE NO ARREGLA</p><h2 id="limits-title">Delegar no lo arregla todo.</h2>
+<div class="oddity-grid">
+<article><span>LA MISIÓN</span><h3>Solo sabe lo que le dices</h3><p>El ayudante no ve la conversación. Una misión vaga da un resultado muy bien resumido de la cosa equivocada.</p></article>
+<article><span>EL RESUMEN</span><h3>Lo que no vuelve, se pierde</h3><p>El jefe decide con la hoja que le llega. Pide referencias (el archivo, el apartado, el enlace) para poder ir a la fuente.</p></article>
+<article><span>LAS NOTAS</span><h3>Sin papel, no hay relevo</h3><p>En una tarea larga, el ayudante debe dejar su resultado escrito en un archivo antes de volver. Si se corta a medias, lo escrito se salva (capítulo 16).</p></article>
+<article><span>LA FACTURA</span><h3>Más ayudantes, más trabajo</h3><p>Repartir evita releer, pero un equipo tiende a hacer más cosas. Anthropic cuenta que su sistema de investigación con varios agentes gasta unas 15 veces más tokens que un chat, y que a cambio rinde mucho mejor.</p></article>
+<article><span>LA PERSONA</span><h3>Menos supervisión no es ninguna</h3><p>Las decisiones de gusto, de dinero o sin vuelta atrás siguen siendo tuyas. Lo que cambia es cada cuánto te necesita.</p></article>
+</div></section>
+
+<section id="vida-real" class="lesson-section" aria-labelledby="real-title"><p class="eyebrow">07 / EN LA VIDA REAL</p><h2 id="real-title">Dónde lo vas a ver.</h2>
+<div class="oddity-grid">
+<article><span>CLAUDE CODE</span><h3>Un sub-agente es un archivo</h3><p>Se escribe en la carpeta <code>.claude/agents/</code>: su nombre, cuándo usarlo, qué herramientas tiene y qué modelo usa. Claude Code ya trae uno para explorar el proyecto, que solo puede leer.</p></article>
+<article><span>ANTHROPIC</span><h3>Tres técnicas para tareas largas</h3><p>En «Effective context engineering for AI agents» (septiembre de 2025) proponen tres: resumir la conversación cuando se llena, tomar notas fuera de la mesa y usar sub-agentes que devuelvan un resumen corto, de unos 1.000 a 2.000 tokens.</p></article>
+<article><span>INVESTIGAR</span><h3>Un jefe y varios buscadores</h3><p>El sistema de investigación de Claude reparte la búsqueda entre varios sub-agentes a la vez, cada uno con su mesa. En la prueba interna de Anthropic (junio de 2025) rindió un 90 % más que un solo agente.</p></article>
+<article><span>TAREAS LARGAS</span><h3>La carrera es aguantar más</h3><p>METR mide la duración de las tareas que completa un agente, contada en tiempo de una persona: desde 2019 se ha duplicado más o menos cada siete meses. Repartir misiones es una de las piezas para seguir alargándolas.</p></article>
+<article><span>CONSEJO 1</span><h3>Escribe la misión para alguien nuevo</h3><p>Qué hacer, con qué, qué no tocar y qué devolver. Si tú no la entenderías sin haber visto la conversación, el ayudante tampoco.</p></article>
+<article><span>CONSEJO 2</span><h3>Que decida una prueba</h3><p>Un «hecho» no demuestra nada. Pide al revisor que ejecute algo que diga sí o no: los tests, una compra de prueba, una captura.</p></article>
+</div>
+<div class="model-layout"><div class="panel"><span class="eyebrow">UN SUB-AGENTE DE CLAUDE CODE</span><div id="agent-file"></div></div>
+<div class="panel"><span class="eyebrow">QUÉ DICE CADA PARTE</span><ul class="file-parts"><li><code>name</code> El nombre con el que el jefe lo llama.</li><li><code>description</code> Cuándo usarlo. Es lo que lee el jefe para decidir, como el menú de skills del capítulo 15.</li><li><code>tools</code> Solo lo que necesita: este puede leer y buscar, pero no cambiar nada.</li><li><code>model</code> El modelo del ayudante: aquí, uno pequeño y barato.</li><li><strong>Lo de abajo</strong> Sus instrucciones fijas, que van con cada misión.</li></ul></div></div>
+<p class="fine">Fuentes: la documentación de sub-agentes de Claude Code; Anthropic, «How we built our multi-agent research system» (junio de 2025) y «Effective context engineering for AI agents» (septiembre de 2025); METR, «Measuring AI Ability to Complete Long Tasks» (marzo de 2025).</p></section>
+
+<section class="lesson-section" aria-labelledby="summary-title"><p class="eyebrow">PARA LLEVAR</p><h2 id="summary-title">Tres ideas.</h2>
+<div class="takeaways"><div><span>1</span><strong>Un sub-agente es una misión con su propia mesa.</strong><small>No ve la conversación, puede usar otro modelo y otras herramientas, y devuelve solo el resultado.</small></div><div><span>2</span><strong>Cada tarea, con quien mejor la haga.</strong><small>El listo para decidir, el barato para el volumen, el rápido para reaccionar, y unos ojos limpios para revisar.</small></div><div><span>3</span><strong>Una mesa despejada aguanta más.</strong><small>Menos que releer y menos motivos para llamarte: el agente trabaja más tiempo solo y llega más lejos.</small></div></div></section>
+
+<section class="lesson-section chapter-bridge" aria-labelledby="bridge-title"><p class="eyebrow">LO QUE VIENE</p><h2 id="bridge-title">De ayudantes a un equipo.</h2><p>Si cada ayudante puede tener su modelo, sus herramientas y su manual, el siguiente paso es darle a cada uno un oficio: alguien que investiga, alguien que diseña, alguien que programa, alguien que prueba y alguien que lo coordina todo. Eso ya es un equipo, y lo veremos en las próximas charlas.</p></section>
+</main>
+<footer><span>neural / labs · los sub-agentes</span><span>Empresa, encargo, perfiles y cifras de los ejercicios inventados como ilustración.</span></footer>
+<script type="module" src="./src/app.js"></script>
+</body></html>

@@ -2,13 +2,13 @@
 
 # Guía de desarrollo de Neural Labs
 
-Dieciséis capítulos en HTML, CSS y JavaScript: **Perceptrones**, **Aprender a leer**, **Autoencoder**, **Superresolución**, **Algoritmos genéticos**, **Coches**, **Tokens**, **Siguiente token**, **Atención**, **Del modelo al asistente**, **Pensar antes de responder**, **Herramientas y agentes**, **Caché y coste**, **El arnés**, **Skills y MCP** y **La memoria**. Las redes, el entrenamiento y la inferencia se ejecutan en el navegador. Desde el capítulo 11, los ejemplos y resultados son ilustrativos y están marcados como tales en cada página; ninguna página llama a ninguna API. No requiere servicios de IA, cuentas ni claves de API.
+Diecisiete capítulos en HTML, CSS y JavaScript: **Perceptrones**, **Aprender a leer**, **Autoencoder**, **Superresolución**, **Algoritmos genéticos**, **Coches**, **Tokens**, **Siguiente token**, **Atención**, **Del modelo al asistente**, **Pensar antes de responder**, **Herramientas y agentes**, **Caché y coste**, **El arnés**, **Skills y MCP**, **La memoria** y **Los sub-agentes**. Las redes, el entrenamiento y la inferencia se ejecutan en el navegador. Desde el capítulo 11, los ejemplos y resultados son ilustrativos y están marcados como tales en cada página; ninguna página llama a ninguna API. No requiere servicios de IA, cuentas ni claves de API.
 
-Este repositorio contiene las fuentes editables de los dieciséis capítulos, sus datos y sus pruebas. La web existente está en [labs.jacksparrot.com](https://labs.jacksparrot.com/); hacer un commit o un push aquí no actualiza ni reinicia ese servicio.
+Este repositorio contiene las fuentes editables de los diecisiete capítulos, sus datos y sus pruebas. La web existente está en [labs.jacksparrot.com](https://labs.jacksparrot.com/); hacer un commit o un push aquí no actualiza ni reinicia ese servicio.
 
 ## Abrir sin servidor ni internet
 
-Abre **`Neural-Labs.html` con doble clic** en un navegador actualizado. Es un único archivo portable que incluye los dieciséis capítulos, los dos idiomas, los 3.000 ejemplos de MNIST y los entrenadores. No necesita Node.js, instalación ni conexión para usarlo. Puedes copiar solo ese archivo a otro ordenador.
+Abre **`Neural-Labs.html` con doble clic** en un navegador actualizado. Es un único archivo portable que incluye los diecisiete capítulos, los dos idiomas, los 3.000 ejemplos de MNIST y los entrenadores. No necesita Node.js, instalación ni conexión para usarlo. Puedes copiar solo ese archivo a otro ordenador.
 
 El archivo se genera automáticamente con `npm run build`, junto a la web habitual. Se incluye en Git para poder abrir el curso tras descargar el repositorio. Para regenerarlo desde un checkout nuevo, sigue los pasos de abajo; `esbuild` se utiliza únicamente durante la generación. El archivo conserva los avisos de licencia y permite descargar la procedencia de MNIST.
 
@@ -67,6 +67,7 @@ El curso adapta automáticamente su paleta al modo claro u oscuro del sistema o 
 14. **El arnés — `/harness/`**. Del chat al agente: el modelo solo escribe texto y el arnés le da instrucciones, herramientas y un bucle. El ejemplo son 40 tickets inventados de un viaje del equipo a una feria en Colonia y el encargo de clasificarlos en una tabla de gastos. Explicadores paso a paso (`Stepper`): el modelo solo puede escribir una petición de herramienta, y el mismo encargo en un chat y en un agente, lado a lado. Luego las piezas del arnés, un «monta tu asistente» con tres niveles (solo el modelo, con herramientas de archivos, con el ordenador) y, opcional, el bucle en código. Las respuestas, los pasos y las cifras están escritos a mano en `harness/src/app.js` y la página los marca como ilustración. Sin entrenamiento ni worker.
 15. **Skills y MCP — `/skills/`**. Cargar solo lo que hace falta: el arnés enseña al modelo un menú (nombre y descripción de cada skill) y el modelo abre la que necesita; la etiqueta decide si la usa; una skill es saber (texto) y MCP es poder (herramientas con un enchufe estándar). Analogía de oficina: la mesa, el archivador (cada skill es un cajón con su etiqueta) y el enchufe (MCP), con Brújula, una agencia de comunicación inventada, y su política de gastos para los tickets de una feria en Colonia. Todo es ilustrativo y está escrito a mano en `skills/src/app.js`, rotulado en la página como ilustración: un paso a paso de la mesa y el archivador (`Stepper`), el mismo encargo con y sin la skill y sus cinco reglas (✓/✗), un selector de cuatro etiquetas con lo que suele pasar con cada una (de «siempre, y lo primero» a «es lotería»), un paso a paso con un servidor MCP de contabilidad inventado, con una casilla para que el arnés pida permiso antes de enviar, y una carpeta de ejemplo de skill. Sin datos grabados, entrenamiento ni worker.
 16. **La memoria — `/memory/`**. Lo que no está en el contexto no existe, una mesa demasiado llena cuesta y estorba, y la memoria es un archivo de notas con índices por niveles. Explicaciones paso a paso y ejercicios con ejemplos y cifras **ilustrativos**, marcados como tales en la página (sin grabaciones exportadas). Sin entrenamiento ni worker.
+17. **Los sub-agentes — `/subagents/`**. Una tarea larga llena la mesa; un sub-agente recibe una misión, trabaja con su propia mesa y su propio modelo y devuelve solo el resultado. El buscador, el revisor y el probador, elegir quién hace qué y la mesa de un agente solo frente a la de uno con ayudantes a lo largo de 50 pasos. Ejemplos y cifras **ilustrativos**, marcados como tales en la página. Sin entrenamiento ni worker.
 
 Los talleres permiten guardar trabajo en el almacenamiento local del navegador. Los guardados pertenecen a su origen completo —protocolo, host y puerto— y no se transfieren automáticamente al cambiar de dirección. Usa las opciones de exportar/importar cuando estén disponibles. El servidor del curso no recibe dibujos, pesos ni experimentos.
 
@@ -80,7 +81,7 @@ Las pruebas de imágenes verifican gradientes por diferencias finitas en cada ca
 
 ## Idiomas
 
-La portada, los dieciséis capítulos y los editores comparten las mismas páginas en **español e inglés**. Usa el selector **ES / EN** para cambiar sin recargar ni perder el ejercicio o entrenamiento en curso. El idioma se recuerda en este navegador; también puedes compartir enlaces con `?lang=en` o `?lang=es`, por ejemplo `/perceptrons/?lang=en#combinar`. El parámetro del enlace tiene prioridad sobre la preferencia guardada.
+La portada, los diecisiete capítulos y los editores comparten las mismas páginas en **español e inglés**. Usa el selector **ES / EN** para cambiar sin recargar ni perder el ejercicio o entrenamiento en curso. El idioma se recuerda en este navegador; también puedes compartir enlaces con `?lang=en` o `?lang=es`, por ejemplo `/perceptrons/?lang=en#combinar`. El parámetro del enlace tiene prioridad sobre la preferencia guardada.
 
 Las traducciones están en `i18n/en.js`: el texto español original es la clave. `i18n/dom.js` traduce el contenido y los atributos accesibles, incluidos los mensajes que generan los talleres, y conserva el original para volver a español. Los gráficos usan la misma función de traducción. No hay copias de las páginas, peticiones a servicios de traducción ni dependencias adicionales. Al cambiar un texto, actualiza su entrada del catálogo; puedes marcar contenido propio con `data-i18n-ignore` para conservarlo literalmente. Los nombres de usuario, valores de formularios, código, pesos y guardados mantienen sus datos originales.
 
@@ -103,6 +104,7 @@ cache/            Capítulo 13: KV cache, caché de prompts y costes
 harness/          Capítulo 14: del chat al agente, con los tickets de un viaje y respuestas de ejemplo
 skills/           Capítulo 15: skills y MCP, con la política de gastos de una agencia inventada y ejemplos ilustrativos
 memory/           Capítulo 16: la memoria, con ejemplos ilustrativos (la mesa, recordar entre conversaciones y el mapa de notas)
+subagents/        Capítulo 17: los sub-agentes, con ejemplos ilustrativos (la misión, tres ayudantes y del bucle corto al largo)
 shell/            Portada, estilos comunes y navegación entre capítulos
 i18n/             Catálogo inglés, selector y traducción compartida
 tests/            Perceptrones, publicación HTTP y restricciones del servidor
@@ -118,7 +120,7 @@ publication-manifest.json  Hashes de la salida; generado, no se guarda en Git
 Neural-Labs.html   Curso portable generado y versionado para distribución
 ```
 
-Edita `course/`, `digits/`, `maze/`, `cars/`, `autoencoder/`, `superresolution/`, `tokens/`, `predictor/`, `attention/`, `assistant/`, `reasoning/`, `tools/`, `cache/`, `harness/`, `skills/`, `memory/` o `shell/`, y ejecuta de nuevo `npm run build`. El mismo build actualiza `Neural-Labs.html`; cierra y vuelve a abrir el archivo para ver los cambios. El servidor mantiene una instantánea en memoria: detenlo y vuelve a iniciarlo para ver un nuevo build. No edites `public/` a mano.
+Edita `course/`, `digits/`, `maze/`, `cars/`, `autoencoder/`, `superresolution/`, `tokens/`, `predictor/`, `attention/`, `assistant/`, `reasoning/`, `tools/`, `cache/`, `harness/`, `skills/`, `memory/`, `subagents/` o `shell/`, y ejecuta de nuevo `npm run build`. El mismo build actualiza `Neural-Labs.html`; cierra y vuelve a abrir el archivo para ver los cambios. El servidor mantiene una instantánea en memoria: detenlo y vuelve a iniciarlo para ver un nuevo build. No edites `public/` a mano.
 
 Todos los orígenes del build son rutas relativas internas. No necesita otro checkout, un disco concreto, Unity, una instalación de Codex ni los proyectos originales.
 
