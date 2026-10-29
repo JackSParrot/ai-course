@@ -177,6 +177,67 @@ El capítulo 10 lo simplifica: el evaluador elige una respuesta y se reentrena c
 
 Cada token no se queda solo con el token anterior «más relevante». Reparte su atención en porcentajes entre todos los anteriores y mezcla su información según esos pesos. Es lo que se ve en el capítulo 09 cuando «al» mira sobre todo a «desierto», pero no solo a él.
 
+## IA 04 · Razonamiento, herramientas, caché y arnés
+
+[Ver el vídeo](https://www.youtube.com/watch?v=X4obf9aygwY)
+
+### 🔴 Pensar no evita que se invente datos
+[4:08](https://www.youtube.com/watch?v=X4obf9aygwY&t=248s)
+
+**Se dijo:** que pensar «permitió en 2024 a los modelos tener menos alucinaciones», es decir, respuestas menos inventadas.
+
+**Lo correcto:** razonar ayuda en problemas de **varios pasos**, como seguir la bola en el trile. Pero pensar no crea datos: si un precio o un resultado no está en lo que aprendió ni en la pregunta, ningún razonamiento lo encuentra. Es la idea con la que abre el capítulo 12. Lo que evita inventar un dato es una **herramienta** que lo consulte, como se ve después en la charla con la grapadora y el partido.
+
+### 🔴 La inyección de prompt sigue sin estar resuelta
+[22:43](https://www.youtube.com/watch?v=X4obf9aygwY&t=1363s)
+
+**Se dijo:** que, avisando de que el texto de fuera puede traer instrucciones, «la mayoría de los modelos de hoy en día no las siguen».
+
+**Lo correcto:** los modelos actuales caen **menos**, pero siguen cayendo a veces, y no hay forma fiable de saber cuándo. Marcar lo que viene de fuera ayuda, pero no basta. Por eso el arnés tiene que **limitar** lo que puede hacer el agente y **pedirte confirmación** antes de lo importante (capítulos 12 y 14).
+
+### 🔴 Guardar el contexto en un archivo sí cuesta
+[48:03](https://www.youtube.com/watch?v=X4obf9aygwY&t=2883s)
+
+**Se dijo:** a la pregunta de si guardar el contexto en un archivo para que otro paso lo lea tiene un coste extra, que «en temas de costes es irrelevante».
+
+**Lo correcto:** lo que se lee de ese archivo entra como **tokens de entrada** en cada llamada que lo usa, así que sí se paga. Aun así suele salir **más barato** que arrastrar toda la conversación: el paso siguiente arranca con un contexto pequeño y solo con lo que necesita. Es la idea de los sub-agentes del capítulo 17. En la misma respuesta hay un lapsus: los tokens que tú envías son de **entrada**, no de salida ([48:08](https://www.youtube.com/watch?v=X4obf9aygwY&t=2888s)).
+
+### 🟡 Repaso de las sesiones anteriores
+[0:22](https://www.youtube.com/watch?v=X4obf9aygwY&t=22s) y [2:26](https://www.youtube.com/watch?v=X4obf9aygwY&t=146s)
+
+**Se dijo:** que la red del capítulo 02 aprendió a identificar «letras escritas», que el autoencoder hacía «un escalado hacia arriba» y que en 2023 llegó ChatGPT 3.5.
+
+**Lo correcto:** el capítulo 02 reconoce **dígitos** (del 0 al 9). El autoencoder **comprime y reconstruye** la imagen; ampliarla es la superresolución del capítulo 04. ChatGPT, con GPT-3.5, salió a **finales de 2022**.
+
+### 🟡 Los números de la caché KV
+[28:24](https://www.youtube.com/watch?v=X4obf9aygwY&t=1704s)
+
+**Se dijo:** que con caché el primer paso calcula «seis posiciones».
+
+**Lo correcto:** la frase empieza con 3 palabras. Sin caché son 1 + 2 + 3 = **6** posiciones; con caché, **3**. Desde ahí, con caché cada token nuevo cuesta **1** posición, y sin caché hay que repasar todos: 36 con 8 palabras, 45 con 9.
+
+### 🟡 El modelo es Claude Sonnet 5.5 y las cifras son céntimos
+[29:21](https://www.youtube.com/watch?v=X4obf9aygwY&t=1761s) y [33:14](https://www.youtube.com/watch?v=X4obf9aygwY&t=1994s)
+
+**Se dijo:** «Claude Sonnet 5», y que la petición costaría «uno y trece» frente a unos once.
+
+**Lo correcto:** los precios del capítulo 13 son los de **Claude Sonnet 5.5** (2 $ por millón de tokens de entrada, 10 $ de salida y 0,20 $ leídos de la caché). La petición del ejemplo cuesta **1,13 céntimos** de dólar con caché, frente a unos **11 céntimos** si cambian las instrucciones. La proporción, unas 10 veces, es la correcta.
+
+### 🔵 Arnés y agente no son lo mismo
+[36:46](https://www.youtube.com/watch?v=X4obf9aygwY&t=2206s)
+
+En la charla se dice que el arnés es «lo que antes se llamaban los agentes». En el curso, el **arnés** es el programa que rodea al modelo. El **agente** es ese programa y el modelo trabajando juntos en bucle. Claude Code, por ejemplo, es un agente; su arnés es la parte que no es el modelo.
+
+### 🔵 El agente no suma de dos en dos
+[39:50](https://www.youtube.com/watch?v=X4obf9aygwY&t=2390s)
+
+Se describe una «herramienta que suma» a la que se llama con cada par de valores. En el capítulo 14, el agente pide **ejecutar un pequeño programa** que hace todas las cuentas de una vez y le devuelve el resultado como texto. La idea de fondo es la misma: no suma de cabeza.
+
+### 🔵 La segunda partida del trile
+[7:33](https://www.youtube.com/watch?v=X4obf9aygwY&t=453s)
+
+Al leer la diapositiva se dicen 4 cambios, pero la partida tiene los mismos **6** que al principio. Con los 6, la bola acaba en el **vaso 1**, como responde el modelo que piensa.
+
 ---
 
 # Errata (English)
@@ -214,3 +275,15 @@ Corrections and clarifications for the talks. Each item links to the exact minut
 - 🔵 Open models publish their size (a few billion to over a trillion parameters); commercial models such as ChatGPT's do not. The chapter 08 network has 35,669.
 - 🔵 Real preference tuning usually trains a reward model on comparisons by hired raters (RLHF), plus user feedback; pre-training data is filtered and mixed, not "the whole internet".
 - 🔵 Attention spreads percentages over all previous tokens and mixes them; it does not pick a single "most relevant" one.
+
+**IA 04 · Reasoning, tools, cache and harness** ([video](https://www.youtube.com/watch?v=X4obf9aygwY))
+
+- 🔴 **Thinking does not stop a model from inventing facts** ([4:08](https://www.youtube.com/watch?v=X4obf9aygwY&t=248s)). Reasoning helps with multi-step problems such as the cups game, but it cannot create data the model never saw. Tools fix that (chapter 12).
+- 🔴 **Prompt injection is still unsolved** ([22:43](https://www.youtube.com/watch?v=X4obf9aygwY&t=1363s)). Current models fall for it less often, not "mostly never". Marking outside text helps but is not enough; the harness must limit what the agent can do and ask before anything important.
+- 🔴 **Context saved to a file does cost money** ([48:03](https://www.youtube.com/watch?v=X4obf9aygwY&t=2883s)). Whatever is read from it is billed as input tokens on every call that uses it, though it is usually cheaper than carrying the whole conversation (the subagents idea in chapter 17). The tokens you send are *input*, not output.
+- 🟡 Recap slips: chapter 02 reads **digits**, not letters; the autoencoder compresses and rebuilds (enlarging is chapter 04); ChatGPT with GPT-3.5 launched in **late 2022**.
+- 🟡 KV cache demo: starting from 3 words, the first step is **6** positions without the cache and **3** with it ([28:24](https://www.youtube.com/watch?v=X4obf9aygwY&t=1704s)).
+- 🟡 The prices are **Claude Sonnet 5.5**'s, and the example request costs **1.13 cents** with the cache versus about 11 cents ([33:14](https://www.youtube.com/watch?v=X4obf9aygwY&t=1994s)).
+- 🔵 The **harness** is the program around the model; the **agent** is harness and model working in a loop.
+- 🔵 In chapter 14 the agent runs one small program for all the sums, not a "sum tool" called pair by pair.
+- 🔵 The second cups slide is read with 4 swaps; the game has 6, and with them the ball ends under cup 1.
