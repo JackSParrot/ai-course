@@ -1,0 +1,15 @@
+GreenBox Packaging S.L. — Calle Pallars 99, 08018 Barcelona — VAT ID ESB66554433
+
+INVOICE INV-10247
+Date: Oct 14, 2025
+Bill to: Horno Alto, S.L., C/ Mayor 14, 50001 Zaragoza (ESB50123456)
+
+Item                                   Qty   Unit price      Amount
+Kraft paper bags, medium (pack 500)      7   €   38.50   €  269.50
+Cake boxes 25x25 (pack 100)              4   €   52.00   €  208.00
+Paper napkins (pack 2000)                2   €   21.75   €   43.50
+
+Subtotal: €521.00
+VAT 21%: €109.41
+Total due: €630.41
+Payment terms: bank transfer within 15 days.

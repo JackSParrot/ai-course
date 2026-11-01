@@ -1,0 +1,21 @@
+ELÉCTRICA SIERRA, S.L.U. — Factura de electricidad
+Nº de factura: ES-202605-830         Fecha de emisión: 2026-05-08
+Titular: Horno Alto, S.L. · Suministro: C/ Mayor 14, Zaragoza
+Tarifa 2.0TD · Potencia contratada: 6,9 kW
+Periodo de facturación: 01/04/2026 a 30/04/2026 (30 días)
+
+LECTURAS DEL CONTADOR
+  Lectura anterior (real): 62.730 kWh
+  Lectura actual (real):   64.730 kWh
+
+DETALLE
+  Término de potencia     6,9 kW x 30 días x 0,113500 €/kW día   23,49 €
+  Término de energía      2.000 kWh x 0,148000 €/kWh   296,00 €
+  Impuesto eléctrico      5,11269632 % s/ 319,49 €      16,33 €
+  Alquiler equipo medida  30 días x 0,026600 €/día           0,80 €
+  -----------------------------------------------------------------
+  Base imponible                                          336,62 €
+  IVA 21 %                                                70,69 €
+  TOTAL                                                   407,31 €
+
+Cargo en cuenta el 2026-05-20.

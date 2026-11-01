@@ -5,7 +5,7 @@ import english from '../i18n/en.js';
 
 const read = path => readFile(new URL('../' + path, import.meta.url), 'utf8');
 
-test('the chapter 19 page says that its examples are illustrations and closes the course', async () => {
+test('the chapter 20 page says that its examples are illustrations and closes the course', async () => {
   const html = await read('practice/index.html');
   assert.match(html, /Ilustración: la tienda, los archivos y lo que hace el agente están escritos a mano/);
   assert.match(html, /Ilustración: los productos, los precios y los cambios son inventados/);
@@ -15,16 +15,17 @@ test('the chapter 19 page says that its examples are illustrations and closes th
   for (const idea of ['Un buen encargo dice dónde, cuándo está hecho y qué no tocar.', 'Plan antes, prueba después.', 'Lo que se puede deshacer, se puede delegar.']) assert.ok(html.includes(idea), idea);
 });
 
-test('chapter 17 leads to 18 and 18 to 19, and no chapter promises talks that will not come', async () => {
-  assert.match(await read('subagents/index.html'), /href="\.\.\/control\/"/);
+test('chapter 17 leads to 18, 18 to 19 and 19 to 20, and no chapter promises talks that will not come', async () => {
+  assert.match(await read('subagents/index.html'), /href="\.\.\/effort\/"/);
+  assert.match(await read('effort/index.html'), /href="\.\.\/control\/"/);
   assert.match(await read('control/index.html'), /href="\.\.\/practice\/"/);
-  for (const path of ['tools/index.html', 'cache/index.html', 'subagents/index.html', 'control/index.html', 'practice/index.html']) {
+  for (const path of ['tools/index.html', 'cache/index.html', 'subagents/index.html', 'effort/index.html', 'control/index.html', 'practice/index.html']) {
     const html = await read(path);
     assert.doesNotMatch(html, /próximas charlas|ejecutemos modelos en local/, path);
   }
 });
 
-test('every text of the chapter 19 page has an English translation, and its script carries its own', async () => {
+test('every text of the chapter 20 page has an English translation, and its script carries its own', async () => {
   const html = (await read('practice/index.html')).replace(/<script[\s\S]*?<\/script>/g, '').replace(/<code>[^<]*<\/code>/g, '<x>');
   const texts = [...html.matchAll(/>([^<]+)</g), ...html.matchAll(/(?:aria-label|title)="([^"]+)"/g)].map(m => m[1].trim()).filter(t => /[a-záéíóúñ]/i.test(t));
   const same = new Set(['neural /', 'labs']);

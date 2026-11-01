@@ -1,0 +1,18 @@
+LÁCTEOS LA VEGA · Cooperativa
+Ctra. de Huesca km 3 · Villanueva de Gállego · NIF F-50443322
+
+Factura: LV/26/0338
+Emitida el 6 de marzo de 2026
+Para: Horno Alto, S.L. (B-50123456)
+
+| Producto                         | Cant. | € unidad | € total  | IVA |
+|----------------------------------|-------|----------|----------|-----|
+| Mantequilla 82 % (bloque 1 kg)   |    60 |     9,60 |   576,00 | 10% |
+| Leche entera (brik 1 l)          |   120 |     0,98 |   117,60 |  4% |
+| Huevos L (bandeja 30)            |    40 |     7,20 |   288,00 |  4% |
+| Nata 35 % (1 l)                  |    24 |     4,10 |    98,40 | 10% |
+
+Suma productos: 1.080,00 €
+IVA 4% sobre 405,60 €: 16,22 €
+IVA 10% sobre 674,40 €: 67,44 €
+Importe total: 1.163,66 €

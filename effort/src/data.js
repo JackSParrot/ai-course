@@ -1,0 +1,36 @@
+// Generado por effort/measure/export.mjs: medidas reales, no ilustraciones.
+// Claude Opus 5.5 (claude-opus-5-5) en Claude Code 2.1.316, 1 de noviembre de 2026, sin memoria entre ejecuciones.
+// usd es el coste a precio de lista de la API que da Claude Code; con una suscripción, ese trabajo gasta del límite de uso.
+export const LEVELS = ['low','medium','high','xhigh','max'];
+export const RUNS = [
+  {task:'explicar',effort:'low',rep:1,seconds:16,usd:0.314,turns:2,output:1381,thinking:248,caught:true},
+  {task:'explicar',effort:'low',rep:2,seconds:17,usd:0.054,turns:2,output:1391,thinking:330,caught:true},
+  {task:'explicar',effort:'low',rep:3,seconds:16,usd:0.053,turns:2,output:1349,thinking:288,caught:true},
+  {task:'explicar',effort:'medium',rep:1,seconds:22,usd:0.064,turns:2,output:1863,thinking:510,caught:true},
+  {task:'explicar',effort:'medium',rep:2,seconds:19,usd:0.059,turns:2,output:1634,thinking:450,caught:true},
+  {task:'explicar',effort:'medium',rep:3,seconds:21,usd:0.063,turns:2,output:1849,thinking:629,caught:true},
+  {task:'explicar',effort:'high',rep:1,seconds:21,usd:0.063,turns:2,output:1824,thinking:560,caught:true},
+  {task:'explicar',effort:'high',rep:2,seconds:23,usd:0.064,turns:2,output:1895,thinking:602,caught:true},
+  {task:'explicar',effort:'high',rep:3,seconds:24,usd:0.069,turns:2,output:2110,thinking:801,caught:true},
+  {task:'explicar',effort:'xhigh',rep:1,seconds:33,usd:0.107,turns:3,output:2997,thinking:1745,caught:true},
+  {task:'explicar',effort:'xhigh',rep:2,seconds:43,usd:0.11,turns:2,output:4181,thinking:2891,caught:true},
+  {task:'explicar',effort:'xhigh',rep:3,seconds:45,usd:0.112,turns:2,output:4257,thinking:2976,caught:true},
+  {task:'explicar',effort:'max',rep:1,seconds:215,usd:0.577,turns:3,output:22624,thinking:21277,caught:true},
+  {task:'explicar',effort:'max',rep:2,seconds:277,usd:0.716,turns:3,output:29510,thinking:28006,caught:true},
+  {task:'explicar',effort:'max',rep:3,seconds:242,usd:0.576,turns:3,output:25070,thinking:23502,caught:true},
+  {task:'tabla',effort:'low',rep:1,seconds:98,usd:0.637,turns:65,output:12561,thinking:3329,caught:true,rows:61,duplicate:true,creditNote:true},
+  {task:'tabla',effort:'low',rep:2,seconds:75,usd:0.553,turns:18,output:9434,thinking:2658,caught:false,rows:61,duplicate:true,creditNote:true},
+  {task:'tabla',effort:'medium',rep:1,seconds:194,usd:0.913,turns:65,output:22386,thinking:7772,caught:true,rows:61,duplicate:true,creditNote:true},
+  {task:'tabla',effort:'medium',rep:2,seconds:118,usd:0.72,turns:65,output:15218,thinking:5619,caught:true,rows:61,duplicate:true,creditNote:true},
+  {task:'tabla',effort:'high',rep:1,seconds:206,usd:0.996,turns:65,output:25297,thinking:10720,caught:true,rows:61,duplicate:true,creditNote:true},
+  {task:'tabla',effort:'high',rep:2,seconds:194,usd:0.953,turns:65,output:23394,thinking:8535,caught:true,rows:61,duplicate:true,creditNote:true},
+  {task:'tabla',effort:'xhigh',rep:1,seconds:272,usd:1.244,turns:65,output:34157,thinking:19417,caught:true,rows:61,duplicate:true,creditNote:true},
+  {task:'tabla',effort:'xhigh',rep:2,seconds:252,usd:1.143,turns:66,output:29579,thinking:14732,caught:true,rows:61,duplicate:true,creditNote:true},
+  {task:'tabla',effort:'max',rep:1,seconds:522,usd:2.203,turns:69,output:66540,thinking:50945,caught:true,rows:61,duplicate:true,creditNote:true},
+  {task:'tabla',effort:'max',rep:2,seconds:550,usd:2.297,turns:72,output:68659,thinking:52935,caught:true,rows:61,duplicate:true,creditNote:true},
+  {task:'informe',effort:'low',rep:1,seconds:171,usd:0.964,turns:9,output:20256,thinking:3381,caught:false,bytes:25461},
+  {task:'informe',effort:'medium',rep:1,seconds:335,usd:1.422,turns:66,output:39289,thinking:13073,caught:true,bytes:28964},
+  {task:'informe',effort:'high',rep:1,seconds:604,usd:2.387,turns:78,output:66871,thinking:30097,caught:true,bytes:39855},
+  {task:'informe',effort:'xhigh',rep:1,seconds:1129,usd:4.03,turns:71,output:131221,thinking:90995,caught:true,bytes:52223},
+  {task:'informe',effort:'max',rep:1,seconds:2575,usd:8.746,turns:79,output:310005,thinking:265473,caught:true,bytes:60356},
+];

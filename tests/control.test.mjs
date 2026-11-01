@@ -5,7 +5,7 @@ import english from '../i18n/en.js';
 
 const read = path => readFile(new URL('../' + path, import.meta.url), 'utf8');
 
-test('the chapter 18 page says that its examples are illustrations and cites its sources', async () => {
+test('the chapter 19 page says that its examples are illustrations and cites its sources', async () => {
   const html = await read('control/index.html');
   assert.match(html, /Ilustración: la tienda, los archivos y lo que hace el agente están escritos a mano/);
   assert.match(html, /Ilustración: el correo, la dirección y lo que hace el agente son inventados/);
@@ -13,7 +13,7 @@ test('the chapter 18 page says that its examples are illustrations and cites its
   for (const idea of ['Las instrucciones sugieren; el arnés obliga.', 'Lo prohibido gana siempre.', 'Lo que lee puede traer órdenes, y lo que lee sale de casa.']) assert.ok(html.includes(idea), idea);
 });
 
-test('every text of the chapter 18 page has an English translation, and its script carries its own', async () => {
+test('every text of the chapter 19 page has an English translation, and its script carries its own', async () => {
   const html = (await read('control/index.html')).replace(/<script[\s\S]*?<\/script>/g, '').replace(/<code>[^<]*<\/code>/g, '<x>');
   const texts = [...html.matchAll(/>([^<]+)</g), ...html.matchAll(/(?:aria-label|title)="([^"]+)"/g)].map(m => m[1].trim()).filter(t => /[a-záéíóúñ]/i.test(t));
   const same = new Set(['neural /', 'labs']);

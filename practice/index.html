@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#17372e"><title>Trabajar con un agente — Tú pones el encargo y la red</title><link rel="icon" href="../digits/favicon.svg"><link rel="stylesheet" href="../tokens/styles.css"></head><body>
-<header class="tokens-header"><a href="../">neural / <b>labs</b></a><span>CAPÍTULO 19 · TRABAJAR CON UN AGENTE</span></header>
+<header class="tokens-header"><a href="../">neural / <b>labs</b></a><span>CAPÍTULO 20 · TRABAJAR CON UN AGENTE</span></header>
 <main>
 <section class="intro" aria-labelledby="practice-title"><div><p class="eyebrow">TRABAJAR CON UN AGENTE</p><h1 id="practice-title">Ya sabes cómo funciona.<br>Ahora, cómo trabajar con él.</h1><p>Un agente no ve lo que tienes en la cabeza ni sabe cuándo te vas a dar por satisfecho. Eso lo pones tú: un <strong>buen encargo</strong> al principio y una <strong>red de seguridad</strong> al final, para comprobar lo que ha hecho y deshacerlo si sale mal.</p><p>Es como encargar una reforma: dices qué quieres y qué no se toca, miras el presupuesto antes de que empiecen, revisas la obra al acabar y te alegras de haber guardado el plano de cómo estaba.</p><a href="#encargo" class="button primary">Empezar ↓</a></div>
 <div class="analogy-grid" aria-label="Tres ideas del capítulo"><div><span class="eyebrow">EL ENCARGO</span><strong>Dónde, cuándo está hecho y qué no tocar</strong><small>lo que no le dices, lo adivina</small></div><div><span class="eyebrow">EL PLAN</span><strong>Antes de tocar nada</strong><small>corregir un plan cuesta una frase</small></div><div class="accent"><span class="eyebrow">LA RED DE SEGURIDAD</span><strong>Comprobar y poder deshacer</strong><small>lo que se puede deshacer, se puede delegar</small></div></div></section>
@@ -56,8 +56,9 @@
 <div class="habit-row"><span>15 · Skills y MCP</span><span>Ve un menú y abre lo que entiende.</span><span>Lo que repites, en una skill con un nombre claro.</span></div>
 <div class="habit-row"><span>16 · La memoria</span><span>Lo que no está en la mesa no existe.</span><span>Apunta lo que debe recordar y revisa lo que recuerda.</span></div>
 <div class="habit-row"><span>17 · Los sub-agentes</span><span>Un ayudante solo sabe lo que le dices.</span><span>Delega misiones que se entiendan solas y digan qué devolver.</span></div>
-<div class="habit-row"><span>18 · Confiar y controlar</span><span>Lo que escribes, el modelo lo puede saltar; el arnés, no.</span><span>Lo que no puede fallar, en el arnés: permisos y hooks.</span></div>
-<div class="habit-row habit-last"><span>19 · Trabajar con un agente</span><span>No adivina qué quieres ni cuándo has acabado.</span><span>Encargo claro, plan antes, prueba después y una forma de deshacer.</span></div>
+<div class="habit-row"><span>18 · El esfuerzo</span><span>El modelo es lo que sabe; el esfuerzo, cuánto trabaja.</span><span>Empieza con el esfuerzo por defecto; súbelo cuando falten comprobaciones.</span></div>
+<div class="habit-row"><span>19 · Confiar y controlar</span><span>Lo que escribes, el modelo lo puede saltar; el arnés, no.</span><span>Lo que no puede fallar, en el arnés: permisos y hooks.</span></div>
+<div class="habit-row habit-last"><span>20 · Trabajar con un agente</span><span>No adivina qué quieres ni cuándo has acabado.</span><span>Encargo claro, plan antes, prueba después y una forma de deshacer.</span></div>
 </div></section>
 
 <section id="vida-real" class="lesson-section" aria-labelledby="real-title"><p class="eyebrow">07 / EN LA VIDA REAL</p><h2 id="real-title">Los mandos de Claude Code.</h2>
@@ -66,7 +67,7 @@
 <article><span>EL PRIMER MINUTO</span><h3>Esc para parar</h3><p>Mira lo que hace al principio. Si se va por otro lado, <code>Esc</code> lo para sin perder lo hecho, y le corriges el rumbo.</p></article>
 <article><span>PODER DESHACER</span><h3>Volver atrás</h3><p><code>/rewind</code>, o <code>Esc</code> dos veces, vuelve al punto antes de cualquier mensaje tuyo. Deshace lo que el agente editó con sus herramientas; lo que cambió un comando o un sub-agente, no siempre. Para eso está git.</p></article>
 <article><span>LA MESA</span><h3>/clear entre tareas</h3><p>Empieza de cero con la mesa limpia. Si le has corregido lo mismo dos veces, mejor un encargo nuevo que incluya lo que has aprendido que una tercera corrección.</p></article>
-<article><span>CAPÍTULO 18</span><h3>Lo que no puede fallar, en el arnés</h3><p>Lo que pides lo puede saltar; una regla de permisos o un <em>hook</em>, no. Y todo lo que lee viaja al proveedor. Lo viste en «Confiar y controlar».</p></article>
+<article><span>CAPÍTULO 19</span><h3>Lo que no puede fallar, en el arnés</h3><p>Lo que pides lo puede saltar; una regla de permisos o un <em>hook</em>, no. Y todo lo que lee viaja al proveedor. Lo viste en «Confiar y controlar».</p></article>
 <article><span>CONSEJO 1</span><h3>Antes de dejarlo solo</h3><p>¿Sabe cuándo ha terminado? ¿Puede comprobarlo? ¿Qué puede tocar? ¿Qué lo detiene? ¿Quién da el visto bueno al final? Si falta una respuesta, quédate mirando.</p></article>
 <article><span>CONSEJO 2</span><h3>Cuándo no usar un agente</h3><p>Cuando tardas menos en hacerlo que en explicarlo, cuando no vas a poder comprobar el resultado, o cuando la decisión es de gusto o de dinero y solo puedes tomarla tú.</p></article>
 </div>

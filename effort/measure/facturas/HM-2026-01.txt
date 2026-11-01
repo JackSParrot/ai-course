@@ -1,0 +1,15 @@
+HARINAS DEL MONCAYO, S.A.
+CIF A-50998877 · Polígono Malpica, nave 7 · Zaragoza
+-----------------------------------------------------------
+FACTURA Nº HM-2026-0117                Fecha: 03/01/2026
+Cliente: Horno Alto, S.L. · CIF B-50123456 · C/ Mayor 14, 50001 Zaragoza
+-----------------------------------------------------------
+Concepto                              Uds.   Precio   Importe
+Harina de trigo T55 (saco 25 kg)       56    17,20    963,20
+Harina integral (saco 25 kg)            9    21,40    192,60
+Levadura fresca (caja 5 kg)            15    11,80    177,00
+-----------------------------------------------------------
+Base 4 %: 1.155,80 €   IVA 4 %: 46,23 €
+Base 10 %: 177,00 €   IVA 10 %: 17,70 €
+TOTAL FACTURA: 1.396,73 €
+Forma de pago: domiciliación a 30 días.

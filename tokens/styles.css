@@ -516,7 +516,27 @@ html[lang=en] .es-only{display:none}
 .breakdown-row strong{font:12px Consolas,monospace}.breakdown-row.total{background:none;border-top:1px solid var(--line);border-radius:0;font-weight:600}
 .file-parts{margin:8px 0 0;padding-left:18px;display:grid;gap:8px;font-size:13.5px;line-height:1.6}.file-parts code,.file-parts strong{margin-right:6px}
 @media(max-width:800px){.two-desks,.helper-card,.profile-grid,.run-grid,.run-breakdown{grid-template-columns:1fr}.assign-row{grid-template-columns:1fr}}
-/* Chapter 18 (practice): the brief, the plan, the review, undoing and the habits. */
+/* Chapter 18 (effort): the dial, the power bill, the measured bars and the checks per level. */
+.level-card{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:16px;padding:18px;border:1px solid var(--line);border-radius:12px;background:var(--paper)}
+.level-card h3{grid-column:1/-1;margin:0;font:20px Consolas,monospace}
+.level-dial{grid-column:1/-1;display:grid;grid-template-columns:repeat(5,1fr);gap:6px;max-width:360px}
+.dial-step{height:10px;border-radius:5px;background:var(--field);border:1px solid var(--line)}.dial-step.on{background:var(--green);border-color:var(--green)}
+.invoice-text{margin:8px 0 0;padding:12px 14px;overflow-x:auto;border-radius:8px;background:var(--field);font:12px/1.55 Consolas,monospace;white-space:pre}
+.effort-controls{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px 24px;margin:16px 0}
+.effort-bars{display:grid;gap:10px;max-width:880px}
+.effort-row{display:grid;grid-template-columns:64px 1fr 120px;align-items:center;gap:12px}
+.effort-level{font:13px Consolas,monospace}.effort-value{font:13px Consolas,monospace;text-align:right}
+.effort-track{position:relative;height:26px;border-radius:6px;background:var(--field)}
+.effort-bar{position:absolute;inset:0 auto 0 0;border-radius:6px;background:var(--bar);overflow:hidden;transition:width .3s}
+.effort-think,.effort-key.think{position:absolute;inset:0 auto 0 0;background:var(--accent)}
+.effort-key.think{position:static;display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:middle}
+.effort-dot{position:absolute;top:50%;width:9px;height:9px;margin:-5px 0 0 -5px;border-radius:50%;background:var(--paper);border:2px solid var(--ink)}
+.effort-checks{display:grid;gap:6px;max-width:880px;margin-top:18px}
+.effort-check{display:grid;grid-template-columns:64px 1fr;gap:2px 12px;padding:8px 12px;border:1px solid var(--line);border-radius:8px;background:var(--paper);font-size:13px;line-height:1.6}
+.effort-check strong{grid-row:span 3;font:13px Consolas,monospace}
+@media(max-width:800px){.level-card{grid-template-columns:1fr}.effort-row{grid-template-columns:52px 1fr 92px;gap:8px}}
+
+/* Chapter 20 (practice): the brief, the plan, the review, undoing and the habits. */
 .sub-title{margin:28px 0 4px;font-size:19px}
 .brief-row{display:grid;grid-template-columns:24px 1fr;gap:8px;align-items:start;font-size:13.5px;line-height:1.55}.brief-row p{margin:0}
 .brief-mark{display:grid;place-items:center;width:22px;height:22px;border-radius:50%;font-size:12px;font-weight:700}
@@ -547,7 +567,7 @@ html[lang=en] .es-only{display:none}
 .habit-head{border-top:0;background:var(--field);font:11px Consolas,monospace;letter-spacing:1px;color:var(--muted)}.habit-head>span:last-child{font-weight:400}.habit-head>span:first-child{color:var(--muted);font-size:11px}
 .habit-last{background:var(--generated);color:#18361f}.habit-last>span:first-child{color:#18361f}
 @media(max-width:800px){.habit-row{grid-template-columns:1fr;gap:2px}.habit-head{display:none}.undo-gone{grid-template-columns:1fr}}
-/* Chapter 18 (control): note or lock, modes, hooks, layers against injection and the trip of a file. */
+/* Chapter 19 (control): note or lock, modes, hooks, layers against injection and the trip of a file. */
 .ctl-tag{display:inline-block;padding:3px 10px;border-radius:12px;background:var(--program);color:var(--program-ink);font-size:12px}
 .two-cols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;width:100%}
 .ctl-col{display:grid;align-content:start;gap:6px;padding:14px 16px;border:1px solid var(--line);border-radius:10px;background:var(--paper)}.ctl-col p{margin:0;font-size:13.5px;line-height:1.6}

@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#17372e"><title>El esfuerzo — El mismo modelo, distinto trabajo</title><link rel="icon" href="../digits/favicon.svg"><link rel="stylesheet" href="../tokens/styles.css"></head><body>
+<header class="tokens-header"><a href="../">neural / <b>labs</b></a><span>CAPÍTULO 18 · EL ESFUERZO</span></header>
+<main>
+<section class="intro" aria-labelledby="effort-title"><div><p class="eyebrow">EL ESFUERZO</p><h1 id="effort-title">El mismo modelo.<br>Distinto trabajo.</h1><p>En el capítulo 11 el modelo aprendió a pensar antes de responder. En el 17, cada ayudante podía «pensar más o menos». Ese mando tiene nombre: el esfuerzo.</p><p>Si a una persona le das una hora para un encargo, hace una cosa; si le das doce, hace otra. No sabe más: comprueba más, repasa más y entrega más. Aquí lo hemos <strong>medido de verdad</strong>: tres encargos, cinco niveles, el tiempo, el dinero y lo que salió.</p><a href="#mando" class="button primary">Empezar ↓</a></div>
+<div class="analogy-grid" aria-label="Tres ideas del capítulo"><div><span class="eyebrow">EL MODELO</span><strong>Lo que sabe</strong><small>se elige una vez: Opus, Sonnet, Haiku</small></div><div><span class="eyebrow">EL ESFUERZO</span><strong>Cuánto trabaja en cada encargo</strong><small>pensar, leer, comprobar, cuántos pasos da</small></div><div class="accent"><span class="eyebrow">LA FACTURA</span><strong>Tiempo y dinero</strong><small>y no siempre compran una respuesta mejor</small></div></div></section>
+
+<section id="mando" class="lesson-section" aria-labelledby="dial-title"><p class="eyebrow">01 / EL MANDO</p><h2 id="dial-title">Cinco niveles, y no solo para pensar.</h2><p>Claude Opus 5.5 tiene cinco niveles de esfuerzo. El esfuerzo no es solo cuánto piensa antes de contestar: cambia también cuántas herramientas usa, cuánto lee, cuánto comprueba y lo largo que escribe. En Claude Code, Opus 5.5 trabaja en <code>medium</code> si no dices otra cosa. Elige un nivel.</p>
+<div id="level-picker" class="build-levels" role="group" aria-label="Elige un nivel"></div>
+<div id="level-card" class="level-card"></div>
+<p class="fine">Las descripciones resumen la documentación de Claude Code y de la API de Claude (consultadas en noviembre de 2026).</p></section>
+
+<section id="facturas" class="lesson-section" aria-labelledby="invoices-title"><p class="eyebrow">02 / EL EXPERIMENTO</p><h2 id="invoices-title">Un año de facturas de una panadería.</h2><p>Horno Alto, la panadería de Zaragoza del capítulo 17, guarda en una carpeta las facturas de sus proveedores de julio de 2025 a junio de 2026: 62 archivos de siete proveedores, cada uno con su formato. Entre ellas hay cosas que un buen contable vería y que nadie avisa.</p>
+<div class="model-layout"><div class="panel"><span class="eyebrow">LA FACTURA DE LA LUZ DE FEBRERO</span><div id="power-bill"></div></div>
+<div class="panel"><span class="eyebrow">LO QUE ESCONDE LA CARPETA</span><ul class="file-parts">
+<li><strong>Un error en la luz.</strong> Las lecturas del contador dan 1.950 kWh, pero cobra 2.950: 213,68 € de más.</li>
+<li><strong>Una factura repetida.</strong> La de los lácteos de octubre llegó dos veces; la segunda es un reenvío.</li>
+<li><strong>Un abono.</strong> La harinera devuelve cuatro sacos dañados: va en negativo.</li>
+<li><strong>Retenciones.</strong> El alquiler y la gestoría restan IRPF del total que se paga.</li>
+<li><strong>Una avería.</strong> Una reparación del horno de 2.350 € que no se repetirá cada año.</li>
+<li><strong>Formatos distintos.</strong> Fechas escritas con letras, tablas, una plantilla en inglés con <code>€1,234.56</code>.</li></ul></div></div>
+<p>Le dimos a Claude Code tres encargos, de menos a más, sin avisarle de nada de esto. Elige uno para ver lo que se le pidió.</p>
+<div id="task-picker" class="build-levels" role="group" aria-label="Elige un encargo"></div>
+<div id="task-card" class="helper-card"></div>
+<p class="fine">La panadería y sus facturas son inventadas; las generamos con un programa que guarda también la solución. Los encargos, las respuestas y las cifras de este capítulo son reales.</p></section>
+
+<section id="medidas" class="lesson-section" aria-labelledby="measure-title"><p class="eyebrow">03 / LO QUE MEDIMOS</p><h2 id="measure-title">Tiempo, dinero y aciertos, nivel a nivel.</h2><p>Cada encargo, en los cinco niveles, con Claude Opus 5.5 en Claude Code y la misma carpeta vacía cada vez. Explicar la factura, tres veces por nivel; la tabla, dos; el informe, una, porque solo el de <code>max</code> tardó 43 minutos. Cada punto es una ejecución; la barra, la mediana.</p>
+<div class="effort-controls"><div id="measure-task" class="build-levels" role="group" aria-label="Elige un encargo"></div><div id="measure-metric" class="build-levels" role="group" aria-label="Elige qué medir"></div></div>
+<div id="measure-bars" class="effort-bars"></div>
+<div id="measure-checks" class="effort-checks"></div>
+<p class="fine">Medido el 1 de noviembre de 2026 con <code>claude-opus-5-5</code> en Claude Code 2.1.316, sin memoria entre ejecuciones. El coste es el que calcula Claude Code a precio de lista de la API; con una suscripción, ese trabajo gasta del límite de uso. Son pocas ejecuciones: sirven para ver el orden de magnitud, no para afinar decimales. El kit para repetirlo está en <code>effort/measure/</code>.</p></section>
+
+<section id="lecciones" class="lesson-section" aria-labelledby="lessons-title"><p class="eyebrow">04 / LO QUE NOS DICE</p><h2 id="lessons-title">Cuatro cosas que no esperábamos tan claras.</h2>
+<div id="lessons" class="oddity-grid"></div></section>
+
+<section id="elegir" class="lesson-section" aria-labelledby="choose-title"><p class="eyebrow">05 / CÓMO ELEGIR</p><h2 id="choose-title">Cuatro preguntas antes de subirlo.</h2><p>El esfuerzo no hace al modelo más listo: le da más tiempo para comprobar. Merece la pena cuando hay cosas que comprobar y nadie más lo va a hacer.</p>
+<div class="oddity-grid">
+<article><span>1 · ¿ESTÁS ENCIMA?</span><h3>Si lo vas a revisar tú enseguida, bájalo.</h3><p>En una conversación rápida, tú eres quien comprueba. Un agente que trabaja solo una hora necesita comprobarse a sí mismo.</p></article>
+<article><span>2 · ¿HAY TRAMPAS?</span><h3>Casos escondidos piden más esfuerzo.</h3><p>Muchos archivos, excepciones, datos que no cuadran. Es justo lo que el nivel bajo pasó por alto entre 62 facturas.</p></article>
+<article><span>3 · ¿ESTÁ CLARO?</span><h3>Un encargo vago deja más por decidir.</h3><p>Con más esfuerzo, el modelo toma más decisiones por su cuenta, y no siempre las que tú querías. Mejor aclarar el encargo que subir el mando.</p></article>
+<article><span>4 · ¿ESPERA ALGUIEN?</span><h3>Si alguien espera la respuesta, el tiempo cuenta.</h3><p>Cuatro minutos para explicar una factura son muchos si tienes al cliente delante. Esperar una noche a un encargo largo, no.</p></article>
+</div>
+<p>¿Qué nivel le pondrías a cada encargo?</p>
+<div id="choose-list" class="assign-list"></div>
+<div id="choose-score" class="lesson-note"></div>
+<div class="lesson-note"><strong>¿No sabía o no se esforzó?</strong> Si falló porque no sabía algo, más esfuerzo no lo arregla: hace falta otro modelo o darle el dato. Si pasó por alto algo que tenía delante, eso sí lo arregla el esfuerzo.</div>
+<p class="fine">Las preguntas siguen la guía de Anthropic para elegir el esfuerzo; las situaciones son inventadas. Fuentes: documentación de Claude Code, Thariq Shihipar, «Spending your effort» (blog de Claude, septiembre de 2026), y Lydia Hallie, «Choosing a Claude model and effort level in Claude Code» (julio de 2026). Consultadas en noviembre de 2026.</p></section>
+
+<section class="lesson-section" aria-labelledby="summary-title"><p class="eyebrow">PARA LLEVAR</p><h2 id="summary-title">Tres ideas.</h2>
+<div class="takeaways"><div><span>1</span><strong>El modelo es lo que sabe; el esfuerzo, cuánto trabaja.</strong><small>Mismo modelo, mismas facturas: de 16 segundos a 43 minutos según el encargo y el mando.</small></div><div><span>2</span><strong>Lo sencillo no mejora con más esfuerzo.</strong><small>Para explicar una factura, el nivel más bajo acertó igual, diez veces más barato que el más alto.</small></div><div><span>3</span><strong>Más esfuerzo compra comprobaciones, no otra respuesta.</strong><small>Sirve cuando hay trampas escondidas. Empieza con el de serie y súbelo cuando falten comprobaciones.</small></div></div></section>
+
+<section class="lesson-section chapter-bridge" aria-labelledby="bridge-title"><p class="eyebrow">LO QUE VIENE</p><h2 id="bridge-title">Ya decides cuánto trabaja. Falta decidir qué puede tocar.</h2><p>Un agente con mucho esfuerzo trabaja más tiempo solo, y hace más cosas por su cuenta. Antes de dejarlo, conviene saber qué tiene prohibido, qué tiene que preguntarte y qué datos salen de tu ordenador.</p><a href="../control/" class="button primary">Ir al capítulo 19 · Confiar y controlar →</a></section>
+</main>
+<footer><span>neural / labs · el esfuerzo</span><span>Panadería y facturas inventadas; encargos, respuestas y medidas reales.</span></footer>
+<script type="module" src="./src/app.js"></script>
+</body></html>
